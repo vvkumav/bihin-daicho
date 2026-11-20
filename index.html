@@ -1,0 +1,3194 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>備品台帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* Layout: files are colored binders. The left shelf lists them with their folder color; the open file's color
+   tints its page — folder icon, totals band, table header, buttons — so every file looks like its own binder.
+   Type: Zen Maru Gothic (rounded) for names, headings, buttons and totals; BIZ UDPGothic for table and form data.
+   Sizes: 26 file name / 20 app name, totals / 16 body, table / 14 labels, secondary */
+:root{
+  --bg:#f4f5f5;
+  --surface:#ffffff;
+  --sunken:#e9edef;
+  --ink:#1f2a33;
+  --ink-2:#4f5d69;
+  --line:#dde3e8;
+  --line-strong:#a3aeb8;
+  --zebra:#f8fafb;
+  --on-color:#ffffff;
+  --danger:#c0392b;
+  --danger-ink:#ffffff;
+  --danger-soft:#fdecea;
+  --danger-text:#a8231b;
+  --scrim:rgba(20,28,36,.45);
+  --fc:#3b7bd4; --fc-btn:#2d6cbd; --fc-soft:#e8f1fc; --fc-ink:#1d4f8f;
+  --round:"Zen Maru Gothic","BIZ UDPGothic","Hiragino Maru Gothic ProN","Yu Gothic UI","Meiryo",sans-serif;
+  --font:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Meiryo",system-ui,sans-serif;
+  --r-lg:14px;
+  --r:10px;
+  --r-sm:8px;
+}
+/* Binder colors: icon/dot, button (white text), soft tint, text on the tint */
+.fc-blue{--fc:#3b7bd4;--fc-btn:#2d6cbd;--fc-soft:#e8f1fc;--fc-ink:#1d4f8f}
+.fc-green{--fc:#34a271;--fc-btn:#22825a;--fc-soft:#e3f4eb;--fc-ink:#1b6845}
+.fc-orange{--fc:#ec8a32;--fc-btn:#b25a0e;--fc-soft:#fdefe1;--fc-ink:#8a4a0b}
+.fc-red{--fc:#e0605a;--fc-btn:#bf3a33;--fc-soft:#fcebea;--fc-ink:#9a2d27}
+.fc-purple{--fc:#9068d0;--fc-btn:#7048b5;--fc-soft:#f2ecfb;--fc-ink:#5a3a94}
+.fc-teal{--fc:#22a6a6;--fc-btn:#147c7c;--fc-soft:#dff3f3;--fc-ink:#0f6464}
+.fc-yellow{--fc:#e2b11c;--fc-btn:#8a6800;--fc-soft:#fcf4d9;--fc-ink:#735700}
+.fc-brown{--fc:#a8775a;--fc-btn:#86583a;--fc-soft:#f5ece5;--fc-ink:#6b452c}
+.fc-vermilion{--fc:#e65733;--fc-btn:#d13e1a;--fc-soft:#fae9e5;--fc-ink:#8f2b12}
+.fc-olive{--fc:#acac46;--fc-btn:#777731;--fc-soft:#f6f6e9;--fc-ink:#555523}
+.fc-lime{--fc:#7fb62d;--fc-btn:#597e20;--fc-soft:#f2f9e7;--fc-ink:#405c17}
+.fc-leaf{--fc:#5abb42;--fc-btn:#40842e;--fc-soft:#ebf7e8;--fc-ink:#2c5c20}
+.fc-forest{--fc:#389451;--fc-btn:#266436;--fc-soft:#e9f7ec;--fc-ink:#235c32}
+.fc-mint{--fc:#4fb7a6;--fc-btn:#358174;--fc-soft:#e9f6f4;--fc-ink:#255b52}
+.fc-cyan{--fc:#22b5d3;--fc-btn:#187e93;--fc-soft:#e5f7fa;--fc-ink:#115b69}
+.fc-sky{--fc:#33a7e6;--fc-btn:#167bb1;--fc-soft:#e5f3fa;--fc-ink:#0f557b}
+.fc-ruri{--fc:#3368e6;--fc-btn:#1a51d1;--fc-soft:#e5ebfa;--fc-ink:#123891}
+.fc-navy{--fc:#3048a6;--fc-btn:#223377;--fc-soft:#e7ebf8;--fc-ink:#25377e}
+.fc-indigo{--fc:#5959c0;--fc-btn:#4141aa;--fc-soft:#e9e9f7;--fc-ink:#2d2d76}
+.fc-lavender{--fc:#8f81bb;--fc-btn:#635298;--fc-soft:#edebf4;--fc-ink:#45396a}
+.fc-violet{--fc:#994dcb;--fc-btn:#8235b6;--fc-soft:#f1e7f8;--fc-ink:#5b257e}
+.fc-grape{--fc:#b259c0;--fc-btn:#7a3285;--fc-soft:#f5e9f7;--fc-ink:#6d2d76}
+.fc-magenta{--fc:#cf4ab4;--fc-btn:#b9319e;--fc-soft:#f9e7f5;--fc-ink:#81226e}
+.fc-pink{--fc:#e45899;--fc-btn:#ca2170;--fc-soft:#fae5ef;--fc-ink:#8c174e}
+.fc-rose{--fc:#d34566;--fc-btn:#be2d4f;--fc-soft:#f9e6eb;--fc-ink:#841f37}
+.fc-wine{--fc:#9f3845;--fc-btn:#712832;--fc-soft:#f7e8ea;--fc-ink:#792a35}
+.fc-gray{--fc:#838c95;--fc-btn:#6c757f;--fc-soft:#eef0f2;--fc-ink:#4a5057}
+.fc-charcoal{--fc:#4f5c69;--fc-btn:#353d46;--fc-soft:#eef0f2;--fc-ink:#46525d}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--fc);outline-offset:2px}
+
+/* Buttons */
+.btn{font-family:var(--round);font-size:15px;font-weight:700;line-height:1.2;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:0 16px;border-radius:var(--r);border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);cursor:pointer;white-space:nowrap;transition:filter .15s}
+.btn:hover:not(:disabled){background:var(--sunken)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn svg{flex:none}
+.btn-primary{background:var(--fc-btn);border-color:var(--fc-btn);color:var(--on-color)}
+.btn-primary:hover:not(:disabled){background:var(--fc-btn);filter:brightness(1.12)}
+.btn-danger{background:var(--danger);border-color:var(--danger);color:var(--danger-ink)}
+.btn-danger:hover:not(:disabled){background:var(--danger);filter:brightness(1.1)}
+.btn-sm{min-height:32px;padding:0 10px;font-size:14px}
+.btn-text{border-color:transparent;background:transparent;color:var(--fc-ink);min-height:32px;padding:0 8px;font-size:14px;gap:4px}
+.btn-text:hover:not(:disabled){background:var(--fc-soft)}
+.btn-text.danger{color:var(--danger-text)}
+.btn-text.danger:hover:not(:disabled){background:var(--danger-soft)}
+.icon-btn{flex:none;width:36px;height:36px;display:grid;place-items:center;border-radius:var(--r-sm);border:1px solid transparent;background:transparent;color:var(--ink-2);cursor:pointer}
+.icon-btn:hover:not(:disabled){background:var(--sunken);color:var(--ink)}
+.icon-btn:disabled{opacity:.3;cursor:not-allowed}
+
+/* Inputs */
+input[type="text"],input[type="search"],select{font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:8px 10px;min-height:42px;width:100%;min-width:0}
+input[type="text"]:focus,input[type="search"]:focus,select:focus{border-color:var(--fc);outline:none;box-shadow:0 0 0 3px var(--fc-soft)}
+input[aria-invalid="true"]{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-soft)}
+input:disabled,select:disabled{opacity:.55}
+.num-input{text-align:right;font-variant-numeric:tabular-nums}
+
+/* Frame */
+.app{min-height:100vh;display:flex;flex-direction:column}
+.topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;padding:10px clamp(16px,2.5vw,28px);background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px}
+.app-name{margin:0;font-family:var(--round);font-size:20px;font-weight:700;letter-spacing:.03em}
+.topbar-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.save-state{font-size:14px;color:var(--ink-2)}
+.save-state[data-state="readonly"]{color:var(--danger-text);font-weight:700}
+.body{flex:1;display:grid;grid-template-columns:210px minmax(0,1fr)}
+
+/* Binder shelf */
+.side{padding:20px 8px 24px 14px;display:flex;flex-direction:column;gap:3px}
+.side-title{margin:0 10px 8px;font-family:var(--round);font-size:15px;font-weight:700;color:var(--ink-2)}
+.file-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+.file-btn{width:100%;display:flex;align-items:center;gap:9px;padding:8px 10px;border:0;border-radius:var(--r);background:transparent;font-family:var(--round);font-size:16px;font-weight:500;color:var(--ink);text-align:left;cursor:pointer}
+.file-btn:hover{background:var(--sunken)}
+.file-btn[aria-current="true"]{background:var(--surface);font-weight:700;box-shadow:0 0 0 1px var(--line),inset 4px 0 0 var(--fc)}
+.fl-icon{flex:none;color:var(--fc)}
+.fl-name{flex:1 1 auto;min-width:0;word-break:keep-all;overflow-wrap:anywhere;line-height:1.4}
+.fl-count{flex:none;font-size:13px;font-weight:700;color:var(--fc-ink);background:var(--fc-soft);border-radius:999px;padding:1px 9px;min-width:2.2em;text-align:center;font-variant-numeric:tabular-nums}
+#new-file-btn{margin-top:10px;width:100%;border-style:dashed;background:transparent;color:var(--ink-2)}
+#new-file-btn:hover:not(:disabled){background:var(--sunken);color:var(--ink)}
+
+/* Open file */
+.main{padding:22px clamp(16px,2vw,24px) 56px 8px;min-width:0;width:100%;max-width:1240px}
+/* The open file is a sheet in a loose-leaf ledger: punched holes, the double margin rule of ledger paper,
+   and the edges of the sheets underneath. Switching files turns the page. */
+.stage{position:relative}
+.sheet{position:relative;z-index:1;display:flex;flex-direction:column;gap:16px;margin:0 8px 8px 0;padding:22px 18px 16px 46px;background:var(--surface);border:1px solid var(--line);border-radius:6px 12px 12px 6px;
+  box-shadow:4px 4px 0 -1px var(--surface),4px 4px 0 0 var(--line),8px 8px 0 -1px var(--surface),8px 8px 0 0 var(--line),0 14px 30px rgba(20,30,40,.10);
+  transform-origin:left center;backface-visibility:hidden}
+.sheet::before{content:"";position:absolute;left:11px;top:22px;bottom:22px;width:16px;pointer-events:none;
+  background:radial-gradient(circle,var(--hole,var(--bg)) 0 5px,var(--line-strong) 5.5px 6.5px,transparent 7px) center top/16px 58px repeat-y}
+.sheet::after{content:"";position:absolute;left:34px;top:0;bottom:0;width:4px;border-left:1px solid var(--fc);border-right:1px solid var(--fc);opacity:.5;pointer-events:none}
+.sheet.ghost{position:absolute;top:0;left:0;z-index:2;margin:0;pointer-events:none}
+/* Paper: the sheet keeps white paper and dark ink in both themes; the desk around it follows the theme */
+.sheet{color-scheme:light;color:var(--ink);--surface:#ffffff;--sunken:#eef1f3;--ink:#1f2a33;--ink-2:#4f5d69;--line:#dde3e8;--line-strong:#a3aeb8;--zebra:#f8fafb;--danger:#c0392b;--danger-soft:#fdecea;--danger-text:#a8231b;background-color:#ffffff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .40 0 0 0 0 .36 0 0 0 .035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E")}
+.fc-blue .sheet,.stage .sheet.fc-blue,.stage .sheet .fc-blue{--fc-soft:#e8f1fc;--fc-ink:#1d4f8f}
+.fc-green .sheet,.stage .sheet.fc-green,.stage .sheet .fc-green{--fc-soft:#e3f4eb;--fc-ink:#1b6845}
+.fc-orange .sheet,.stage .sheet.fc-orange,.stage .sheet .fc-orange{--fc-soft:#fdefe1;--fc-ink:#8a4a0b}
+.fc-red .sheet,.stage .sheet.fc-red,.stage .sheet .fc-red{--fc-soft:#fcebea;--fc-ink:#9a2d27}
+.fc-purple .sheet,.stage .sheet.fc-purple,.stage .sheet .fc-purple{--fc-soft:#f2ecfb;--fc-ink:#5a3a94}
+.fc-teal .sheet,.stage .sheet.fc-teal,.stage .sheet .fc-teal{--fc-soft:#dff3f3;--fc-ink:#0f6464}
+.fc-yellow .sheet,.stage .sheet.fc-yellow,.stage .sheet .fc-yellow{--fc-soft:#fcf4d9;--fc-ink:#735700}
+.fc-brown .sheet,.stage .sheet.fc-brown,.stage .sheet .fc-brown{--fc-soft:#f5ece5;--fc-ink:#6b452c}
+.flip-shade{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,.08) 55%,rgba(0,0,0,0));opacity:0}
+.pager{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;border-top:1px dashed var(--line);font-family:var(--round)}
+.pager-btn{display:inline-flex;align-items:center;gap:6px;max-width:42%;min-height:36px;padding:0 10px;border:0;border-radius:var(--r);background:transparent;color:var(--fc-ink);font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.pager-btn:hover{background:var(--fc-soft)}
+.pager-btn.is-off{visibility:hidden}
+.pager-btn svg{flex:none}
+.pager-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pager-pos{font-size:14px;color:var(--ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.file-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px}
+.file-heading{display:flex;align-items:center;gap:10px;min-width:0}
+.big-folder{flex:none;color:var(--fc)}
+.file-name{margin:0;font-family:var(--round);font-size:26px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;min-width:0}
+.head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.totals{display:flex;flex-wrap:wrap;align-items:baseline;row-gap:8px;margin:0;padding:12px 4px;background:var(--fc-soft);border-radius:var(--r-lg)}
+.totals div{display:flex;align-items:baseline;gap:8px;padding:0 18px;border-left:1px solid var(--line);border-left-color:color-mix(in srgb,var(--fc) 40%,transparent)}
+.totals div:first-child{border-left:0}
+.totals dt{font-size:14px;font-weight:700;color:var(--fc-ink)}
+.totals dd{margin:0;font-family:var(--round);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.totals .unit{font-size:15px;margin-left:1px}
+.totals .warn{font-family:var(--font);font-size:14px;font-weight:400;color:var(--danger-text);margin-left:6px}
+.readonly-note{margin:0;font-size:15px;color:var(--danger-text);font-weight:700}
+
+/* Ledger */
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.toolbar .grow{flex:1 1 0}
+.search{position:relative;flex:0 1 240px;display:flex}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-2);pointer-events:none}
+.search input{padding-left:38px;border-radius:999px}
+.toolbar select{width:auto;max-width:100%;border-radius:999px;padding-inline:14px}
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{background:var(--fc-soft);color:var(--fc-ink);font-family:var(--round);font-size:14px;font-weight:700;text-align:left;padding:8px 10px;border-bottom:2px solid var(--fc);white-space:nowrap;vertical-align:bottom;line-height:1.35}
+td{padding:11px 10px;border-bottom:1px solid var(--line);font-size:16px;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:nth-child(even) td{background:var(--zebra)}
+tbody tr:hover td{background:var(--fc-soft)}
+tbody tr.confirming td{background:var(--danger-soft)}
+.th-unit{display:block;font-size:12px;font-weight:500;opacity:.85}
+.num{text-align:right;white-space:nowrap}
+.c-no{width:2.5em;text-align:right;color:var(--ink-2);font-size:14px}
+.c-title{font-weight:700;min-width:11em;overflow-wrap:break-word;text-wrap:pretty}
+.c-text{min-width:6em;overflow-wrap:break-word;text-wrap:pretty;color:var(--ink-2)}
+.c-calc{font-weight:700}
+.cell-err{color:var(--danger-text);font-weight:700;font-size:14px}
+.c-act{width:1%;white-space:nowrap;text-align:center;padding-block:6px;position:sticky;right:0;background:var(--surface);box-shadow:inset 1px 0 0 var(--line)}
+th.c-act{background:var(--fc-soft)}
+.act{display:inline-flex;gap:0;align-items:center}
+.act .btn-text{padding:0 6px}
+/* パソコン幅の表では編集・削除をアイコンだけにして列の幅を確保（スマホのカードでは文字も出す） */
+@media (min-width:681px){.act .btn-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.act .btn-text{min-width:34px;min-height:34px;padding:0}}
+.confirm-text{font-size:14px;font-weight:700;color:var(--danger-text);margin-right:4px}
+tfoot td{background:var(--fc-soft);color:var(--ink);font-weight:700;border-top:3px double var(--fc);border-bottom:0;font-size:17px}
+tfoot .ft-label{font-family:var(--round);color:var(--fc-ink);font-size:16px}
+.empty{background:var(--surface);border:2px dashed var(--line);border-radius:var(--r-lg);padding:28px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px}
+.empty > svg{flex:none;color:var(--fc)}
+.empty-body{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.empty p{margin:0;font-family:var(--round);font-size:17px;font-weight:500;color:var(--ink-2)}
+
+/* Dialogs */
+dialog.modal{border:0;border-top:6px solid var(--fc);padding:0;margin:auto;border-radius:16px;background:var(--surface);color:var(--ink);width:min(620px,calc(100vw - 24px));max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);box-shadow:0 18px 50px rgba(0,0,0,.28);overflow:hidden}
+dialog.modal-wide{width:min(980px,calc(100vw - 24px))}
+dialog.modal::backdrop{background:var(--scrim)}
+.modal-form{display:flex;flex-direction:column;max-height:calc(100vh - 38px);max-height:calc(100dvh - 38px)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px 12px 22px;border-bottom:1px solid var(--line)}
+.modal-head h2{margin:0;font-family:var(--round);font-size:20px;font-weight:700;line-height:1.4;overflow-wrap:anywhere}
+.modal-body{padding:18px 22px 20px;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.modal-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 22px;border-top:1px solid var(--line);background:var(--zebra)}
+.foot-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;width:100%}
+.spacer{flex:1 1 0}
+.confirm-msg{margin:0;font-weight:700;color:var(--danger-text);flex:1 1 260px}
+.foot-status{margin:0;font-size:14px;font-weight:700;color:var(--danger-text)}
+.group-title{margin:4px 0 -4px;font-family:var(--round);font-size:16px;font-weight:700;padding-top:14px;border-top:1px solid var(--line)}
+
+.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.wide{grid-column:1 / -1}
+.field > label,.field > .label{font-family:var(--round);font-size:14px;font-weight:700}
+.field-check{justify-content:flex-end}
+.req,.opt{margin-left:6px;font-size:12px;font-weight:700;border-radius:999px;padding:1px 8px}
+.req{color:var(--danger-text);background:var(--danger-soft)}
+.opt{color:var(--ink-2);background:var(--sunken);font-weight:500}
+.input-unit{display:flex;align-items:center;gap:8px}
+.input-unit span{flex:none;min-width:1.5em;color:var(--ink-2)}
+.calc-out{min-height:42px;display:flex;align-items:center;justify-content:flex-end;padding:0 12px;border-radius:var(--r-sm);background:var(--fc-soft);color:var(--fc-ink);font-family:var(--round);font-weight:700;font-size:19px;font-variant-numeric:tabular-nums}
+.calc-out.is-err{justify-content:flex-start;background:var(--danger-soft);color:var(--danger-text);font-family:var(--font);font-size:14px}
+.calc-hint{margin:0;font-size:14px;color:var(--ink-2);overflow-wrap:anywhere}
+.check{display:flex;align-items:center;gap:10px;cursor:pointer;min-height:42px}
+.check input{width:20px;height:20px;accent-color:var(--fc-btn);margin:0;flex:none}
+.form-error{margin:0;color:var(--danger-text);font-weight:700;font-size:14px;white-space:pre-line}
+.form-error:empty{display:none}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(32px,1fr));gap:10px 8px;padding:4px 2px}
+.swatch{position:relative;cursor:pointer;display:grid;place-items:center}
+.swatch input{position:absolute;opacity:0;width:1px;height:1px}
+.swatch .dot{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--fc);box-shadow:0 0 0 3px var(--surface)}
+.swatch .dot svg{opacity:0;color:#fff}
+.swatch input:checked + .dot{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--fc)}
+.swatch input:checked + .dot svg{opacity:1}
+.swatch input:focus-visible + .dot{outline:3px solid var(--ink);outline-offset:5px}
+
+/* Fields & formulas editor: one table — a header row, then one row per field */
+.schema-head,.s-grid{display:grid;grid-template-columns:76px minmax(0,1.6fr) 116px 84px 84px 48px 48px 48px 56px;gap:10px;align-items:center}
+.schema-head{padding:9px 12px;background:var(--fc-soft);color:var(--fc-ink);border:1px solid var(--line);border-bottom:2px solid var(--fc);border-radius:var(--r) var(--r) 0 0;font-family:var(--round);font-size:14px;font-weight:700}
+.schema-head .c{text-align:center}
+#schema-list{border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r) var(--r)}
+.s-row{padding:10px 12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.s-row:first-child{border-top:0}
+.s-row.kind-formula{background:var(--zebra)}
+.s-row.has-error{background:var(--danger-soft)}
+.s-cell{display:flex;flex-direction:column;gap:4px;min-width:0}
+.cell-label{font-size:13px;font-weight:700;color:var(--ink-2)}
+.s-order{display:flex;gap:4px}
+.s-order .icon-btn{width:34px;height:34px;border-color:var(--line)}
+.s-name input{font-weight:700}
+.s-fixed{font-size:15px;color:var(--ink-2);min-height:42px;display:flex;align-items:center}
+.s-flag{display:flex;justify-content:center}
+.s-check{display:flex;align-items:center;gap:8px;cursor:pointer;min-height:42px}
+.s-check input{width:20px;height:20px;accent-color:var(--fc-btn);margin:0}
+.s-del{justify-self:end}
+.s-row.kind-text .s-unit,.s-row.kind-text .s-dec{visibility:hidden}
+.s-formula{display:flex;flex-direction:column;gap:8px;margin-left:86px}
+.s-formula > label{font-family:var(--round);font-size:14px;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips-label{font-size:14px;color:var(--ink-2);margin-right:2px}
+.ins{font:inherit;font-size:14px;min-height:32px;min-width:32px;padding:0 10px;border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer}
+.ins:hover{border-color:var(--fc);color:var(--fc-ink)}
+.ins.ref{background:var(--fc-soft);border-color:transparent;color:var(--fc-ink);font-weight:700}
+.chip-sep{width:1px;height:22px;background:var(--line);margin:0 4px}
+.s-status{margin:0;font-size:14px;color:var(--ink-2);overflow-wrap:anywhere}
+.s-status.is-bad{color:var(--danger-text);font-weight:700}
+.s-error{margin:0 0 0 86px;font-size:14px;font-weight:700;color:var(--danger-text)}
+.s-error:empty{display:none}
+.schema-add{display:flex;flex-wrap:wrap;gap:8px}
+.schema-add .btn{border-style:dashed}
+.func-help summary{cursor:pointer;font-family:var(--round);font-weight:700;padding:4px 0}
+.func-scroll{overflow-x:auto;margin-top:8px;border:1px solid var(--line);border-radius:var(--r)}
+.func-table th,.func-table td{font-size:14px;padding:7px 10px;white-space:normal;vertical-align:top}
+.func-table th{border-bottom-width:1px}
+.func-table tbody tr:nth-child(even) td,.func-table tbody tr:hover td{background:transparent}
+.func-table code{font-family:inherit;white-space:nowrap}
+@media (min-width:761px){
+  .s-row .cell-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,8px);background:var(--ink);color:var(--surface);padding:10px 20px;border-radius:999px;font-family:var(--round);font-size:15px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:calc(100% - 32px);width:max-content;z-index:10}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast[data-kind="error"]{background:var(--danger);color:var(--danger-ink)}
+
+@media (max-width:860px){
+  .body{grid-template-columns:minmax(0,1fr)}
+  .side{flex-direction:row;align-items:center;gap:8px;padding:10px clamp(16px,2.5vw,28px);border-bottom:1px solid var(--line);background:var(--surface)}
+  .side-title{display:none}
+  .file-list{flex-direction:row;overflow-x:auto;flex:1 1 0;min-width:0;scrollbar-width:thin;padding:2px}
+  .file-list li{flex:none}
+  .file-btn{white-space:nowrap}
+  .file-btn[aria-current="true"]{box-shadow:0 0 0 1px var(--line),inset 0 -3px 0 var(--fc)}
+  .fl-name{overflow-wrap:normal}
+  #new-file-btn{margin-top:0;width:auto;flex:none}
+  .main{padding-left:clamp(16px,2vw,24px)}
+}
+@media (max-width:760px){
+  .schema-head{display:none}
+  #schema-list{border-top:1px solid var(--line);border-radius:var(--r)}
+  .s-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"name name name" "kind unit dec" "req tot pdf" "order order del";align-items:end}
+  .s-order{grid-area:order}.s-name{grid-area:name}.s-kind{grid-area:kind}.s-unit{grid-area:unit}.s-dec{grid-area:dec}
+  .s-req{grid-area:req}.s-tot{grid-area:tot}.s-pdf{grid-area:pdf}.s-del{grid-area:del}
+  .s-flag{justify-content:flex-start}
+  .s-formula,.s-error{margin-left:0}
+}
+@media (max-width:680px){
+  .table-wrap{border:0;border-radius:0;overflow:visible;background:transparent}
+  .ledger thead{display:none}
+  .ledger table,.ledger tbody,.ledger tfoot,.ledger tr{display:block}
+  .ledger tbody tr{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--fc);border-radius:var(--r);padding:10px 14px;margin-bottom:10px}
+  .ledger td{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border:0;padding:4px 0;background:none !important}
+  .ledger td[data-label]::before{content:attr(data-label);flex:none;font-size:14px;font-weight:400;color:var(--ink-2)}
+  .ledger .c-no{display:none}
+  .sheet{padding:16px 12px 14px 36px;margin:0 6px 6px 0}
+  .sheet::before{left:7px;top:16px;bottom:16px;width:14px;background-size:14px 52px}
+  .sheet::after{left:27px}
+  .ledger .c-title{display:block;font-size:17px;min-width:0;padding-bottom:6px;margin-bottom:4px;border-bottom:1px solid var(--line)}
+  .ledger .c-text{min-width:0;text-align:right}
+  .ledger td.is-empty{display:none}
+  .ledger .c-act{justify-content:flex-end;width:auto;padding-top:6px;position:static;box-shadow:none}
+  .ledger tfoot tr{background:var(--fc-soft);border-top:3px double var(--fc);border-radius:var(--r);padding:10px 14px}
+  .ledger tfoot td{background:none}
+  .ledger tfoot .ft-label{display:block}
+  .ledger tfoot .ft-blank{display:none}
+}
+@media (max-width:560px){
+  .field-grid{grid-template-columns:minmax(0,1fr)}
+  .head-actions{width:100%}
+  .head-actions .btn{flex:1 1 auto}
+  .toolbar #add-btn{flex:1 1 100%}
+  .toolbar .grow{display:none}
+  .search{flex:1 1 140px}
+  .modal-head,.modal-body,.modal-foot{padding-inline:16px}
+  .totals div{padding:0 12px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== Binder: the whole screen is an open ring binder in the open file's color — a textured cover with a
+   spine label, an inside pocket holding the file index cards, and the loose-leaf sheet clipped on metal rings.
+   One physical look in both light and dark settings, like a real binder. ===== */
+body{background-color:var(--fc-btn);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),linear-gradient(165deg,rgba(255,255,255,.12),rgba(255,255,255,0) 35%,rgba(0,0,0,.14));transition:background-color .45s ease}
+.topbar{background:transparent;border-bottom:0;padding:16px clamp(16px,2vw,24px) 8px}
+.spine-label{background:#ffffff;padding:6px 18px 6px 12px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.25),inset 0 0 0 1px rgba(0,0,0,.06)}
+.spine-label .app-name{color:#1f2a33}
+.save-state{color:rgba(255,255,255,.92)}
+.save-state[data-state="readonly"]{color:#ffffff;font-weight:700;background:rgba(0,0,0,.28);padding:2px 10px;border-radius:999px}
+.topbar .btn{background:#ffffff;border-color:transparent;color:#1f2a33;box-shadow:0 1px 3px rgba(0,0,0,.28)}
+.topbar .btn:hover:not(:disabled){background:#f1f3f4}
+.body{grid-template-columns:204px minmax(0,1fr);padding:4px 0 28px}
+.side{align-self:start;margin:10px 0 0 16px;padding:14px 8px 16px;background:rgba(0,0,0,.17);border-radius:14px;box-shadow:inset 0 2px 7px rgba(0,0,0,.24),0 1px 0 rgba(255,255,255,.14)}
+.side-title{color:rgba(255,255,255,.94);margin:0 6px 10px}
+.file-list{gap:6px}
+.file-btn{background:#ffffff;color:#1f2a33;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.28);transition:transform .2s ease,box-shadow .2s ease;gap:6px;padding:9px 8px;font-size:15px}
+.file-btn .fl-count{padding:1px 7px;min-width:1.9em}
+.file-btn:hover{background:#ffffff;transform:translateX(3px)}
+.file-btn[aria-current="true"]{background:#ffffff;transform:translateX(9px);box-shadow:0 5px 12px rgba(0,0,0,.3),inset 5px 0 0 var(--fc)}
+#new-file-btn{border:1.5px dashed rgba(255,255,255,.75);color:#ffffff;background:transparent;margin-top:12px}
+#new-file-btn:hover:not(:disabled){background:rgba(255,255,255,.14);color:#ffffff}
+.main{padding:10px 16px 40px 38px}
+.sheet{--hole:var(--fc-btn)}
+.sheet{box-shadow:4px 4px 0 -1px var(--surface),4px 4px 0 0 var(--line),8px 8px 0 -1px var(--surface),8px 8px 0 0 var(--line),0 16px 34px rgba(0,0,0,.28)}
+/* ring mechanism: a metal plate along the spine and rings running through the punched holes */
+.stage::before{content:"";position:absolute;left:-31px;top:4px;bottom:4px;width:12px;border-radius:6px;pointer-events:none;
+  background:linear-gradient(90deg,#7d858d,#e9ecef 42%,#aeb5bc 68%,#737b83);box-shadow:0 2px 4px rgba(0,0,0,.35)}
+.stage::after{content:"";position:absolute;left:-26px;top:23px;bottom:22px;width:56px;z-index:3;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='58'%3E%3Cdefs%3E%3ClinearGradient id='m' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f4f6f8'/%3E%3Cstop offset='.45' stop-color='%23b4bbc2'/%3E%3Cstop offset='1' stop-color='%23697179'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cellipse cx='25' cy='29' rx='21' ry='9' fill='none' stroke='%23000' stroke-opacity='.18' stroke-width='4.6' transform='translate(0 1.5)'/%3E%3Cellipse cx='25' cy='29' rx='21' ry='9' fill='none' stroke='url(%23m)' stroke-width='3.4'/%3E%3C/svg%3E") left top/56px 58px repeat-y}
+dialog.modal::backdrop{background:rgba(10,14,18,.5)}
+@media (max-width:860px){
+  .body{grid-template-columns:minmax(0,1fr);padding-top:0}
+  .side{margin:4px 12px 8px;padding:8px;border-bottom:0;background:rgba(0,0,0,.17);border-radius:12px}
+  .file-btn:hover{transform:none}
+  .file-btn[aria-current="true"]{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.3),inset 0 -4px 0 var(--fc)}
+  .main{padding:8px 12px 32px}
+  .stage::before,.stage::after{display:none}
+}
+@media (prefers-reduced-motion:reduce){body,.file-btn{transition:none}}
+
+/* Export dialog: format cards, paper options for PDF/PNG, and a note on what each format contains */
+.ex-group{border:0;margin:0;padding:0;min-width:0}
+.ex-group legend{padding:0;margin-bottom:8px;font-family:var(--round);font-size:14px;font-weight:700}
+.ex-formats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ex-card{position:relative;display:flex;flex-direction:column;gap:2px;padding:11px 14px 12px 42px;border:1px solid var(--line-strong);border-radius:10px;background:#ffffff;cursor:pointer}
+.ex-card:hover{border-color:var(--fc-btn)}
+.ex-card input{position:absolute;left:14px;top:14px;width:18px;height:18px;margin:0;accent-color:var(--fc-btn)}
+.ex-card:has(input:checked){border-color:var(--fc-btn);background:var(--fc-soft);box-shadow:inset 0 0 0 1px var(--fc-btn)}
+.ex-name{font-family:var(--round);font-size:16px;font-weight:700}
+.ex-name small{margin-left:6px;font-size:12px;font-weight:500;color:var(--ink-2)}
+.ex-desc{font-size:13px;color:var(--ink-2)}
+.seg{display:flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden;background:#ffffff}
+.seg label{position:relative;flex:1 1 0}
+.seg input{position:absolute;opacity:0;width:1px;height:1px}
+.seg span{display:block;padding:9px 6px;text-align:center;font-family:var(--round);font-size:14px;font-weight:700;cursor:pointer}
+.seg label + label span{border-left:1px solid var(--line-strong)}
+.seg input:checked + span{background:var(--fc-btn);color:var(--on-color)}
+.seg input:focus-visible + span{outline:3px solid var(--fc);outline-offset:-3px}
+.ex-note{margin:0;padding:10px 12px;border-radius:8px;background:var(--zebra);font-size:14px;color:var(--ink-2)}
+.ex-filename{margin:0;font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
+.ex-filename span{font-weight:700;color:var(--ink)}
+@media (max-width:560px){.ex-formats{grid-template-columns:minmax(0,1fr)}}
+/* ===== Manual: a formal operating manual kept in the binder — plain business typography (UD Gothic only),
+   numbered chapters and sections, tables for settings, ［］ for on-screen names, 注意/補足 notes. ===== */
+dialog.manual{width:min(940px,calc(100vw - 24px));height:calc(100vh - 32px);height:calc(100dvh - 32px)}
+dialog.manual .modal-form{height:100%;max-height:none}
+dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spacing:.02em}
+.manual-body{position:relative;flex:1 1 auto;min-height:0;overflow:auto;padding:24px 40px 56px 72px;
+  background:
+    radial-gradient(circle,var(--fc-btn) 0 5px,#a3aeb8 5.5px 6.5px,transparent 7px) 20px 28px/16px 58px repeat-y local,
+    linear-gradient(90deg,transparent 50px,#d5dbe1 50px 51px,transparent 51px) 0 0/100% 100% no-repeat local,
+    #ffffff}
+.manual-inner{max-width:780px;font-family:var(--font);font-size:15px;line-height:1.85;color:#1f2a33}
+.manual-inner :focus-visible{outline:3px solid #2d6cbd;outline-offset:4px}
+.manual-inner [tabindex="-1"]:focus{outline:none}
+.manual-inner a{color:#1d4f8f;text-underline-offset:3px}
+.m-meta{margin:0 0 4px;font-size:13px;color:#5b6773;text-align:right}
+.m-lead{margin:0 0 22px;font-size:15px}
+.m-toc{border-top:2px solid #1f2a33;border-bottom:1px solid #c3cbd2;padding:10px 4px 14px}
+.m-toc h3{margin:0 0 6px;font-size:15px;font-weight:700;letter-spacing:.1em}
+.m-toc ol{margin:0;padding-left:2.2em;columns:2 260px;column-gap:32px}
+.m-toc li{break-inside:avoid;padding:2px 0}
+.m-toc li::marker{font-variant-numeric:tabular-nums;color:#5b6773}
+.m-sec{margin-top:40px}
+.m-sec h3{display:flex;align-items:baseline;gap:14px;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid #1f2a33;font-family:var(--font);font-size:20px;font-weight:700;line-height:1.4;scroll-margin-top:16px}
+.m-num{flex:none;min-width:1.6em;font-size:20px;font-variant-numeric:tabular-nums;color:#1f2a33}
+.m-sec h4{margin:24px 0 8px;padding-bottom:4px;border-bottom:1px solid #d5dbe1;font-family:var(--font);font-size:16px;font-weight:700;scroll-margin-top:16px}
+.m-sec p{margin:8px 0}
+.m-sec ul,.m-sec ol{margin:8px 0;padding-left:1.7em}
+.m-sec li{margin:4px 0}
+.m-steps li::marker{font-weight:700;font-variant-numeric:tabular-nums}
+.ui{font-weight:700;white-space:nowrap}
+.ui::before{content:"［"}
+.ui::after{content:"］"}
+.manual-inner code{font-family:var(--font);font-size:14px;padding:1px 6px;border:1px solid #dde3e8;border-radius:4px;background:#f6f7f8;white-space:nowrap}
+.m-note{margin:14px 0 0;padding:10px 14px;border:1px solid #c3cbd2;border-left:4px solid #5b6773;background:#f6f7f8;font-size:14.5px}
+.m-note.warn{border-color:#e7b9b4;border-left-color:#b3261e;background:#fdf3f2}
+.m-note-label{display:inline-block;margin-right:12px;font-weight:700;color:#3b4652}
+.m-note.warn .m-note-label{color:#a8231b}
+.m-table{width:100%;margin:10px 0 6px;border-collapse:collapse;border-top:1px solid #8e9aa6;border-bottom:1px solid #8e9aa6}
+.m-table th,.m-table td{padding:8px 12px;font-family:var(--font);font-size:14.5px;line-height:1.7;text-align:left;vertical-align:top;white-space:normal;border-bottom:1px solid #dde3e8;background:transparent;color:#1f2a33}
+.m-table th{background:#eef1f3;font-size:13.5px;font-weight:700;letter-spacing:.04em;border-bottom:1px solid #8e9aa6;color:#1f2a33}
+.m-table tbody tr:last-child td{border-bottom:0}
+.m-table tbody tr:nth-child(even) td,.m-table tbody tr:hover td{background:transparent}
+.m-table td:first-child{white-space:nowrap;font-weight:700}
+.m-table.legend td:first-child{font-weight:400}
+.m-table .c-n{width:4.5em;text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
+.m-table.legend td:nth-child(2){white-space:nowrap;font-weight:700}
+.m-table.faq td:first-child{white-space:normal;width:30%}
+.m-table.faq td:nth-child(2){width:28%}
+.m-back{display:inline-block;margin-top:12px;font-size:13.5px}
+.diagram{display:block;width:100%;height:auto;margin:8px 0 12px;border:1px solid #c3cbd2;border-radius:6px}
+.dg-cover{fill:var(--fc-btn)}
+.dg-white{fill:#ffffff}
+.dg-pocket{fill:#000000;fill-opacity:.18}
+.dg-paper{fill:#ffffff;stroke:#d5dbe1}
+.dg-plate{fill:#c3c9cf}
+.dg-holes circle{fill:var(--fc-btn);stroke:#a3aeb8}
+.dg-rings ellipse{fill:none;stroke:#b4bbc2;stroke-width:3}
+.dg-margin{stroke:var(--fc);stroke-opacity:.5}
+.dg-fc{fill:var(--fc)}
+.dg-soft{fill:var(--fc-soft)}
+.dg-btn{fill:var(--fc-btn)}
+.dg-out{fill:#ffffff;stroke:#a3aeb8}
+.dg-tbl{fill:#ffffff;stroke:#d5dbe1}
+.dg-fcline{stroke:var(--fc);stroke-width:2}
+.dg-rowline line{stroke:#e2e7eb}
+.dg-dash{fill:none;stroke:#ffffff;stroke-opacity:.8;stroke-dasharray:4 3}
+.dg-dashline{stroke:#d5dbe1;stroke-dasharray:4 3}
+.dg-icons path{fill:none;stroke:var(--fc-ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.diagram text{font-family:var(--font);font-weight:700;font-size:14px}
+.diagram .s,.diagram .s text{font-size:12px}
+.diagram .xs,.diagram .xs text{font-size:11px}
+.diagram .l{font-size:18px}
+.dg-t,.dg-t text{fill:#1f2a33}
+.dg-tw{fill:#ffffff}
+.dg-ink,.dg-ink text{fill:var(--fc-ink)}
+.dg-sub{fill:#4f5d69;font-weight:400}
+.dg-marks circle{fill:#1f2a33;stroke:#ffffff;stroke-width:2}
+.dg-marks text{fill:#ffffff;font-size:12px;text-anchor:middle}
+.head-help{margin-left:auto}
+@media (max-width:680px){
+  .manual-body{padding:18px 16px 40px 46px;background-position:10px 22px,-20px 0,0 0}
+  .m-table{display:block;overflow-x:auto}
+  .m-table td:first-child,.m-table.legend td:nth-child(2){white-space:normal}
+  .manual-inner code{white-space:normal;word-break:break-all}
+  .m-table th,.m-table td{padding:7px 8px}
+}
+</style>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand spine-label">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+        <rect x="2.5" y="6" width="7.5" height="21" rx="2" fill="#3b7bd4"/>
+        <rect x="11.25" y="3" width="7.5" height="24" rx="2" fill="#34a271"/>
+        <rect x="20" y="8" width="7.5" height="19" rx="2" fill="#ec8a32"/>
+        <rect x="4.25" y="10" width="4" height="5" rx="1" fill="#ffffff" fill-opacity=".75"/>
+        <rect x="13" y="7" width="4" height="5" rx="1" fill="#ffffff" fill-opacity=".75"/>
+        <rect x="21.75" y="12" width="4" height="5" rx="1" fill="#ffffff" fill-opacity=".75"/>
+      </svg>
+      <h1 class="app-name">備品台帳</h1>
+    </div>
+    <div class="topbar-right">
+      <span class="save-state" id="save-state" data-state="loading">読み込み中</span>
+      <button type="button" class="btn" id="manual-btn" data-manual="">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19"/><path d="M9 7.5h6M9 11h6"/></svg>
+        説明書
+      </button>
+      <button type="button" class="btn" id="schema-btn" disabled>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>
+        項目と計算式
+      </button>
+    </div>
+  </header>
+
+  <div class="body">
+    <nav class="side" aria-labelledby="side-title">
+      <h2 class="side-title" id="side-title">ファイル</h2>
+      <ul class="file-list" id="file-list"></ul>
+      <button type="button" class="btn" id="new-file-btn" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        新しいファイル
+      </button>
+    </nav>
+
+    <main class="main" id="main">
+      <div class="stage" id="stage">
+      <article class="sheet" id="sheet" aria-labelledby="file-title">
+      <div class="file-head">
+        <div class="file-heading">
+          <svg class="big-folder" width="34" height="34" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h3.6a2 2 0 0 1 1.4.6L12 6h6.5A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z" fill="currentColor"/><path d="M3 9.5h18v8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z" fill="#ffffff" fill-opacity=".22"/></svg>
+          <h2 class="file-name" id="file-title">読み込み中</h2>
+        </div>
+        <div class="head-actions">
+          <button type="button" class="btn" id="file-settings-btn" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>
+            ファイル設定
+          </button>
+          <button type="button" class="btn btn-primary" id="pdf-btn" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M12 12v6"/><path d="m9 15 3 3 3-3"/></svg>
+            <span id="pdf-label">出力</span>
+          </button>
+        </div>
+      </div>
+
+      <dl class="totals" id="totals" aria-label="このファイルの合計" hidden></dl>
+      <p class="readonly-note" id="readonly-note" hidden>閲覧のみの権限です。登録・編集はできません。</p>
+
+      <section class="ledger" aria-labelledby="ledger-title">
+        <h3 class="sr" id="ledger-title">備品一覧</h3>
+        <div class="toolbar">
+          <button type="button" class="btn btn-primary" id="add-btn" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            備品を追加
+          </button>
+          <span class="grow"></span>
+          <div class="search">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <label class="sr" for="search">検索</label>
+            <input type="search" id="search" placeholder="品名・備考で検索">
+          </div>
+          <label class="sr" for="sort">並び順</label>
+          <select id="sort"></select>
+        </div>
+        <div class="table-wrap" id="table-wrap" hidden>
+          <table>
+            <thead id="thead"></thead>
+            <tbody id="rows"></tbody>
+            <tfoot id="tfoot"></tfoot>
+          </table>
+        </div>
+        <div class="empty" id="empty"><div class="empty-body"><p>読み込み中</p></div></div>
+      </section>
+      <nav class="pager" id="pager" aria-label="ファイルをめくる" hidden>
+        <button type="button" class="pager-btn" id="prev-file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg><span class="pager-name" id="prev-name"></span></button>
+        <span class="pager-pos" id="pager-pos"></span>
+        <button type="button" class="pager-btn" id="next-file"><span class="pager-name" id="next-name"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+      </nav>
+      </article>
+      </div>
+    </main>
+  </div>
+</div>
+
+<dialog class="modal" id="item-dialog" aria-labelledby="item-dialog-title">
+  <form class="modal-form" id="item-form" novalidate autocomplete="off">
+    <div class="modal-head">
+      <h2 id="item-dialog-title">備品の追加</h2>
+      <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field-grid" id="item-fields"></div>
+      <div class="field"><label for="item-file">ファイル</label><select id="item-file"></select></div>
+      <p class="form-error" id="item-error" role="alert"></p>
+    </div>
+    <div class="modal-foot">
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>キャンセル</button>
+      <button type="submit" class="btn" id="item-save-next">続けて登録</button>
+      <button type="submit" class="btn btn-primary" id="item-save">登録</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="modal" id="file-dialog" aria-labelledby="file-dialog-title">
+  <form class="modal-form" id="file-form" novalidate autocomplete="off">
+    <div class="modal-head">
+      <h2 id="file-dialog-title">ファイル設定</h2>
+      <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label for="fd-name">ファイル名<span class="req">必須</span></label><input type="text" id="fd-name" maxlength="40"></div>
+      <div class="field"><span class="label" id="fd-color-label">色</span><div class="swatches" id="fd-colors" role="radiogroup" aria-labelledby="fd-color-label"></div></div>
+      <h3 class="group-title">PDF</h3>
+      <div class="field-grid">
+        <div class="field"><label for="fd-title">タイトル<span class="opt">任意</span></label><input type="text" id="fd-title" maxlength="40" placeholder="備品一覧表"></div>
+        <div class="field"><label for="fd-org">会社名・部署名<span class="opt">任意</span></label><input type="text" id="fd-org" maxlength="60"></div>
+        <div class="field field-check"><label class="check" for="fd-stamps"><input type="checkbox" id="fd-stamps">押印欄を入れる</label></div>
+      </div>
+      <p class="form-error" id="file-error" role="alert"></p>
+    </div>
+    <div class="modal-foot">
+      <div class="foot-row" id="fd-foot-normal">
+        <button type="button" class="btn btn-text danger" id="fd-delete">このファイルを削除</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>キャンセル</button>
+        <button type="submit" class="btn btn-primary" id="fd-save">保存</button>
+      </div>
+      <div class="foot-row" id="fd-foot-confirm" hidden>
+        <p class="confirm-msg" id="fd-confirm-text"></p>
+        <button type="button" class="btn" id="fd-delete-no">やめる</button>
+        <button type="button" class="btn btn-danger" id="fd-delete-yes">削除する</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="modal modal-wide" id="schema-dialog" aria-labelledby="schema-dialog-title">
+  <form class="modal-form" id="schema-form" novalidate autocomplete="off">
+    <div class="modal-head">
+      <h2 id="schema-dialog-title">項目と計算式</h2>
+      <button type="button" class="btn btn-text head-help" data-manual="m-schema">書き方の説明</button>
+      <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="schema-head" aria-hidden="true"><span>順番</span><span>項目名</span><span>種類</span><span>単位</span><span>小数</span><span class="c">必須</span><span class="c">合計</span><span class="c">PDF</span><span></span></div>
+        <div id="schema-list"></div>
+      </div>
+      <div class="schema-add">
+        <button type="button" class="btn" id="add-input-field">入力項目を追加</button>
+        <button type="button" class="btn" id="add-formula-field">計算項目を追加</button>
+      </div>
+      <details class="func-help">
+        <summary>使える関数</summary>
+        <div class="func-scroll">
+          <table class="func-table">
+            <thead><tr><th scope="col">書き方</th><th scope="col">内容</th><th scope="col">例</th></tr></thead>
+            <tbody>
+              <tr><td><code>[項目名]</code></td><td>ほかの項目の値</td><td><code>[単価] × [数量]</code></td></tr>
+              <tr><td><code>+ − × ÷</code></td><td>四則演算（* / も使えます）</td><td><code>[単価] × [数量] − [値引]</code></td></tr>
+              <tr><td><code>%</code></td><td>パーセント（10% は 0.1）</td><td><code>[合計金額] × 10%</code></td></tr>
+              <tr><td><code>ROUND(値, 桁数)</code></td><td>四捨五入。桁数0で整数、-2で百の位</td><td><code>ROUND([合計金額] × 1.1, 0)</code></td></tr>
+              <tr><td><code>ROUNDDOWN(値, 桁数)</code></td><td>切り捨て</td><td><code>ROUNDDOWN([合計金額] × 1.1, 0)</code></td></tr>
+              <tr><td><code>ROUNDUP(値, 桁数)</code></td><td>切り上げ</td><td><code>ROUNDUP([単価] ÷ 3, 0)</code></td></tr>
+              <tr><td><code>INT(値)</code></td><td>整数にする（小数点以下を切り捨て）</td><td><code>INT([単価] ÷ 7)</code></td></tr>
+              <tr><td><code>MAX / MIN(値, …)</code></td><td>最大値・最小値</td><td><code>MAX([単価] − 1000, 0)</code></td></tr>
+              <tr><td><code>SUM(値, …)</code></td><td>合計</td><td><code>SUM([本体], [送料])</code></td></tr>
+              <tr><td><code>ABS(値)</code></td><td>絶対値</td><td><code>ABS([差額])</code></td></tr>
+              <tr><td><code>IF(条件, 真, 偽)</code></td><td>条件で切り替え。比較は = &lt;&gt; &lt; &gt; &lt;= &gt;=</td><td><code>IF([数量] &gt;= 10, [単価] × 0.9, [単価])</code></td></tr>
+              <tr><td><code>AND / OR(…)</code></td><td>すべて満たす・どれかを満たす</td><td><code>IF(AND([数量] &gt; 0, [単価] &gt; 0), 1, 0)</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+    <div class="modal-foot">
+      <p class="foot-status" id="schema-status"></p>
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>キャンセル</button>
+      <button type="submit" class="btn btn-primary" id="schema-save">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="modal" id="export-dialog" aria-labelledby="export-title">
+  <form class="modal-form" id="export-form" novalidate autocomplete="off">
+    <div class="modal-head">
+      <h2 id="export-title">出力</h2>
+      <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <fieldset class="ex-group">
+        <legend>形式</legend>
+        <div class="ex-formats">
+          <label class="ex-card"><input type="radio" name="ex-format" value="pdf"><span class="ex-name">PDF<small>.pdf</small></span><span class="ex-desc">押印欄付きの帳票。印刷・提出用</span></label>
+          <label class="ex-card"><input type="radio" name="ex-format" value="xlsx"><span class="ex-name">Excel<small>.xlsx</small></span><span class="ex-desc">表計算ソフトで集計・加工する用</span></label>
+          <label class="ex-card"><input type="radio" name="ex-format" value="csv"><span class="ex-name">CSV<small>.csv</small></span><span class="ex-desc">ほかのシステムへの取り込み用</span></label>
+          <label class="ex-card"><input type="radio" name="ex-format" value="png"><span class="ex-name">画像<small>.png</small></span><span class="ex-desc">メールやチャットに貼り付ける用</span></label>
+        </div>
+      </fieldset>
+      <div class="ex-paper" id="ex-paper">
+        <div class="field-grid">
+          <div class="field"><label for="ex-size">用紙サイズ</label>
+            <select id="ex-size">
+              <option value="A4">A4（210×297mm）</option>
+              <option value="A3">A3（297×420mm）</option>
+              <option value="B4">B4（257×364mm）</option>
+              <option value="B5">B5（182×257mm）</option>
+              <option value="A5">A5（148×210mm）</option>
+              <option value="Letter">レター（216×279mm）</option>
+            </select>
+          </div>
+          <div class="field"><label for="ex-quality">画質</label>
+            <select id="ex-quality">
+              <option value="light">軽量（ファイルが小さい）</option>
+              <option value="std">標準</option>
+              <option value="high">高画質（印刷向け）</option>
+            </select>
+          </div>
+          <div class="field wide"><span class="label" id="ex-orient-label">向き</span>
+            <div class="seg" role="radiogroup" aria-labelledby="ex-orient-label">
+              <label><input type="radio" name="ex-orient" value="auto"><span>自動</span></label>
+              <label><input type="radio" name="ex-orient" value="portrait"><span>縦</span></label>
+              <label><input type="radio" name="ex-orient" value="landscape"><span>横</span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="ex-note" id="ex-note"></p>
+      <p class="ex-filename">保存名：<span id="ex-filename"></span></p>
+      <p class="form-error" id="export-error" role="alert"></p>
+    </div>
+    <div class="modal-foot">
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>キャンセル</button>
+      <button type="submit" class="btn btn-primary" id="ex-submit">出力する</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="modal manual" id="manual-dialog" aria-labelledby="manual-title">
+  <div class="modal-form">
+    <div class="modal-head">
+      <h2 id="manual-title">備品台帳 操作説明書</h2>
+      <button type="button" class="btn btn-sm" data-close>閉じる</button>
+    </div>
+    <div class="manual-body" id="manual-body">
+      <div class="manual-inner">
+        <p class="m-meta">第1.1版　2026年11月20日</p>
+        <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
+
+        <nav class="m-toc" aria-label="目次">
+          <h3>目次</h3>
+          <ol>
+            <li><a href="#m-intro" data-jump="m-intro">はじめに</a></li>
+            <li><a href="#m-screen" data-jump="m-screen">画面構成</a></li>
+            <li><a href="#m-file" data-jump="m-file">ファイルの管理</a></li>
+            <li><a href="#m-item" data-jump="m-item">備品の登録</a></li>
+            <li><a href="#m-edit" data-jump="m-edit">備品情報の修正・移動・削除</a></li>
+            <li><a href="#m-find" data-jump="m-find">一覧の検索と並べ替え</a></li>
+            <li><a href="#m-pdf" data-jump="m-pdf">出力（PDF・Excel・CSV・画像）</a></li>
+            <li><a href="#m-schema" data-jump="m-schema">項目と計算式の設定</a></li>
+            <li><a href="#m-save" data-jump="m-save">データの保存と権限</a></li>
+            <li><a href="#m-faq" data-jump="m-faq">トラブルシューティング</a></li>
+          </ol>
+        </nav>
+
+        <section class="m-sec" aria-labelledby="m-intro">
+          <h3 id="m-intro" tabindex="-1"><span class="m-num">1</span>はじめに</h3>
+          <h4>1.1　本アプリの概要</h4>
+          <p>本アプリは、社内の備品を区分ごとに登録・集計し、押印欄付きのA4一覧表をPDF形式で出力するためのアプリケーションです。主な機能は次のとおりです。</p>
+          <ul>
+            <li>部署・設置場所・年度などの区分（ファイル）ごとの備品管理</li>
+            <li>品名・単価・数量等の登録と、金額の自動計算</li>
+            <li>管理項目および計算式の追加・変更（例：税込金額、購入日）</li>
+            <li>ファイル単位での出力（PDF・Excel・CSV・画像）</li>
+          </ul>
+          <h4>1.2　用語</h4>
+          <table class="m-table">
+            <thead><tr><th scope="col">用語</th><th scope="col">意味</th></tr></thead>
+            <tbody>
+              <tr><td>ファイル</td><td>備品を分類する単位です。画面上では、色の異なるバインダーとして表示されます。</td></tr>
+              <tr><td>項目</td><td>一覧表の列（品名、単価、数量など）です。すべてのファイルで共通です。</td></tr>
+              <tr><td>計算項目</td><td>ほかの項目の値から計算式で求める項目（合計金額など）です。直接入力はできません。</td></tr>
+              <tr><td>帳票</td><td>本アプリが出力する押印欄付きの一覧表です（PDFまたは画像）。</td></tr>
+              <tr><td>クリック</td><td>本書では、マウスによるクリックとタッチ操作によるタップを総称して「クリック」と表記します。</td></tr>
+            </tbody>
+          </table>
+          <h4>1.3　利用形態とデータの保存先</h4>
+          <p>本アプリには次の2つの利用形態があり、データの保存先が異なります。詳細は「<a href="#m-save" data-jump="m-save">9 データの保存と権限</a>」を参照してください。</p>
+          <ul>
+            <li><strong>claude.ai上で利用する場合</strong>：データは自動で保存され、本アプリを閲覧できる利用者の間で共有されます。</li>
+            <li><strong>HTMLファイル（ローカル版）をブラウザで開いて利用する場合</strong>：データは、その端末のブラウザ内にのみ保存されます。</li>
+          </ul>
+          <p class="m-note warn"><span class="m-note-label">注意</span>削除したデータは復元できません。重要なデータは定期的に帳票を出力し、保管することを推奨します。</p>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+
+        <section class="m-sec" aria-labelledby="m-screen">
+          <h3 id="m-screen" tabindex="-1"><span class="m-num">2</span>画面構成</h3>
+          <p>図中の番号は、下表の番号に対応しています。</p>
+          <svg class="diagram" viewBox="0 0 720 430" role="img" aria-labelledby="dg-title">
+            <title id="dg-title">画面構成図（番号は下表に対応）</title>
+            <rect class="dg-cover" x="0" y="0" width="720" height="430" rx="12"/>
+            <rect class="dg-white" x="16" y="14" width="124" height="32" rx="6"/>
+            <rect x="26" y="22" width="5" height="16" rx="1.5" fill="#3b7bd4"/><rect x="32.5" y="20" width="5" height="18" rx="1.5" fill="#34a271"/><rect x="39" y="23" width="5" height="15" rx="1.5" fill="#ec8a32"/>
+            <text class="dg-t" x="52" y="36">備品台帳</text>
+            <text class="dg-tw s" x="508" y="35" text-anchor="end">自動保存（共有）</text>
+            <rect class="dg-white" x="516" y="16" width="78" height="28" rx="6"/><text class="dg-t s" x="555" y="35" text-anchor="middle">説明書</text>
+            <rect class="dg-white" x="600" y="16" width="106" height="28" rx="6"/><text class="dg-t s" x="653" y="35" text-anchor="middle">項目と計算式</text>
+            <rect class="dg-pocket" x="16" y="64" width="150" height="214" rx="10"/>
+            <text class="dg-tw s" x="28" y="86">ファイル</text>
+            <g class="fc-blue"><rect class="dg-white" x="27" y="96" width="128" height="30" rx="5"/><rect class="dg-fc" x="35" y="105" width="14" height="11" rx="2"/><text class="dg-t s" x="56" y="116">本社 総務部</text></g>
+            <g class="fc-purple"><rect class="dg-white" x="33" y="134" width="128" height="30" rx="5"/><rect class="dg-fc" x="33" y="134" width="4" height="30"/><rect class="dg-fc" x="43" y="143" width="14" height="11" rx="2"/><text class="dg-t s" x="64" y="154">3F会議室</text></g>
+            <g class="fc-orange"><rect class="dg-white" x="27" y="172" width="128" height="30" rx="5"/><rect class="dg-fc" x="35" y="181" width="14" height="11" rx="2"/><text class="dg-t s" x="56" y="192">2026年度 購入分</text></g>
+            <rect class="dg-dash" x="27" y="218" width="128" height="28" rx="5"/><text class="dg-tw s" x="91" y="237" text-anchor="middle">＋ 新しいファイル</text>
+            <rect class="dg-plate" x="176" y="66" width="7" height="346" rx="3"/>
+            <rect class="dg-paper" x="192" y="62" width="512" height="352" rx="6"/>
+            <g class="dg-holes"><circle cx="205" cy="92" r="4.5"/><circle cx="205" cy="148" r="4.5"/><circle cx="205" cy="204" r="4.5"/><circle cx="205" cy="260" r="4.5"/><circle cx="205" cy="316" r="4.5"/><circle cx="205" cy="372" r="4.5"/></g>
+            <g class="dg-rings"><ellipse cx="192" cy="92" rx="15" ry="6"/><ellipse cx="192" cy="148" rx="15" ry="6"/><ellipse cx="192" cy="204" rx="15" ry="6"/><ellipse cx="192" cy="260" rx="15" ry="6"/><ellipse cx="192" cy="316" rx="15" ry="6"/><ellipse cx="192" cy="372" rx="15" ry="6"/></g>
+            <line class="dg-margin" x1="217" y1="62" x2="217" y2="414"/><line class="dg-margin" x1="220" y1="62" x2="220" y2="414"/>
+            <rect class="dg-fc" x="234" y="79" width="20" height="15" rx="3"/>
+            <text class="dg-t l" x="262" y="93">3F会議室</text>
+            <rect class="dg-out" x="546" y="74" width="72" height="24" rx="5"/><text class="dg-t xs" x="582" y="90" text-anchor="middle">ファイル設定</text>
+            <rect class="dg-btn" x="624" y="74" width="68" height="24" rx="5"/><text class="dg-tw xs" x="658" y="90" text-anchor="middle">出力</text>
+            <rect class="dg-soft" x="232" y="108" width="460" height="28" rx="6"/>
+            <text class="dg-ink s" x="244" y="127">件数 4件　 数量 19　 合計金額 524,200円　 税込金額 576,620円</text>
+            <rect class="dg-btn" x="232" y="148" width="86" height="24" rx="5"/><text class="dg-tw xs" x="275" y="164" text-anchor="middle">＋ 備品を追加</text>
+            <rect class="dg-out" x="514" y="148" width="100" height="24" rx="12"/><text class="dg-sub xs" x="530" y="164">品名・備考で検索</text>
+            <rect class="dg-out" x="620" y="148" width="72" height="24" rx="12"/><text class="dg-t xs" x="634" y="164">登録順 ▾</text>
+            <rect class="dg-tbl" x="232" y="182" width="460" height="172" rx="6"/>
+            <rect class="dg-soft" x="233" y="183" width="458" height="24"/>
+            <line class="dg-fcline" x1="233" y1="207" x2="691" y2="207"/>
+            <g class="dg-ink xs"><text x="244" y="199">No.</text><text x="276" y="199">品名</text><text x="430" y="199" text-anchor="end">単価</text><text x="476" y="199" text-anchor="end">数量</text><text x="560" y="199" text-anchor="end">合計金額</text></g>
+            <g class="dg-t xs">
+              <text x="250" y="226">1</text><text x="276" y="226">プロジェクター</text><text x="430" y="226" text-anchor="end">89,000</text><text x="476" y="226" text-anchor="end">1</text><text x="560" y="226" text-anchor="end">89,000</text>
+              <text x="250" y="256">2</text><text x="276" y="256">会議用テーブル</text><text x="430" y="256" text-anchor="end">45,000</text><text x="476" y="256" text-anchor="end">4</text><text x="560" y="256" text-anchor="end">180,000</text>
+              <text x="250" y="286">3</text><text x="276" y="286">会議用チェア</text><text x="430" y="286" text-anchor="end">15,800</text><text x="476" y="286" text-anchor="end">12</text><text x="560" y="286" text-anchor="end">189,600</text>
+            </g>
+            <g class="dg-rowline"><line x1="233" y1="237" x2="691" y2="237"/><line x1="233" y1="267" x2="691" y2="267"/><line x1="233" y1="297" x2="691" y2="297"/></g>
+            <g class="dg-icons"><path d="M641 228l8-8 3 3-8 8h-3z"/><path d="M662 219h10M664 219l1 10h6l1-10"/><path d="M641 258l8-8 3 3-8 8h-3z"/><path d="M662 249h10M664 249l1 10h6l1-10"/><path d="M641 288l8-8 3 3-8 8h-3z"/><path d="M662 279h10M664 279l1 10h6l1-10"/></g>
+            <rect class="dg-soft" x="233" y="326" width="458" height="27"/>
+            <line class="dg-fcline" x1="233" y1="326" x2="691" y2="326"/>
+            <text class="dg-ink xs" x="244" y="344">合計</text><text class="dg-t xs" x="476" y="344" text-anchor="end">19</text><text class="dg-t xs" x="560" y="344" text-anchor="end">524,200</text>
+            <line class="dg-dashline" x1="232" y1="370" x2="692" y2="370"/>
+            <text class="dg-ink s" x="236" y="394">‹ 本社 総務部</text><text class="dg-sub s" x="462" y="394" text-anchor="middle">2 / 3</text><text class="dg-ink s" x="690" y="394" text-anchor="end">2026年度 購入分 ›</text>
+            <g class="dg-marks">
+              <g><circle cx="146" cy="16" r="11"/><text x="146" y="21">1</text></g>
+              <g><circle cx="515" cy="14" r="11"/><text x="515" y="19">2</text></g>
+              <g><circle cx="706" cy="14" r="11"/><text x="706" y="19">3</text></g>
+              <g><circle cx="166" cy="100" r="11"/><text x="166" y="105">4</text></g>
+              <g><circle cx="160" cy="220" r="11"/><text x="160" y="225">5</text></g>
+              <g><circle cx="228" cy="74" r="11"/><text x="228" y="79">6</text></g>
+              <g><circle cx="546" cy="70" r="11"/><text x="546" y="75">7</text></g>
+              <g><circle cx="692" cy="70" r="11"/><text x="692" y="75">8</text></g>
+              <g><circle cx="694" cy="110" r="11"/><text x="694" y="115">9</text></g>
+              <g><circle cx="228" cy="150" r="11"/><text x="228" y="155">10</text></g>
+              <g><circle cx="512" cy="146" r="11"/><text x="512" y="151">11</text></g>
+              <g><circle cx="694" cy="214" r="11"/><text x="694" y="219">12</text></g>
+              <g><circle cx="228" cy="388" r="11"/><text x="228" y="393">13</text></g>
+            </g>
+          </svg>
+          <table class="m-table legend">
+            <thead><tr><th scope="col" class="c-n">番号</th><th scope="col">名称</th><th scope="col">内容</th></tr></thead>
+            <tbody>
+              <tr><td class="c-n">1</td><td>背ラベル</td><td>アプリケーション名です。</td></tr>
+              <tr><td class="c-n">2</td><td><span class="ui">説明書</span></td><td>本書を表示します。</td></tr>
+              <tr><td class="c-n">3</td><td><span class="ui">項目と計算式</span></td><td>項目および計算式を設定します（<a href="#m-schema" data-jump="m-schema">8章</a>）。</td></tr>
+              <tr><td class="c-n">4</td><td>ファイル一覧</td><td>登録済みのファイルを表示します。右側の数値は備品の件数です。表示中のファイルは右へ引き出された状態で示されます。</td></tr>
+              <tr><td class="c-n">5</td><td><span class="ui">新しいファイル</span></td><td>ファイルを作成します（<a href="#m-file" data-jump="m-file">3.1</a>）。</td></tr>
+              <tr><td class="c-n">6</td><td>ファイル名</td><td>表示中のファイル名です。表紙の色は、そのファイルに設定した色です。</td></tr>
+              <tr><td class="c-n">7</td><td><span class="ui">ファイル設定</span></td><td>ファイル名、色、帳票の設定を変更します（<a href="#m-filesettings" data-jump="m-filesettings">3.3</a>）。</td></tr>
+              <tr><td class="c-n">8</td><td><span class="ui">出力</span></td><td>表示中のファイルを出力します。形式（PDF・Excel・CSV・画像）や用紙サイズを選択できます（<a href="#m-pdf" data-jump="m-pdf">7章</a>）。</td></tr>
+              <tr><td class="c-n">9</td><td>集計欄</td><td>件数と、「合計」を有効にした項目の合計を表示します。</td></tr>
+              <tr><td class="c-n">10</td><td><span class="ui">備品を追加</span></td><td>備品を登録します（<a href="#m-item" data-jump="m-item">4章</a>）。</td></tr>
+              <tr><td class="c-n">11</td><td>検索欄・並び順</td><td>一覧の絞り込みと並べ替えを行います（<a href="#m-find" data-jump="m-find">6章</a>）。</td></tr>
+              <tr><td class="c-n">12</td><td>一覧表</td><td>登録済みの備品です。行末の鉛筆アイコンで修正、ごみ箱アイコンで削除します（<a href="#m-edit" data-jump="m-edit">5章</a>）。</td></tr>
+              <tr><td class="c-n">13</td><td>ページ送り</td><td>前後のファイルへ移動します。</td></tr>
+            </tbody>
+          </table>
+          <p class="m-note"><span class="m-note-label">補足</span>画面右上の「自動保存（共有）」等の表示は、現在のデータの保存先を示します（<a href="#m-save" data-jump="m-save">9章</a>）。</p>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+
+        <section class="m-sec" aria-labelledby="m-file">
+          <h3 id="m-file" tabindex="-1"><span class="m-num">3</span>ファイルの管理</h3>
+          <h4>3.1　ファイルの作成</h4>
+          <ol class="m-steps">
+            <li>ファイル一覧の下にある<span class="ui">新しいファイル</span>をクリックします。</li>
+            <li><span class="ui">ファイル名</span>を入力します（必須）。</li>
+            <li><span class="ui">色</span>を選択します。初期状態では、直前のファイルと判別しやすい色（色相環上で反対側にある色）が選択されています。</li>
+            <li><span class="ui">作成</span>をクリックします。作成したファイルが表示されます。</li>
+          </ol>
+          <p class="m-note"><span class="m-note-label">補足</span>帳票のタイトル、会社名・部署名、押印欄の設定は、作成時に表示していたファイルの設定を引き継ぎます。</p>
+          <h4>3.2　ファイルの切り替え</h4>
+          <p>ファイル一覧で目的のファイルをクリックするか、画面下部のページ送り（‹ ›）をクリックします。</p>
+          <h4 id="m-filesettings" tabindex="-1">3.3　ファイル設定の変更</h4>
+          <p><span class="ui">ファイル設定</span>をクリックし、次の項目を変更して<span class="ui">保存</span>をクリックします。</p>
+          <table class="m-table">
+            <thead><tr><th scope="col">設定</th><th scope="col">内容</th></tr></thead>
+            <tbody>
+              <tr><td>ファイル名（必須）</td><td>ファイル一覧および画面見出しに表示される名称です。</td></tr>
+              <tr><td>色</td><td>28色から選択します。表紙、ボタン、一覧表の見出しの色に反映されます。</td></tr>
+              <tr><td>タイトル（任意）</td><td>帳票の表題です。未入力の場合は「備品一覧表」となります。</td></tr>
+              <tr><td>会社名・部署名（任意）</td><td>帳票の表題の下に印字されます。未入力の場合は印字されません。</td></tr>
+              <tr><td>押印欄を入れる</td><td>帳票の右上に「作成・確認・承認」の押印欄を印字します。</td></tr>
+            </tbody>
+          </table>
+          <h4>3.4　ファイルの削除</h4>
+          <ol class="m-steps">
+            <li><span class="ui">ファイル設定</span>をクリックします。</li>
+            <li>画面左下の<span class="ui">このファイルを削除</span>をクリックします。</li>
+            <li>確認メッセージの内容を確認し、<span class="ui">削除する</span>をクリックします。</li>
+          </ol>
+          <p class="m-note warn"><span class="m-note-label">注意</span>ファイルを削除すると、そのファイルに登録された備品もすべて削除されます。削除したデータは復元できません。</p>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+
+        <section class="m-sec" aria-labelledby="m-item">
+          <h3 id="m-item" tabindex="-1"><span class="m-num">4</span>備品の登録</h3>
+          <h4>4.1　登録手順</h4>
+          <ol class="m-steps">
+            <li><span class="ui">備品を追加</span>をクリックします。</li>
+            <li>各項目を入力します。計算項目（合計金額等）は、入力内容に応じて自動で計算・表示されます。</li>
+            <li><span class="ui">登録</span>をクリックします。続けて登録する場合は<span class="ui">続けて登録</span>をクリックすると、入力画面を閉じずに次の入力に移ります。</li>
+          </ol>
+          <h4>4.2　入力規則</h4>
+          <ul>
+            <li>「必須」と表示された項目は、入力しなければ登録できません。「任意」と表示された項目は省略できます。</li>
+            <li>数値項目は全角・半角のいずれでも入力できます。桁区切りのカンマ、「円」「¥」などの記号は自動的に除去されます（例：「¥12,800」「12800円」は、いずれも 12800 として登録されます）。</li>
+            <li>登録先のファイルは、入力画面下部の<span class="ui">ファイル</span>で変更できます。</li>
+          </ul>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+
+        <section class="m-sec" aria-labelledby="m-edit">
+          <h3 id="m-edit" tabindex="-1"><span class="m-num">5</span>備品情報の修正・移動・削除</h3>
+          <table class="m-table">
+            <thead><tr><th scope="col">操作</th><th scope="col">手順</th></tr></thead>
+            <tbody>
+              <tr><td>修正</td><td>一覧表の行末にある鉛筆アイコンをクリックし、内容を変更して<span class="ui">保存</span>をクリックします。</td></tr>
+              <tr><td>他のファイルへの移動</td><td>修正画面の<span class="ui">ファイル</span>で移動先を選択し、<span class="ui">保存</span>をクリックします。</td></tr>
+              <tr><td>削除</td><td>行末のごみ箱アイコンをクリックし、確認表示で<span class="ui">削除</span>をクリックします。<span class="ui">やめる</span>をクリックすると取り消せます。</td></tr>
+            </tbody>
+          </table>
+          <p class="m-note warn"><span class="m-note-label">注意</span>削除した備品は復元できません。</p>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+
+        <section class="m-sec" aria-labelledby="m-find">
+          <h3 id="m-find" tabindex="-1"><span class="m-num">6</span>一覧の検索と並べ替え</h3>
+          <ul>
+            <li><strong>検索</strong>：検索欄に語句を入力すると、文字項目（品名、備考等）にその語句を含む備品のみを表示します。絞り込み中は合計行が「合計（n件）」と表示され、表示中の備品のみを集計します。</li>
+            <li><strong>並べ替え</strong>：並び順から、登録順、新しい順、各項目の昇順・降順を選択できます。</li>
+          </ul>
+          <p class="m-note"><span class="m-note-label">補足</span>出力には、検索条件にかかわらず、そのファイルのすべての備品が選択中の並び順で含まれます。</p>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+
+        <section class="m-sec" aria-labelledby="m-pdf">
+          <h3 id="m-pdf" tabindex="-1"><span class="m-num">7</span>出力（PDF・Excel・CSV・画像）</h3>
+          <h4>7.1　出力手順</h4>
+          <ol class="m-steps">
+            <li>出力するファイルを表示します。</li>
+            <li><span class="ui">出力</span>をクリックします。</li>
+            <li><span class="ui">形式</span>を選択します。PDFまたは画像の場合は、<span class="ui">用紙サイズ</span><span class="ui">画質</span><span class="ui">向き</span>も選択します。</li>
+            <li><span class="ui">出力する</span>をクリックします。保存の確認画面が表示された場合は、保存を選択します（claude.ai上で利用する場合）。</li>
+          </ol>
+          <p class="m-note"><span class="m-note-label">補足</span>選択した形式・用紙サイズ等はファイルごとに記憶され、次回の出力時に初期値として表示されます。記憶は利用している端末ごとです。</p>
+          <h4>7.2　形式</h4>
+          <table class="m-table">
+            <thead><tr><th scope="col">形式</th><th scope="col">内容</th><th scope="col">主な用途</th></tr></thead>
+            <tbody>
+              <tr><td>PDF（.pdf）</td><td>押印欄・集計欄・合計行を含む帳票です。「PDF」を有効にした項目を出力します。</td><td>印刷、提出、保管</td></tr>
+              <tr><td>Excel（.xlsx）</td><td>表題・ファイル名・作成日、見出し、明細、合計行を出力します。すべての項目を出力し、数値は計算に使える数値として保存されます。</td><td>集計、加工</td></tr>
+              <tr><td>CSV（.csv）</td><td>見出しと明細のみを出力します（合計行なし）。すべての項目を出力し、文字コードはUTF-8（BOM付き）です。</td><td>他システムへの取り込み</td></tr>
+              <tr><td>画像（.png）</td><td>PDFと同じ帳票を画像にしたものです。複数ページの場合は、縦につないだ1枚の画像になります。</td><td>メール・チャットへの貼り付け</td></tr>
+            </tbody>
+          </table>
+          <h4>7.3　用紙サイズ・画質・向き（PDF・画像）</h4>
+          <table class="m-table">
+            <thead><tr><th scope="col">設定</th><th scope="col">選択肢</th></tr></thead>
+            <tbody>
+              <tr><td>用紙サイズ</td><td>A4（210×297mm）、A3（297×420mm）、B4（257×364mm）、B5（182×257mm）、A5（148×210mm）、レター（216×279mm）</td></tr>
+              <tr><td>画質</td><td>軽量（ファイルが小さい）、標準、高画質（印刷向け。ファイルが大きくなります）</td></tr>
+              <tr><td>向き</td><td>自動（列が7つ以上の場合は横向き）、縦、横</td></tr>
+            </tbody>
+          </table>
+          <h4>7.4　帳票の構成（PDF・画像）</h4>
+          <table class="m-table">
+            <thead><tr><th scope="col">部位</th><th scope="col">内容</th></tr></thead>
+            <tbody>
+              <tr><td>表題部</td><td>タイトル（既定値「備品一覧表」）、会社名・部署名（設定時のみ）、作成日</td></tr>
+              <tr><td>押印欄</td><td>作成・確認・承認（ファイル設定で省略できます）</td></tr>
+              <tr><td>集計欄</td><td>件数および合計対象項目の合計</td></tr>
+              <tr><td>明細</td><td>備品の一覧表（「PDF」を有効にした項目のみ）</td></tr>
+              <tr><td>合計行</td><td>合計対象項目の合計（二重線で区切って表示）</td></tr>
+            </tbody>
+          </table>
+          <p>複数ページにわたる場合は、2ページ目以降にも表の見出しが印字され、各ページの下部にページ番号が付されます。</p>
+          <h4>7.5　ファイル名</h4>
+          <p>「タイトル_ファイル名_出力日.拡張子」となります（例：備品一覧表_3F会議室_20261120.xlsx）。</p>
+          <h4>7.6　留意事項</h4>
+          <ul>
+            <li>PDF・画像の文字は画像として出力されるため、文字の選択・検索・コピーはできません。文字データが必要な場合は、ExcelまたはCSVを利用してください。</li>
+            <li>CSVでは、「=」「+」「-」「@」で始まる文字の先頭に「'」を付けて出力します。表計算ソフトで数式として扱われることを防ぐためです。</li>
+            <li>閲覧環境によっては、Excel・CSVの保存が許可されていない場合があります（<a href="#m-faq" data-jump="m-faq">10章</a>）。</li>
+          </ul>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+
+        <section class="m-sec" aria-labelledby="m-schema">
+          <h3 id="m-schema" tabindex="-1"><span class="m-num">8</span>項目と計算式の設定</h3>
+          <p><span class="ui">項目と計算式</span>では、すべてのファイルに共通する項目と計算式を設定します。設定内容は<span class="ui">保存</span>をクリックした時点で反映されます。</p>
+          <h4>8.1　項目の設定</h4>
+          <table class="m-table">
+            <thead><tr><th scope="col">設定</th><th scope="col">内容</th></tr></thead>
+            <tbody>
+              <tr><td>順番</td><td>↑↓で列の順序を変更します。一覧表および帳票の列順に反映されます。</td></tr>
+              <tr><td>項目名</td><td>列の見出しです。名称を変更すると、その項目を参照している計算式も自動的に更新されます。</td></tr>
+              <tr><td>種類</td><td>「文字」「数値」「計算式」から選択します。品名は「文字」で固定です。</td></tr>
+              <tr><td>単位</td><td>見出しに併記されます（円、個、% など）。</td></tr>
+              <tr><td>小数</td><td>表示する小数点以下の桁数です。</td></tr>
+              <tr><td>必須</td><td>有効にすると、未入力では登録できなくなります。</td></tr>
+              <tr><td>合計</td><td>有効にすると、集計欄および合計行に合計を表示します。</td></tr>
+              <tr><td>PDF</td><td>有効にすると、PDF・画像の帳票に列として出力します。Excel・CSVには常にすべての項目を出力します。</td></tr>
+            </tbody>
+          </table>
+          <p>項目を追加する場合は、入力する項目であれば<span class="ui">入力項目を追加</span>、計算式で求める項目であれば<span class="ui">計算項目を追加</span>をクリックします。</p>
+          <h4>8.2　計算式の記述</h4>
+          <ul>
+            <li>ほかの項目の値は <code>[項目名]</code> の形式で参照します。</li>
+            <li>入力欄の下のボタンで、項目名・演算子・関数を挿入できます。</li>
+            <li>入力中は計算例が表示されます。記述に誤りがある場合は理由が赤字で表示され、修正するまで保存できません。</li>
+          </ul>
+          <table class="m-table">
+            <thead><tr><th scope="col">用途</th><th scope="col">計算式の例</th></tr></thead>
+            <tbody>
+              <tr><td>合計金額</td><td><code>[単価] × [数量]</code></td></tr>
+              <tr><td>税込金額（税率10%、1円未満切り捨て）</td><td><code>ROUNDDOWN([合計金額] × 1.1, 0)</code></td></tr>
+              <tr><td>税込金額（税率の項目を参照）</td><td><code>ROUNDDOWN([合計金額] × (1 + [税率]%), 0)</code></td></tr>
+              <tr><td>数量10以上で単価を10%引き</td><td><code>IF([数量] &gt;= 10, [単価] × 0.9, [単価])</code></td></tr>
+            </tbody>
+          </table>
+          <h4>8.3　関数・演算子一覧</h4>
+          <table class="m-table">
+            <thead><tr><th scope="col">記述</th><th scope="col">内容</th></tr></thead>
+            <tbody>
+              <tr><td><code>+ − × ÷</code></td><td>四則演算（* / も使用できます）</td></tr>
+              <tr><td><code>%</code></td><td>百分率（10% は 0.1）</td></tr>
+              <tr><td><code>ROUND(値, 桁数)</code></td><td>四捨五入。桁数0で整数、-2で百の位</td></tr>
+              <tr><td><code>ROUNDDOWN(値, 桁数)</code></td><td>切り捨て</td></tr>
+              <tr><td><code>ROUNDUP(値, 桁数)</code></td><td>切り上げ</td></tr>
+              <tr><td><code>INT(値)</code></td><td>小数点以下を切り捨てた整数</td></tr>
+              <tr><td><code>MAX / MIN(値, …)</code></td><td>最大値・最小値</td></tr>
+              <tr><td><code>SUM(値, …)</code></td><td>合計</td></tr>
+              <tr><td><code>ABS(値)</code></td><td>絶対値</td></tr>
+              <tr><td><code>IF(条件, 真の場合, 偽の場合)</code></td><td>条件による分岐。比較演算子は = &lt;&gt; &lt; &gt; &lt;= &gt;=</td></tr>
+              <tr><td><code>AND / OR(…)</code></td><td>すべての条件を満たす／いずれかの条件を満たす</td></tr>
+            </tbody>
+          </table>
+          <h4>8.4　留意事項</h4>
+          <ul>
+            <li>数値項目が未入力の場合、計算上は0として扱います。</li>
+            <li>項目を削除すると、その項目に入力済みの値は表示されなくなります。</li>
+            <li>互いを参照し合う計算式（AがBを、BがAを参照するなど）は保存できません。</li>
+          </ul>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+
+        <section class="m-sec" aria-labelledby="m-save">
+          <h3 id="m-save" tabindex="-1"><span class="m-num">9</span>データの保存と権限</h3>
+          <p>画面右上の表示により、現在の保存先と権限を確認できます。</p>
+          <table class="m-table">
+            <thead><tr><th scope="col">表示</th><th scope="col">内容</th></tr></thead>
+            <tbody>
+              <tr><td>自動保存（共有）</td><td>claude.ai上で利用している状態です。入力内容は即時に保存され、本アプリを閲覧できる利用者の間で共有されます。</td></tr>
+              <tr><td>この端末に保存</td><td>ローカル版を利用している状態です。データはその端末のブラウザ内にのみ保存されます。ブラウザの閲覧データを削除すると、本アプリのデータも削除されます。</td></tr>
+              <tr><td>閲覧のみ</td><td>編集権限がない状態です。一覧の閲覧と帳票の出力のみ行えます。</td></tr>
+              <tr><td>接続が切れました</td><td>通信が途絶えた状態です。ページを再読み込みしてください。</td></tr>
+            </tbody>
+          </table>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+
+        <section class="m-sec" aria-labelledby="m-faq">
+          <h3 id="m-faq" tabindex="-1"><span class="m-num">10</span>トラブルシューティング</h3>
+          <table class="m-table faq">
+            <thead><tr><th scope="col">症状</th><th scope="col">考えられる原因</th><th scope="col">対処</th></tr></thead>
+            <tbody>
+              <tr><td>一覧に「計算エラー」と表示される</td><td>0による除算など、その備品の値では計算式が成立しない</td><td>表示にマウスポインターを合わせると理由が表示されます。<span class="ui">項目と計算式</span>で計算式を見直してください。</td></tr>
+              <tr><td>出力したファイルが保存されない</td><td>保存の確認画面で保存が選択されていない、または出力機能の読み込み中</td><td>確認画面で保存を選択してください。「準備中です」と表示された場合は、数秒後に再度実行してください。</td></tr>
+              <tr><td>「この画面ではこの形式を保存できません」と表示される</td><td>閲覧環境でExcel・CSVの保存が許可されていない</td><td>PDFまたは画像で出力するか、ローカル版を利用してください。</td></tr>
+              <tr><td>「編集する権限がありません」と表示される</td><td>閲覧のみの権限で開いている</td><td>管理者に編集権限の付与を依頼してください。</td></tr>
+              <tr><td>ローカル版のデータが消えた</td><td>ブラウザの閲覧データが削除された</td><td>復元はできません。定期的に帳票を出力し、保管してください。</td></tr>
+              <tr><td>新しいファイルの色が自動で設定される</td><td>判別しやすい色を自動で選択する仕様</td><td><span class="ui">ファイル設定</span>で任意の色に変更できます。</td></tr>
+              <tr><td>本書を直接開きたい</td><td>―</td><td>本アプリのURLの末尾に <code>#manual</code> を付けて開くと、本書を表示した状態で起動します。</td></tr>
+            </tbody>
+          </table>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const el = {
+  saveState: $('#save-state'), schemaBtn: $('#schema-btn'),
+  fileList: $('#file-list'), newFileBtn: $('#new-file-btn'),
+  fileTitle: $('#file-title'), fileSettingsBtn: $('#file-settings-btn'), pdf: $('#pdf-btn'), pdfLabel: $('#pdf-label'),
+  totals: $('#totals'), readonlyNote: $('#readonly-note'), main: $('#main'), fdColors: $('#fd-colors'),
+  stage: $('#stage'), sheet: $('#sheet'), pager: $('#pager'), prevFile: $('#prev-file'), nextFile: $('#next-file'),
+  prevName: $('#prev-name'), nextName: $('#next-name'), pagerPos: $('#pager-pos'),
+  addBtn: $('#add-btn'), search: $('#search'), sort: $('#sort'),
+  tableWrap: $('#table-wrap'), thead: $('#thead'), rows: $('#rows'), tfoot: $('#tfoot'), empty: $('#empty'),
+  itemDialog: $('#item-dialog'), itemForm: $('#item-form'), itemTitle: $('#item-dialog-title'), itemFields: $('#item-fields'),
+  itemFile: $('#item-file'), itemError: $('#item-error'), itemSave: $('#item-save'), itemSaveNext: $('#item-save-next'),
+  fileDialog: $('#file-dialog'), fileForm: $('#file-form'), fileDialogTitle: $('#file-dialog-title'),
+  fdName: $('#fd-name'), fdTitle: $('#fd-title'), fdOrg: $('#fd-org'), fdStamps: $('#fd-stamps'),
+  exportDialog: $('#export-dialog'), exportForm: $('#export-form'), exPaper: $('#ex-paper'), exSize: $('#ex-size'), exQuality: $('#ex-quality'),
+  exNote: $('#ex-note'), exFilename: $('#ex-filename'), exportError: $('#export-error'), exSubmit: $('#ex-submit'),
+  fdDelete: $('#fd-delete'), fdFootNormal: $('#fd-foot-normal'), fdFootConfirm: $('#fd-foot-confirm'), fdConfirmText: $('#fd-confirm-text'),
+  fdDeleteYes: $('#fd-delete-yes'), fdDeleteNo: $('#fd-delete-no'), fileError: $('#file-error'), fdSave: $('#fd-save'),
+  schemaDialog: $('#schema-dialog'), schemaForm: $('#schema-form'), schemaList: $('#schema-list'),
+  addInputField: $('#add-input-field'), addFormulaField: $('#add-formula-field'), schemaStatus: $('#schema-status'), schemaSave: $('#schema-save'),
+  manualDialog: $('#manual-dialog'), manualBody: $('#manual-body'),
+  toast: $('#toast'),
+};
+
+const MAIN = 'main';                 // 最初のファイル（未保存のうちは仮のファイルとして表示）
+const FILE_DEFAULTS = { title: '備品一覧表', org: '', stamps: true, orient: 'auto' };
+// ファイルの色（バインダーの色）28色。[キー, 表示名, 色相（灰色系は null）]。色相の順に並べて選択欄にもこの順で出す
+const PALETTE = [
+  ['red', '赤', 3],
+  ['vermilion', '朱色', 12],
+  ['brown', '茶', 22],
+  ['orange', 'オレンジ', 28],
+  ['yellow', '黄', 45],
+  ['olive', 'オリーブ', 60],
+  ['lime', '黄緑', 84],
+  ['leaf', '若葉', 108],
+  ['forest', '深緑', 136],
+  ['green', '緑', 153],
+  ['mint', 'ミント', 170],
+  ['teal', '青緑', 180],
+  ['cyan', '水浅葱', 190],
+  ['sky', '空色', 201],
+  ['blue', '青', 215],
+  ['ruri', '瑠璃', 222],
+  ['navy', '紺', 228],
+  ['indigo', '藍', 240],
+  ['lavender', 'ラベンダー', 254],
+  ['purple', '紫', 263],
+  ['violet', '菫', 276],
+  ['grape', 'ぶどう', 292],
+  ['magenta', '赤紫', 312],
+  ['pink', 'ピンク', 332],
+  ['rose', 'ローズ', 346],
+  ['wine', 'ワイン', 352],
+  ['gray', '灰', null],
+  ['charcoal', '墨', null],
+];
+const PALETTE_KEYS = PALETTE.map((p) => p[0]);
+const HUE = Object.fromEntries(PALETTE.map((p) => [p[0], p[2]]));
+// 色が保存されていない古いファイルは、最初の8色から決める（色数を増やしても見た目が変わらないように）
+const LEGACY_KEYS = ['blue', 'green', 'orange', 'red', 'purple', 'teal', 'yellow', 'brown'];
+
+// 2色の離れ具合（0 = 同じ、1 = 色相環で真反対）。灰色系は色相がないので中間扱い
+function colorGap(a, b) {
+  if (!a || !b) return 1;
+  const ha = HUE[a], hb = HUE[b];
+  if (ha == null && hb == null) return a === b ? 0 : 0.15;
+  if (ha == null || hb == null) return 0.5;
+  const d = Math.abs(ha - hb) % 360;
+  return Math.min(d, 360 - d) / 180;
+}
+// 新しいファイルの色：直前のファイルの反対色を最優先し、2つ前の色からも離れていて、まだ使っていない色を少し優先。
+// いちばん良い点数に近い候補の中からランダムに選ぶ
+function chooseColor(prevKey, prev2Key, usedKeys, rnd = Math.random) {
+  const score = (k) =>
+    (prevKey ? colorGap(k, prevKey) : (HUE[k] == null ? 0.2 : 0.5)) +
+    (prev2Key ? 0.3 * colorGap(k, prev2Key) - (k === prev2Key ? 0.3 : 0) : 0) +
+    (usedKeys.has(k) ? 0 : 0.12);
+  const scored = PALETTE_KEYS.filter((k) => k !== prevKey).map((k) => [k, score(k)]);
+  const best = Math.max(...scored.map((x) => x[1]));
+  const band = scored.filter((x) => x[1] >= best - 0.1).map((x) => x[0]);
+  return band[Math.floor(rnd() * band.length)];
+}
+function setCoverColor(key) {
+  const b = document.body;
+  PALETTE_KEYS.forEach((k) => { if (k !== key) b.classList.remove('fc-' + k); });
+  b.classList.add('fc-' + key);
+}
+function colorOf(f) {
+  if (!f) return 'blue';
+  if (PALETTE_KEYS.includes(f.color)) return f.color;
+  if (f.id === 'main') return 'blue';
+  let hsh = 0;
+  for (const ch of String(f.id)) hsh = (hsh * 31 + ch.charCodeAt(0)) >>> 0;
+  return LEGACY_KEYS[hsh % LEGACY_KEYS.length];
+}
+const LS_DATA = 'bihin-daicho:v1';
+const LS_SORT = 'bihin-daicho:sort';
+const LS_FILE = 'bihin-daicho:file';
+const MAX_FIELDS = 24;
+const ID_RE = /^[A-Za-z0-9_-]{1,40}$/;
+const LABEL_BAD = /[\[\]{}［］｛｝]/g;
+const KIND_NAMES = { text: '文字', number: '数値', formula: '計算式' };
+const DEFAULT_SCHEMA = [
+  { id: 'name', label: '品名', kind: 'text', unit: '', decimals: 0, required: true, total: false, pdf: true, expr: '' },
+  { id: 'price', label: '単価', kind: 'number', unit: '円', decimals: 0, required: true, total: false, pdf: true, expr: '' },
+  { id: 'qty', label: '数量', kind: 'number', unit: '', decimals: 0, required: true, total: true, pdf: true, expr: '' },
+  { id: 'amount', label: '合計金額', kind: 'formula', unit: '円', decimals: 0, required: false, total: true, pdf: true, expr: '{price} * {qty}' },
+  { id: 'note', label: '備考', kind: 'text', unit: '', decimals: 0, required: false, total: false, pdf: true, expr: '' },
+];
+
+const state = {
+  files: [], items: [], schema: DEFAULT_SCHEMA,
+  filesLoaded: false, itemsLoaded: false, schemaLoaded: false,
+  mode: 'loading', canWrite: true, currentId: null,
+  sort: 'created:asc', query: '', confirmId: null, busy: false, deleting: false,
+};
+
+let db = null;
+let downloadsP = null;
+let pendingFocus = null;
+let warnedLocal = false;
+
+/* ---------- small helpers ---------- */
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  if (props) {
+    for (const [k, v] of Object.entries(props)) {
+      if (v == null || v === false) continue;
+      if (k === 'class') e.className = v;
+      else if (k === 'text') e.textContent = v;
+      else if (k.includes('-') || ['for', 'role', 'title', 'placeholder', 'inputmode', 'maxlength', 'scope', 'colspan'].includes(k)) e.setAttribute(k, v === true ? '' : v);
+      else e[k] = v;
+    }
+  }
+  for (const c of kids.flat(Infinity)) if (c != null && c !== false) e.append(c.nodeType ? c : String(c));
+  return e;
+}
+function icon(d, size = 16) {
+  const t = document.createElement('template');
+  t.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+  return t.content.firstChild;
+}
+const ICONS = {
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  pencil: '<path d="M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+  trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  folder: '<path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h3.6a2 2 0 0 1 1.4.6L12 6h6.5A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z" fill="currentColor" stroke="none"/><path d="M3 9.5h18v8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z" fill="#ffffff" fill-opacity=".22" stroke="none"/>',
+};
+function ico(name, size = 18) {
+  const t = document.createElement('template');
+  t.innerHTML = name === 'box'
+    ? `<svg width="${size}" height="${Math.round(size * 0.8)}" viewBox="0 0 80 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 24 40 32l28-8v26L40 58 12 50z" fill="currentColor" fill-opacity=".14"/><path d="M40 32v26"/><path d="M12 24 3 13l28-8 9 11"/><path d="M68 24l9-11-28-8-9 11"/><path d="M12 24l28-8 28 8"/></svg>`
+    : `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+  return t.content.firstChild;
+}
+const pad = (n) => String(n).padStart(2, '0');
+const num = (n) => Math.round(Number(n) || 0).toLocaleString('ja-JP');
+const isLoaded = () => state.filesLoaded && state.itemsLoaded && state.schemaLoaded;
+const newId = (prefix = '') => {
+  try { if (crypto && crypto.randomUUID) return prefix + crypto.randomUUID().replace(/-/g, '').slice(0, prefix ? 10 : 32); } catch (e) {}
+  return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+};
+function fmtNum(v, f) {
+  if (v == null || !Number.isFinite(v)) return '';
+  const d = f ? f.decimals || 0 : 0;
+  return (v === 0 ? 0 : v).toLocaleString('ja-JP', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+const withUnit = (v, f) => { const s = fmtNum(v, f); return s ? s + (f.unit || '') : ''; };
+const unitLabel = (f) => (f.unit ? `${f.label}（${f.unit}）` : f.label);
+
+let toastTimer = 0;
+function toast(msg, kind) {
+  el.toast.textContent = msg;
+  el.toast.dataset.kind = kind || '';
+  el.toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.toast.classList.remove('show'), kind === 'error' ? 5000 : 2600);
+}
+
+function openDialog(d) { if (typeof d.showModal === 'function') { if (!d.open) d.showModal(); } else d.setAttribute('open', ''); }
+function closeDialog(d) { if (typeof d.close === 'function') d.close(); else d.removeAttribute('open'); }
+document.addEventListener('click', (e) => {
+  const c = e.target.closest('[data-close]');
+  if (c) closeDialog(c.closest('dialog'));
+});
+
+/* ---------- normalising stored data ---------- */
+function normField(f) {
+  if (!f || typeof f !== 'object' || typeof f.id !== 'string' || !ID_RE.test(f.id)) return null;
+  const fixed = f.id === 'name';
+  const kind = fixed ? 'text' : (['text', 'number', 'formula'].includes(f.kind) ? f.kind : 'text');
+  return {
+    id: f.id,
+    label: String(f.label ?? '').replace(LABEL_BAD, '').trim().slice(0, 20) || f.id,
+    kind,
+    unit: kind === 'text' ? '' : String(f.unit ?? '').slice(0, 6),
+    decimals: kind === 'text' ? 0 : Math.min(4, Math.max(0, Math.round(Number(f.decimals) || 0))),
+    required: fixed ? true : (kind !== 'formula' && !!f.required),
+    total: kind !== 'text' && !!f.total,
+    pdf: f.pdf !== false,
+    expr: kind === 'formula' ? String(f.expr ?? '').slice(0, 500) : '',
+  };
+}
+function normSchema(list) {
+  const out = [], ids = new Set(), labels = new Set();
+  for (const raw of Array.isArray(list) ? list : []) {
+    const f = normField(raw);
+    if (!f || ids.has(f.id)) continue;
+    while (labels.has(f.label)) f.label += '2';
+    ids.add(f.id); labels.add(f.label); out.push(f);
+    if (out.length >= MAX_FIELDS) break;
+  }
+  if (!ids.has('name')) {
+    const f = { ...DEFAULT_SCHEMA[0] };
+    while (labels.has(f.label)) f.label += '2';
+    out.unshift(f);
+  }
+  return out;
+}
+function normItem(id, d) {
+  d = d || {};
+  // 旧形式（name/price/qty/note を直接持つ）も読み込む
+  const src = d.values && typeof d.values === 'object' ? d.values : { name: d.name, price: d.price, qty: d.qty, note: d.note };
+  const values = {};
+  for (const [k, v] of Object.entries(src)) {
+    if (!ID_RE.test(k)) continue;
+    if (typeof v === 'number' && Number.isFinite(v)) values[k] = v;
+    else if (typeof v === 'string') values[k] = v.slice(0, 200);
+  }
+  return {
+    id,
+    fileId: typeof d.fileId === 'string' && d.fileId ? d.fileId : MAIN,
+    values,
+    createdAt: Number(d.createdAt) || 0,
+    updatedAt: Number(d.updatedAt) || 0,
+  };
+}
+function normFile(id, d) {
+  d = d || {};
+  return {
+    id,
+    name: String(d.name ?? '').slice(0, 40) || '名称未設定',
+    title: typeof d.title === 'string' ? d.title.slice(0, 40) : FILE_DEFAULTS.title,
+    org: typeof d.org === 'string' ? d.org.slice(0, 60) : '',
+    stamps: typeof d.stamps === 'boolean' ? d.stamps : true,
+    orient: ['auto', 'portrait', 'landscape'].includes(d.orient) ? d.orient : 'auto',
+    color: PALETTE_KEYS.includes(d.color) ? d.color : '',
+    createdAt: Number(d.createdAt) || 0,
+    updatedAt: Number(d.updatedAt) || 0,
+  };
+}
+
+/* ---------- formula engine ---------- */
+class CalcError extends Error {}
+const FUNC_SPEC = { ROUND: [1, 2], ROUNDDOWN: [1, 2], ROUNDUP: [1, 2], INT: [1, 1], ABS: [1, 1], MAX: [1, 30], MIN: [1, 30], SUM: [1, 30], IF: [2, 3], AND: [1, 30], OR: [1, 30] };
+const fix = (x) => (Number.isFinite(x) ? Number(x.toPrecision(15)) : x);
+function roundTo(x, n, mode) {
+  const p = Math.pow(10, Math.trunc(n || 0));
+  const a = fix(Math.abs(x) * p);
+  const r = mode === 'down' ? Math.floor(a) : mode === 'up' ? Math.ceil(a) : Math.round(a);
+  return fix((Math.sign(x) * r) / p);
+}
+
+// 保存形式: 項目は {id}、演算子は半角。表示形式: 項目は [項目名]、× ÷ を使う
+function tokenize(src) {
+  const s = String(src);
+  const toks = [];
+  let i = 0;
+  while (i < s.length) {
+    const ch = s[i];
+    if (ch === ' ' || ch === '\t' || ch === '\n') { i++; continue; }
+    if (ch === '{') {
+      const j = s.indexOf('}', i + 1);
+      if (j < 0) throw new CalcError('項目の指定が閉じていません');
+      toks.push({ t: 'ref', v: s.slice(i + 1, j) });
+      i = j + 1; continue;
+    }
+    const rest = s.slice(i);
+    let m;
+    if ((m = /^(\d+\.?\d*|\.\d+)/.exec(rest))) { toks.push({ t: 'num', v: Number(m[0]) }); i += m[0].length; continue; }
+    if ((m = /^[A-Za-z][A-Za-z0-9]*/.exec(rest))) { toks.push({ t: 'id', v: m[0].toUpperCase() }); i += m[0].length; continue; }
+    if ((m = /^(<=|>=|<>|!=)/.exec(rest))) { toks.push({ t: 'op', v: m[0] === '!=' ? '<>' : m[0] }); i += 2; continue; }
+    if ('+-*/^%(),=<>'.includes(ch)) { toks.push({ t: 'op', v: ch }); i++; continue; }
+    throw new CalcError(`使えない文字「${ch}」があります`);
+  }
+  return toks;
+}
+
+function parseExpr(src, resolveRef) {
+  const toks = tokenize(src);
+  if (!toks.length) throw new CalcError('計算式を入力してください');
+  let p = 0;
+  const isOp = (v) => toks[p] && toks[p].t === 'op' && toks[p].v === v;
+  const expect = (v, msg) => { if (!isOp(v)) throw new CalcError(msg); p++; };
+  const CMP = ['=', '<>', '<', '>', '<=', '>='];
+  function cmp() {
+    let a = add();
+    while (toks[p] && toks[p].t === 'op' && CMP.includes(toks[p].v)) { const op = toks[p++].v; a = { k: 'bin', op, a, b: add() }; }
+    return a;
+  }
+  function add() {
+    let a = mul();
+    while (isOp('+') || isOp('-')) { const op = toks[p++].v; a = { k: 'bin', op, a, b: mul() }; }
+    return a;
+  }
+  function mul() {
+    let a = unary();
+    while (isOp('*') || isOp('/')) { const op = toks[p++].v; a = { k: 'bin', op, a, b: unary() }; }
+    return a;
+  }
+  function unary() {
+    if (isOp('-') || isOp('+')) { const neg = toks[p++].v === '-'; return { k: 'neg', neg, a: unary() }; }
+    return pow();
+  }
+  function pow() {
+    const a = postfix();
+    if (isOp('^')) { p++; return { k: 'bin', op: '^', a, b: unary() }; }
+    return a;
+  }
+  function postfix() {
+    let a = primary();
+    while (isOp('%')) { p++; a = { k: 'pct', a }; }
+    return a;
+  }
+  function primary() {
+    const t = toks[p];
+    if (!t) throw new CalcError('計算式が途中で終わっています');
+    if (t.t === 'num') { p++; return { k: 'num', v: t.v }; }
+    if (t.t === 'ref') { p++; return { k: 'ref', id: resolveRef(t.v) }; }
+    if (t.t === 'id') {
+      p++;
+      const spec = FUNC_SPEC[t.v];
+      if (!spec) throw new CalcError(`${t.v} という関数はありません`);
+      expect('(', `${t.v} の後ろに ( が必要です`);
+      const args = [];
+      if (!isOp(')')) { do { args.push(cmp()); } while (isOp(',') && ++p); }
+      expect(')', `${t.v}( の閉じかっこがありません`);
+      if (args.length < spec[0] || args.length > spec[1]) throw new CalcError(`${t.v} の値の数が正しくありません`);
+      return { k: 'call', f: t.v, args };
+    }
+    if (t.v === '(') { p++; const e = cmp(); expect(')', '閉じかっこが足りません'); return e; }
+    if (t.v === ')') throw new CalcError('閉じかっこの位置が正しくありません');
+    throw new CalcError(`${t.v} の前に値か項目が必要です`);
+  }
+  const ast = cmp();
+  if (p < toks.length) {
+    const t = toks[p];
+    throw new CalcError(t.v === ')' ? '閉じかっこが多すぎます' : '値と値の間に + − × ÷ などが必要です');
+  }
+  return ast;
+}
+
+function evalNode(n, get) {
+  switch (n.k) {
+    case 'num': return n.v;
+    case 'ref': return get(n.id);
+    case 'neg': { const v = evalNode(n.a, get); return n.neg ? -v : v; }
+    case 'pct': return evalNode(n.a, get) / 100;
+    case 'bin': {
+      const a = evalNode(n.a, get), b = evalNode(n.b, get);
+      switch (n.op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': if (b === 0) throw new CalcError('0で割っています'); return a / b;
+        case '^': return Math.pow(a, b);
+        case '=': return fix(a) === fix(b) ? 1 : 0;
+        case '<>': return fix(a) !== fix(b) ? 1 : 0;
+        case '<': return a < b ? 1 : 0;
+        case '>': return a > b ? 1 : 0;
+        case '<=': return a <= b ? 1 : 0;
+        case '>=': return a >= b ? 1 : 0;
+      }
+      break;
+    }
+    case 'call': {
+      if (n.f === 'IF') return evalNode(n.args[0], get) ? evalNode(n.args[1], get) : (n.args[2] ? evalNode(n.args[2], get) : 0);
+      const v = n.args.map((a) => evalNode(a, get));
+      switch (n.f) {
+        case 'ROUND': return roundTo(v[0], v[1], 'half');
+        case 'ROUNDDOWN': return roundTo(v[0], v[1], 'down');
+        case 'ROUNDUP': return roundTo(v[0], v[1], 'up');
+        case 'INT': return Math.floor(fix(v[0]));
+        case 'ABS': return Math.abs(v[0]);
+        case 'MAX': return Math.max(...v);
+        case 'MIN': return Math.min(...v);
+        case 'SUM': return v.reduce((s, x) => s + x, 0);
+        case 'AND': return v.every((x) => x !== 0) ? 1 : 0;
+        case 'OR': return v.some((x) => x !== 0) ? 1 : 0;
+      }
+    }
+  }
+  throw new CalcError('計算できません');
+}
+
+function compileSchema(fields) {
+  const byId = new Map(fields.map((f) => [f.id, f]));
+  const info = new Map();
+  for (const f of fields) {
+    if (f.kind !== 'formula') continue;
+    const refs = new Set();
+    try {
+      const ast = parseExpr(f.expr, (id) => {
+        const t = byId.get(id);
+        if (!t) throw new CalcError('削除された項目が含まれています');
+        if (t.kind === 'text') throw new CalcError(`${t.label} は文字の項目なので計算に使えません`);
+        refs.add(id);
+        return id;
+      });
+      info.set(f.id, { ast, refs });
+    } catch (e) {
+      info.set(f.id, { error: e instanceof CalcError ? e.message : '計算式が正しくありません' });
+    }
+  }
+  // 循環参照（A が B を使い、B が A を使う）を見つける
+  const mark = new Map();
+  const visit = (id, path) => {
+    const inf = info.get(id);
+    if (!inf || inf.error || mark.get(id) === 2) return;
+    if (mark.get(id) === 1) {
+      const cyc = path.slice(path.indexOf(id));
+      const names = cyc.map((x) => byId.get(x).label);
+      for (const x of cyc) { const i2 = info.get(x); if (i2 && !i2.error) i2.error = `計算式が互いを参照しています（${names.join('・')}）`; }
+      return;
+    }
+    mark.set(id, 1); path.push(id);
+    for (const r of inf.refs) if (byId.get(r).kind === 'formula') visit(r, path);
+    path.pop(); mark.set(id, 2);
+  };
+  for (const f of fields) if (f.kind === 'formula') visit(f.id, []);
+  return { schema: fields, byId, info };
+}
+
+function computeRow(values, C) {
+  const memo = new Map();
+  let depth = 0;
+  const get = (id) => {
+    const f = C.byId.get(id);
+    if (!f) throw new CalcError('項目がありません');
+    if (f.kind === 'number') {
+      const raw = values[id];
+      const v = Number(raw);
+      return raw === '' || raw == null || !Number.isFinite(v) ? 0 : v;
+    }
+    if (f.kind !== 'formula') throw new CalcError('文字の項目は計算に使えません');
+    const inf = C.info.get(id);
+    if (!inf || inf.error) throw new CalcError(depth === 0 ? (inf ? inf.error : '計算式がありません') : `${f.label} の計算式に問題があります`);
+    if (memo.has(id)) { const m = memo.get(id); if ('err' in m) throw new CalcError(m.err); return m.v; }
+    depth++;
+    try {
+      const v = fix(evalNode(inf.ast, get));
+      if (!Number.isFinite(v)) throw new CalcError('計算結果が数になりません');
+      memo.set(id, { v });
+      return v;
+    } catch (e) {
+      const err = e instanceof CalcError ? e.message : '計算できません';
+      memo.set(id, { err });
+      throw new CalcError(err);
+    } finally {
+      depth--;
+    }
+  };
+  const vals = {}, errs = {};
+  for (const f of C.schema) {
+    if (f.kind !== 'formula') continue;
+    try { vals[f.id] = get(f.id); } catch (e) { errs[f.id] = e.message || '計算できません'; }
+  }
+  return { vals, errs };
+}
+
+function mapOutsideRefs(s, open, close, fn) {
+  let out = '';
+  let i = 0;
+  while (i < s.length) {
+    if (s[i] === open) {
+      const j = s.indexOf(close, i + 1);
+      if (j < 0) { out += s.slice(i); break; }
+      out += fn(null, s.slice(i + 1, j));
+      i = j + 1;
+    } else {
+      out += fn(s[i], null);
+      i++;
+    }
+  }
+  return out;
+}
+function toDisplay(expr, fields) {
+  const byId = new Map(fields.map((f) => [f.id, f]));
+  return mapOutsideRefs(String(expr || ''), '{', '}', (ch, ref) => {
+    if (ref != null) return `[${byId.has(ref) ? byId.get(ref).label : '削除された項目'}]`;
+    return ch === '*' ? '×' : ch === '/' ? '÷' : ch;
+  });
+}
+function normChar(ch) {
+  const c = ch.charCodeAt(0);
+  if (c >= 0xff01 && c <= 0xff5e) return String.fromCharCode(c - 0xfee0);
+  if (ch === '×' || ch === '✕' || ch === '＊') return '*';
+  if (ch === '÷') return '/';
+  if (ch === '−' || ch === '–' || ch === '―') return '-';
+  if (ch === '　') return ' ';
+  return ch;
+}
+function displayToStored(text, fields) {
+  const byLabel = new Map(fields.map((f) => [f.label.trim(), f]));
+  const s = String(text || '').replace(/［/g, '[').replace(/］/g, ']');
+  let out = '';
+  let i = 0;
+  while (i < s.length) {
+    const ch = s[i];
+    if (ch === '[') {
+      const j = s.indexOf(']', i + 1);
+      if (j < 0) throw new CalcError('[ を閉じる ] がありません');
+      const label = s.slice(i + 1, j).trim();
+      const f = byLabel.get(label);
+      if (!f) throw new CalcError(label ? `${label} という項目はありません` : '[ ] の中に項目名がありません');
+      out += `{${f.id}}`;
+      i = j + 1;
+      continue;
+    }
+    if (ch === ']') throw new CalcError('] に対応する [ がありません');
+    if (ch === '{' || ch === '}') throw new CalcError('項目は [項目名] の形で書いてください');
+    out += normChar(ch);
+    i++;
+  }
+  return out;
+}
+
+let calcCache = { schema: null, C: null };
+function calc() {
+  if (calcCache.schema !== state.schema) calcCache = { schema: state.schema, C: compileSchema(state.schema) };
+  return calcCache.C;
+}
+function cellOf(row, f) {
+  const raw = row.it.values[f.id];
+  if (f.kind === 'text') return { text: raw == null ? '' : String(raw) };
+  if (f.kind === 'number') {
+    if (raw === '' || raw == null) return { num: null };
+    const v = Number(raw);
+    return { num: Number.isFinite(v) ? v : null };
+  }
+  if (row.errs[f.id]) return { err: row.errs[f.id] };
+  return { num: row.vals[f.id] ?? null };
+}
+function rowsFor(items, C) { return items.map((it) => ({ it, ...computeRow(it.values, C) })); }
+function totalsOf(rows, C) {
+  const out = new Map();
+  for (const f of C.schema) {
+    if (!f.total || f.kind === 'text') continue;
+    let s = 0, bad = 0;
+    for (const r of rows) { const c = cellOf(r, f); if (c.err) bad++; else if (c.num != null) s += c.num; }
+    out.set(f.id, { sum: fix(s), bad });
+  }
+  return out;
+}
+
+/* ---------- files (derived) ---------- */
+function realIds() { return new Set(state.files.map((f) => f.id)); }
+// 存在しないファイルを指す備品は、最初のファイルに入れて表示する
+function fileIdOf(it, ids) { return ids.has(it.fileId) ? it.fileId : MAIN; }
+function fileList() {
+  const ids = realIds();
+  const list = state.files.slice();
+  if (!ids.has(MAIN) && (!list.length || state.items.some((it) => fileIdOf(it, ids) === MAIN))) {
+    list.push({ id: MAIN, name: 'ファイル1', ...FILE_DEFAULTS, createdAt: 0, updatedAt: 0, virtual: true });
+  }
+  return list.sort((a, b) => (a.createdAt - b.createdAt) || a.name.localeCompare(b.name, 'ja'));
+}
+function currentFile(list = fileList()) { return list.find((f) => f.id === state.currentId) || list[0] || null; }
+function itemsOf(fileId) { const ids = realIds(); return state.items.filter((it) => fileIdOf(it, ids) === fileId); }
+
+/* ---------- storage ---------- */
+function readLocal() {
+  try { const raw = localStorage.getItem(LS_DATA); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+}
+function persistLocal() {
+  try {
+    localStorage.setItem(LS_DATA, JSON.stringify({ v: 3, files: state.files, items: state.items, schema: state.schema }));
+  } catch (e) {
+    if (!warnedLocal) { warnedLocal = true; toast('このブラウザでは保存できません。閉じると内容が消えます', 'error'); }
+  }
+}
+async function dbCall(fn) {
+  try { return await fn(); }
+  catch (e) {
+    if (e && e.code === 'unavailable') {
+      await new Promise((r) => setTimeout(r, 400 + Math.random() * 600));
+      return fn();
+    }
+    throw e;
+  }
+}
+function explainError(e) {
+  const code = e && e.code;
+  if (code === 'invalid_argument') { state.canWrite = false; render(); return '編集する権限がありません'; }
+  if (code === 'quota_exceeded') return '保存できる件数の上限です。不要な備品を削除してください';
+  if (code === 'resource_exhausted') return '混み合っています。少し待ってからもう一度お試しください';
+  return '保存できませんでした。通信状態を確認してください';
+}
+
+const api = {
+  async addItem(data) {
+    if (db) { const ref = db.collection('items').doc(); return dbCall(() => ref.set(data)); }
+    state.items.push(normItem(newId(), data)); persistLocal();
+  },
+  async updateItem(id, data) {
+    if (db) return dbCall(() => db.doc('items/' + id).set(data));
+    const i = state.items.findIndex((x) => x.id === id);
+    if (i >= 0) state.items[i] = normItem(id, data);
+    persistLocal();
+  },
+  async removeItem(id) {
+    if (db) return dbCall(() => db.doc('items/' + id).delete());
+    state.items = state.items.filter((x) => x.id !== id); persistLocal();
+  },
+  async createFile(data) {
+    if (db) { const ref = db.collection('files').doc(); await dbCall(() => ref.set(data)); return ref.id; }
+    const id = newId(); state.files.push(normFile(id, data)); persistLocal(); return id;
+  },
+  async putFile(id, data) {
+    if (db) return dbCall(() => db.doc('files/' + id).set(data));
+    const f = normFile(id, data);
+    const i = state.files.findIndex((x) => x.id === id);
+    if (i >= 0) state.files[i] = f; else state.files.push(f);
+    persistLocal();
+  },
+  async removeFile(id) {
+    if (db) return dbCall(() => db.doc('files/' + id).delete());
+    state.files = state.files.filter((f) => f.id !== id); persistLocal();
+  },
+  async putSchema(fields) {
+    if (db) return dbCall(() => db.doc('config/schema').set({ fields, updatedAt: Date.now() }));
+    state.schema = normSchema(fields); persistLocal();
+  },
+};
+
+/* ---------- boot ---------- */
+const retries = { items: 0, files: 0 };
+function subscribe(kind) {
+  db.collection(kind).onSnapshot((snap) => {
+    retries[kind] = 0;
+    if (kind === 'items') {
+      state.items = snap.docs.map((d) => normItem(d.id, d.data()));
+      state.itemsLoaded = true;
+      if (state.confirmId && !state.items.some((x) => x.id === state.confirmId)) state.confirmId = null;
+    } else {
+      state.files = snap.docs.map((d) => normFile(d.id, d.data()));
+      state.filesLoaded = true;
+    }
+    render();
+  }, (err) => {
+    if (err && err.code === 'unavailable' && retries[kind] < 3) {
+      retries[kind]++;
+      setTimeout(() => subscribe(kind), 2000 * retries[kind]);
+      return;
+    }
+    state.mode = 'offline'; state.canWrite = false; render();
+    toast('読み込みが止まりました。ページを再読み込みしてください', 'error');
+  });
+}
+function startShared(ns) {
+  db = ns;
+  state.mode = 'shared';
+  render();
+  subscribe('files');
+  subscribe('items');
+  db.doc('config/schema').onSnapshot((snap) => {
+    state.schema = snap.exists ? normSchema(snap.data().fields) : DEFAULT_SCHEMA;
+    state.schemaLoaded = true;
+    render();
+  }, () => { state.schemaLoaded = true; render(); });
+}
+function startLocal() {
+  const saved = readLocal();
+  if (saved) {
+    state.items = Array.isArray(saved.items) ? saved.items.map((d) => normItem(d.id || newId(), d)) : [];
+    if (Array.isArray(saved.files)) state.files = saved.files.map((d) => normFile(d.id || newId(), d));
+    else if (saved.settings || state.items.length) state.files = [normFile(MAIN, { name: 'ファイル1', ...(saved.settings || {}), createdAt: 0 })];
+    if (Array.isArray(saved.schema)) state.schema = normSchema(saved.schema);
+  }
+  state.mode = 'local';
+  state.filesLoaded = state.itemsLoaded = state.schemaLoaded = true;
+  render();
+}
+async function boot() {
+  try {
+    state.sort = localStorage.getItem(LS_SORT) || state.sort;
+    state.currentId = localStorage.getItem(LS_FILE) || null;
+  } catch (e) {}
+  render();
+  const c = window.claude;
+  if (c && typeof c.use === 'function') {
+    downloadsP = c.use('downloads').catch(() => null);
+    let ns = null;
+    try { ns = await c.use('db'); } catch (e) { ns = null; }
+    if (ns) {
+      startShared(ns);
+      try {
+        const user = await c.use('user');
+        if (user && typeof user.can === 'function') {
+          const ok = await user.can('data.write');
+          if (ok === false) { state.canWrite = false; render(); }
+        }
+      } catch (e) {}
+      return;
+    }
+  }
+  startLocal();
+}
+
+/* ---------- rendering ---------- */
+function sortRows(rows, C) {
+  const parts = state.sort.split(':');
+  const f = parts[0] === 'field' ? C.byId.get(parts[1]) : null;
+  const dir = (f ? parts[2] : parts[1]) === 'desc' ? -1 : 1;
+  return [...rows].sort((x, y) => {
+    let c = 0;
+    if (!f) c = (x.it.createdAt - y.it.createdAt) * dir;
+    else if (f.kind === 'text') {
+      const a = cellOf(x, f).text, b = cellOf(y, f).text;
+      c = (!a && b) ? 1 : (a && !b) ? -1 : a.localeCompare(b, 'ja') * dir;
+    } else {
+      const a = cellOf(x, f).num, b = cellOf(y, f).num;
+      c = a == null && b == null ? 0 : a == null ? 1 : b == null ? -1 : (a - b) * dir;
+    }
+    return c || (x.it.createdAt - y.it.createdAt);
+  });
+}
+
+let sortSig = '';
+function renderSortOptions(C) {
+  const opts = [['created:asc', '登録順'], ['created:desc', '新しい順']];
+  for (const f of C.schema) {
+    if (f.kind === 'text') opts.push([`field:${f.id}:asc`, `${f.label}順`]);
+    else opts.push([`field:${f.id}:desc`, `${f.label}の大きい順`], [`field:${f.id}:asc`, `${f.label}の小さい順`]);
+  }
+  const sig = opts.map((o) => o.join('=')).join('|');
+  if (sig !== sortSig) {
+    sortSig = sig;
+    el.sort.replaceChildren(...opts.map(([v, t]) => h('option', { value: v, text: t })));
+  }
+  if (!opts.some((o) => o[0] === state.sort)) state.sort = 'created:asc';
+  el.sort.value = state.sort;
+}
+
+function renderSaveState() {
+  const map = {
+    loading: ['loading', '読み込み中'],
+    shared: ['shared', '自動保存（共有）'],
+    local: ['local', 'この端末に保存'],
+    offline: ['readonly', '接続が切れました'],
+  };
+  let [ds, text] = map[state.mode] || map.loading;
+  if (state.mode === 'shared' && !state.canWrite) { ds = 'readonly'; text = '閲覧のみ'; }
+  el.saveState.dataset.state = ds;
+  el.saveState.textContent = text;
+}
+
+function renderFiles(list, cur) {
+  if (!isLoaded()) { el.fileList.replaceChildren(); return; }
+  const ids = realIds();
+  const counts = new Map();
+  for (const it of state.items) { const k = fileIdOf(it, ids); counts.set(k, (counts.get(k) || 0) + 1); }
+  el.fileList.replaceChildren(...list.map((f) => {
+    const n = counts.get(f.id) || 0;
+    return h('li', null,
+      h('button', { type: 'button', class: `file-btn fc-${colorOf(f)}`, 'data-file': f.id, 'aria-current': cur && f.id === cur.id ? 'true' : 'false', title: f.name },
+        h('span', { class: 'fl-icon' }, ico('folder', 20)),
+        h('span', { class: 'fl-name', text: f.name }),
+        h('span', { class: 'fl-count', text: String(n), 'aria-label': `${n}件` })));
+  }));
+}
+
+function pdfFields(C) { const f = C.schema.filter((x) => x.pdf); return f.length ? f : C.schema.slice(0, 1); }
+// 向きの選択（auto / portrait / landscape）を実際の向きにする。自動は列が7つ以上なら横
+function resolveOrient(choice, C) {
+  if (choice === 'portrait' || choice === 'landscape') return choice;
+  return pdfFields(C).length >= 7 ? 'landscape' : 'portrait';
+}
+
+function renderHeader(cur) {
+  el.fileTitle.textContent = isLoaded() && cur ? cur.name : '読み込み中';
+  for (const b of [el.fileSettingsBtn, el.schemaBtn, el.newFileBtn, el.addBtn]) { b.hidden = !state.canWrite; b.disabled = !isLoaded(); }
+  el.readonlyNote.hidden = state.canWrite || state.mode !== 'shared';
+  el.pdf.disabled = state.busy || !isLoaded();
+  el.pdf.setAttribute('aria-busy', state.busy ? 'true' : 'false');
+  el.pdfLabel.textContent = state.busy ? '作成中…' : '出力';
+}
+
+function renderTotals(rows, C) {
+  if (!isLoaded()) { el.totals.hidden = true; return; }
+  const totals = totalsOf(rows, C);
+  const pair = (label, value, unit, warn) => h('div', null,
+    h('dt', { text: label }),
+    h('dd', null, value, unit ? h('span', { class: 'unit', text: unit }) : null, warn ? h('span', { class: 'warn', text: warn }) : null));
+  const items = [pair('件数', num(rows.length), '件')];
+  for (const f of C.schema) {
+    const t = totals.get(f.id);
+    if (!t) continue;
+    items.push(pair(f.label, fmtNum(t.sum, f) || '0', f.unit, t.bad ? `計算できない行 ${t.bad}件` : null));
+  }
+  el.totals.replaceChildren(...items);
+  el.totals.hidden = false;
+}
+
+function setEmpty(text, withButton) {
+  el.empty.replaceChildren(
+    withButton ? ico('box', 76) : null,
+    h('div', { class: 'empty-body' }, h('p', { text }),
+      withButton ? h('button', { type: 'button', class: 'btn btn-primary', 'data-act': 'add-first' }, ico('plus', 16), '備品を追加') : null));
+  el.empty.hidden = false;
+}
+
+function makeBtn(label, cls, act, id, aria, iconName) {
+  return h('button', { type: 'button', class: cls, 'data-act': act, 'data-id': id, 'aria-label': aria || null, title: iconName ? label : null },
+    iconName ? ico(iconName, 16) : null, iconName ? h('span', { class: 'btn-label', text: label }) : label);
+}
+
+function titleFieldOf(C) { return C.byId.get('name') || C.schema.find((f) => f.kind === 'text'); }
+
+function rowEl(row, no, C, titleF) {
+  const it = row.it;
+  const name = titleF ? cellOf(row, titleF).text : '';
+  const tr = h('tr', { class: state.confirmId === it.id ? 'confirming' : null }, h('td', { class: 'c-no', text: String(no) }));
+  for (const f of C.schema) {
+    const c = cellOf(row, f);
+    const isTitle = titleF && f.id === titleF.id;
+    let td;
+    if (f.kind === 'text') td = h('td', { class: isTitle ? 'c-title' : 'c-text', text: c.text, 'data-label': isTitle ? null : f.label });
+    else if (c.err) td = h('td', { class: 'num', 'data-label': unitLabel(f) }, h('span', { class: 'cell-err', title: c.err, text: '計算エラー' }));
+    else td = h('td', { class: 'num' + (f.kind === 'formula' ? ' c-calc' : ''), text: fmtNum(c.num, f), 'data-label': unitLabel(f) });
+    if (!isTitle && !c.err && (f.kind === 'text' ? !c.text : c.num == null)) td.classList.add('is-empty');
+    tr.append(td);
+  }
+  const act = h('td', { class: 'c-act' });
+  if (state.canWrite) {
+    const box = h('div', { class: 'act' });
+    if (state.confirmId === it.id) {
+      box.append(h('span', { class: 'confirm-text', text: '削除しますか' }),
+        makeBtn('削除', 'btn btn-danger btn-sm', 'delete', it.id, `${name}を削除する`),
+        makeBtn('やめる', 'btn btn-sm', 'cancel', it.id));
+    } else {
+      box.append(makeBtn('編集', 'btn btn-text', 'edit', it.id, `${name}を編集`, 'pencil'),
+        makeBtn('削除', 'btn btn-text danger', 'ask', it.id, `${name}を削除`, 'trash'));
+    }
+    act.append(box);
+  }
+  tr.append(act);
+  return tr;
+}
+
+function renderTable(cur, rows, C) {
+  if (!isLoaded() || !cur) { el.tableWrap.hidden = true; setEmpty('読み込み中'); return; }
+  if (!rows.length) { el.tableWrap.hidden = true; setEmpty(state.canWrite ? 'まだ備品がありません。最初の1件を登録しましょう。' : 'まだ備品がありません。', state.canWrite); return; }
+  const numbering = new Map(rows.map((r, i) => [r.it.id, i + 1]));
+  const textFields = C.schema.filter((f) => f.kind === 'text');
+  const q = state.query.trim().toLowerCase();
+  const shown = q ? rows.filter((r) => textFields.some((f) => cellOf(r, f).text.toLowerCase().includes(q))) : rows;
+  if (!shown.length) { el.tableWrap.hidden = true; setEmpty('該当する備品がありません。'); return; }
+  el.empty.hidden = true;
+  el.tableWrap.hidden = false;
+  const titleF = titleFieldOf(C);
+  el.thead.replaceChildren(h('tr', null,
+    h('th', { class: 'c-no', scope: 'col', text: 'No.' }),
+    C.schema.map((f) => h('th', { scope: 'col', class: f.kind === 'text' ? null : 'num' }, f.label, f.unit ? h('span', { class: 'th-unit', text: f.unit }) : null)),
+    h('th', { class: 'c-act', scope: 'col' }, h('span', { class: 'sr', text: '操作' }))));
+  el.rows.replaceChildren(...shown.map((r) => rowEl(r, numbering.get(r.it.id), C, titleF)));
+  const totals = totalsOf(shown, C);
+  const firstIdx = C.schema.findIndex((f) => totals.has(f.id));
+  if (firstIdx < 0) {
+    el.tfoot.replaceChildren();
+  } else {
+    const tr = h('tr', null, h('td', { class: 'ft-label', colspan: String(firstIdx + 1), text: q ? `合計（${shown.length}件）` : '合計' }));
+    C.schema.slice(firstIdx).forEach((f) => {
+      const t = totals.get(f.id);
+      tr.append(t ? h('td', { class: 'num', 'data-label': unitLabel(f), text: fmtNum(t.sum, f) || '0' }) : h('td', { class: 'ft-blank' }));
+    });
+    tr.append(h('td', { class: 'ft-blank' }));
+    el.tfoot.replaceChildren(tr);
+  }
+  if (pendingFocus) {
+    const b = el.rows.querySelector(pendingFocus);
+    if (b) b.focus();
+    pendingFocus = null;
+  }
+}
+
+function render() {
+  const C = calc();
+  const list = fileList();
+  const cur = currentFile(list);
+  setCoverColor(colorOf(cur));
+  renderSortOptions(C);
+  const rows = cur && isLoaded() ? sortRows(rowsFor(itemsOf(cur.id), C), C) : [];
+  renderSaveState();
+  renderFiles(list, cur);
+  renderHeader(cur);
+  renderTotals(rows, C);
+  renderTable(cur, rows, C);
+  renderPager(list, cur);
+}
+
+function renderPager(list, cur) {
+  const idx = cur ? list.findIndex((f) => f.id === cur.id) : -1;
+  el.pager.hidden = !isLoaded() || list.length < 2 || idx < 0;
+  if (el.pager.hidden) return;
+  const set = (btn, nameEl, f, word) => {
+    btn.classList.toggle('is-off', !f);
+    btn.className = 'pager-btn' + (f ? ` fc-${colorOf(f)}` : ' is-off');
+    btn.dataset.file = f ? f.id : '';
+    btn.tabIndex = f ? 0 : -1;
+    btn.setAttribute('aria-label', f ? `${word}のファイル：${f.name}` : word);
+    nameEl.textContent = f ? f.name : '';
+  };
+  set(el.prevFile, el.prevName, list[idx - 1], '前');
+  set(el.nextFile, el.nextName, list[idx + 1], '次');
+  el.pagerPos.textContent = `${idx + 1} / ${list.length}`;
+}
+
+/* ---------- file selection ---------- */
+function selectFile(id) {
+  state.currentId = id;
+  state.confirmId = null;
+  state.query = '';
+  el.search.value = '';
+  try { localStorage.setItem(LS_FILE, id); } catch (e) {}
+  render();
+  const b = el.fileList.querySelector('.file-btn[aria-current="true"]');
+  if (b) {
+    const box = el.fileList;
+    const l = b.offsetLeft - box.offsetLeft, t = b.offsetTop - box.offsetTop;
+    if (l < box.scrollLeft || l + b.offsetWidth > box.scrollLeft + box.clientWidth) box.scrollLeft = l - 8;
+    if (t < box.scrollTop || t + b.offsetHeight > box.scrollTop + box.clientHeight) box.scrollTop = t - 8;
+  }
+}
+function flipTo(id) {
+  const list = fileList();
+  const cur = currentFile(list);
+  if (!cur || id === cur.id) { selectFile(id); return; }
+  const fromIdx = list.findIndex((f) => f.id === cur.id);
+  const toIdx = list.findIndex((f) => f.id === id);
+  const forward = toIdx < 0 || toIdx > fromIdx;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sheet = el.sheet;
+  const top = sheet.getBoundingClientRect().top;
+  if (top < 0) window.scrollBy(0, top - 12);
+  if (reduce || typeof sheet.animate !== 'function' || !sheet.offsetWidth) { selectFile(id); return; }
+  el.stage.querySelectorAll('.ghost').forEach((g) => g.remove());
+  sheet.getAnimations().forEach((a) => a.cancel());
+  const ghost = sheet.cloneNode(true);
+  ghost.removeAttribute('id');
+  ghost.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'));
+  ghost.classList.add('ghost', 'fc-' + colorOf(cur));
+  ghost.setAttribute('aria-hidden', 'true');
+  ghost.inert = true;
+  ghost.style.width = sheet.offsetWidth + 'px';
+  ghost.style.height = sheet.offsetHeight + 'px';
+  el.stage.append(ghost);
+  selectFile(id);
+  const turn = (deg) => `perspective(2400px) rotateY(${deg}deg)`;
+  const opts = { duration: 640, easing: 'cubic-bezier(.45,.05,.25,1)' };
+  let anim;
+  if (forward) {
+    ghost.style.zIndex = '2';
+    const shade = h('div', { class: 'flip-shade' });
+    ghost.append(shade);
+    anim = ghost.animate([
+      { transform: turn(0), opacity: 1 },
+      { transform: turn(-86), opacity: 1, offset: 0.82 },
+      { transform: turn(-100), opacity: 0 },
+    ], opts);
+    shade.animate([{ opacity: 0 }, { opacity: 1 }], opts);
+  } else {
+    ghost.style.zIndex = '0';
+    anim = sheet.animate([
+      { transform: turn(-100), opacity: 0 },
+      { transform: turn(-86), opacity: 1, offset: 0.18 },
+      { transform: turn(0), opacity: 1 },
+    ], opts);
+    ghost.animate([{ opacity: 1 }, { opacity: 1, offset: 0.7 }, { opacity: 0 }], opts);
+  }
+  // 動きが止められる環境（裏のタブなど）でも、写しは必ず片付ける
+  const done = () => { ghost.remove(); sheet.getAnimations().forEach((x) => x.cancel()); };
+  anim.finished.catch(() => {}).then(done);
+  setTimeout(done, opts.duration + 150);
+}
+
+el.fileList.addEventListener('click', (e) => {
+  const b = e.target.closest('.file-btn');
+  if (b) flipTo(b.dataset.file);
+});
+[el.prevFile, el.nextFile].forEach((b) => b.addEventListener('click', () => { if (b.dataset.file) flipTo(b.dataset.file); }));
+
+/* ---------- item dialog ---------- */
+let itemCtx = null;
+
+function parseNumInput(raw, f) {
+  let s = String(raw ?? '').replace(/[０-９．－＋，]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0)).replace(/−/g, '-');
+  if (f.unit) s = s.split(f.unit).join('');
+  s = s.replace(/[,、¥￥円個点枚台本冊脚式\s]/g, '');
+  if (s === '') return { empty: true };
+  if (!/^[-+]?(\d+\.?\d*|\.\d+)$/.test(s)) return { bad: true };
+  const n = Number(s);
+  return Number.isFinite(n) && Math.abs(n) < 1e15 ? { n } : { bad: true };
+}
+
+function itemInput(f) { return document.getElementById('if-' + f.id); }
+
+function readItemForm(C) {
+  const values = {}, errors = [];
+  for (const f of C.schema) {
+    if (f.kind === 'formula') continue;
+    const inp = itemInput(f);
+    if (!inp) continue;
+    if (f.kind === 'text') {
+      const v = inp.value.trim();
+      if (v) values[f.id] = v.slice(0, 200);
+      else if (f.required) errors.push({ f, msg: `${f.label}を入力してください` });
+    } else {
+      const r = parseNumInput(inp.value, f);
+      if (r.bad) errors.push({ f, msg: `${f.label}は数値で入力してください` });
+      else if (r.empty) { if (f.required) errors.push({ f, msg: `${f.label}を入力してください` }); }
+      else values[f.id] = r.n;
+    }
+  }
+  return { values, errors };
+}
+
+function updateItemCalc() {
+  const C = calc();
+  const { values } = readItemForm(C);
+  const res = computeRow(values, C);
+  for (const f of C.schema) {
+    if (f.kind !== 'formula') continue;
+    const out = itemInput(f);
+    if (!out) continue;
+    const err = res.errs[f.id];
+    out.classList.toggle('is-err', !!err);
+    out.textContent = err ? `計算できません（${err}）` : withUnit(res.vals[f.id], f) || '0';
+  }
+}
+
+function openItemDialog(id) {
+  if (!state.canWrite || !isLoaded()) return;
+  const C = calc();
+  const list = fileList();
+  const cur = currentFile(list);
+  const it = id ? state.items.find((x) => x.id === id) : null;
+  el.itemDialog.className = 'modal fc-' + colorOf(cur);
+  itemCtx = { id: it ? it.id : null };
+  el.itemTitle.textContent = it ? '備品の編集' : '備品の追加';
+  el.itemSaveNext.hidden = !!it;
+  el.itemSave.textContent = it ? '保存' : '登録';
+  el.itemError.textContent = '';
+  const nodes = C.schema.map((f) => {
+    const raw = it ? it.values[f.id] : undefined;
+    const label = h('label', { for: 'if-' + f.id }, f.label, f.required ? h('span', { class: 'req', text: '必須' }) : h('span', { class: 'opt', text: '任意' }));
+    if (f.kind === 'text') {
+      return h('div', { class: 'field wide' }, label,
+        h('input', { type: 'text', id: 'if-' + f.id, maxlength: '200', value: raw == null ? '' : String(raw) }));
+    }
+    if (f.kind === 'number') {
+      return h('div', { class: 'field' }, label,
+        h('div', { class: 'input-unit' },
+          h('input', { type: 'text', id: 'if-' + f.id, class: 'num-input', inputmode: 'decimal', value: raw == null || raw === '' ? '' : String(raw) }),
+          h('span', { text: f.unit || '', 'aria-hidden': f.unit ? null : 'true' })));
+    }
+    return h('div', { class: 'field' },
+      h('span', { class: 'label', id: 'if-label-' + f.id, text: f.label }),
+      h('output', { id: 'if-' + f.id, class: 'calc-out', 'aria-labelledby': 'if-label-' + f.id }),
+      h('p', { class: 'calc-hint', text: `計算式：${toDisplay(f.expr, C.schema)}` }));
+  });
+  el.itemFields.replaceChildren(...nodes);
+  const ids = realIds();
+  el.itemFile.replaceChildren(...list.map((f) => h('option', { value: f.id, text: f.name })));
+  el.itemFile.value = it ? fileIdOf(it, ids) : cur.id;
+  updateItemCalc();
+  openDialog(el.itemDialog);
+  const first = el.itemFields.querySelector('input');
+  if (first) first.focus();
+}
+
+el.itemFields.addEventListener('input', (e) => {
+  if (e.target.matches('input')) { e.target.removeAttribute('aria-invalid'); updateItemCalc(); }
+});
+
+el.itemForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!itemCtx || !state.canWrite) return;
+  const keepOpen = e.submitter && e.submitter.id === 'item-save-next';
+  const C = calc();
+  const { values, errors } = readItemForm(C);
+  el.itemFields.querySelectorAll('[aria-invalid]').forEach((x) => x.removeAttribute('aria-invalid'));
+  if (errors.length) {
+    errors.forEach((er) => itemInput(er.f).setAttribute('aria-invalid', 'true'));
+    el.itemError.textContent = errors.map((er) => er.msg).join('\n');
+    itemInput(errors[0].f).focus();
+    return;
+  }
+  const list = fileList();
+  const cur = currentFile(list);
+  const target = list.find((f) => f.id === el.itemFile.value) || cur;
+  const now = Date.now();
+  const orig = itemCtx.id ? state.items.find((x) => x.id === itemCtx.id) : null;
+  const data = { fileId: target.id, values, createdAt: orig ? orig.createdAt : now, updatedAt: now };
+  el.itemSave.disabled = el.itemSaveNext.disabled = true;
+  try {
+    if (orig) {
+      const moved = fileIdOf(orig, realIds()) !== target.id;
+      await api.updateItem(orig.id, data);
+      toast(moved ? `${target.name}に移動しました` : '保存しました');
+    } else {
+      await api.addItem(data);
+      toast(target.id === cur.id ? '登録しました' : `${target.name}に登録しました`);
+    }
+    render();
+    if (keepOpen) {
+      el.itemFields.querySelectorAll('input').forEach((x) => { x.value = ''; });
+      el.itemError.textContent = '';
+      updateItemCalc();
+      const first = el.itemFields.querySelector('input');
+      if (first) first.focus();
+    } else {
+      closeDialog(el.itemDialog);
+    }
+  } catch (err) {
+    el.itemError.textContent = explainError(err);
+  } finally {
+    el.itemSave.disabled = el.itemSaveNext.disabled = false;
+  }
+});
+
+el.addBtn.addEventListener('click', () => openItemDialog(null));
+el.empty.addEventListener('click', (e) => { if (e.target.closest('[data-act="add-first"]')) openItemDialog(null); });
+
+async function doDelete(it) {
+  state.confirmId = null;
+  try {
+    await api.removeItem(it.id);
+    toast('削除しました');
+  } catch (err) {
+    toast(explainError(err), 'error');
+  }
+  render();
+}
+
+el.rows.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-act]');
+  if (!b) return;
+  const id = b.dataset.id;
+  const it = state.items.find((x) => x.id === id);
+  if (!it) return;
+  const sel = (act) => `button[data-act="${act}"][data-id="${CSS.escape(id)}"]`;
+  if (b.dataset.act === 'edit') openItemDialog(id);
+  else if (b.dataset.act === 'ask') { state.confirmId = id; pendingFocus = sel('cancel'); render(); }
+  else if (b.dataset.act === 'cancel') { state.confirmId = null; pendingFocus = sel('ask'); render(); }
+  else if (b.dataset.act === 'delete') doDelete(it);
+});
+
+el.search.addEventListener('input', () => { state.query = el.search.value; render(); });
+el.sort.addEventListener('change', () => {
+  state.sort = el.sort.value;
+  try { localStorage.setItem(LS_SORT, state.sort); } catch (e) {}
+  render();
+});
+
+/* ---------- file dialog ---------- */
+let fileCtx = null;
+
+function nextColor() {
+  const list = fileList();
+  const n = list.length;
+  return chooseColor(n ? colorOf(list[n - 1]) : null, n > 1 ? colorOf(list[n - 2]) : null, new Set(list.map(colorOf)));
+}
+function setFileColor(key) {
+  const r = el.fdColors.querySelector(`input[value="${key}"]`);
+  if (r) r.checked = true;
+  el.fileDialog.className = 'modal fc-' + key;
+}
+el.fdColors.replaceChildren(...PALETTE.map(([k, name]) => h('label', { class: `swatch fc-${k}`, title: name },
+  h('input', { type: 'radio', name: 'fd-color', value: k }),
+  h('span', { class: 'dot' }, ico('check', 18)),
+  h('span', { class: 'sr', text: name }))));
+el.fdColors.addEventListener('change', (e) => { if (e.target.name === 'fd-color') el.fileDialog.className = 'modal fc-' + e.target.value; });
+
+function showFileFoot(confirming) {
+  el.fdFootNormal.hidden = confirming;
+  el.fdFootConfirm.hidden = !confirming;
+}
+
+function openFileDialog(mode) {
+  if (!state.canWrite || !isLoaded()) return;
+  const list = fileList();
+  const cur = currentFile(list);
+  fileCtx = { mode, id: mode === 'edit' ? cur.id : null };
+  const base = cur || FILE_DEFAULTS;
+  el.fileDialogTitle.textContent = mode === 'edit' ? 'ファイル設定' : '新しいファイル';
+  el.fdName.value = mode === 'edit' ? cur.name : '';
+  el.fdTitle.value = base.title;
+  el.fdOrg.value = base.org;
+  el.fdStamps.checked = base.stamps !== false;
+  setFileColor(mode === 'edit' ? colorOf(cur) : nextColor());
+  el.fdName.removeAttribute('aria-invalid');
+  el.fileError.textContent = '';
+  el.fdDelete.hidden = mode !== 'edit';
+  el.fdSave.textContent = mode === 'edit' ? '保存' : '作成';
+  showFileFoot(false);
+  openDialog(el.fileDialog);
+  el.fdName.focus();
+  el.fdName.select();
+}
+
+el.fileForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!fileCtx) return;
+  const name = el.fdName.value.trim();
+  if (!name) { el.fdName.setAttribute('aria-invalid', 'true'); el.fileError.textContent = 'ファイル名を入力してください'; el.fdName.focus(); return; }
+  const now = Date.now();
+  const keep = fileList().find((x) => x.id === (fileCtx.id || state.currentId)) || FILE_DEFAULTS;
+  const settings = { title: el.fdTitle.value.trim().slice(0, 40), org: el.fdOrg.value.trim().slice(0, 60), stamps: el.fdStamps.checked, orient: keep.orient || 'auto', color: (el.fdColors.querySelector('input:checked') || {}).value || '' };
+  el.fdSave.disabled = true;
+  try {
+    if (fileCtx.mode === 'new') {
+      const id = await api.createFile({ name, ...settings, createdAt: now, updatedAt: now });
+      closeDialog(el.fileDialog);
+      flipTo(id);
+      toast('ファイルを作成しました');
+    } else {
+      const f = fileList().find((x) => x.id === fileCtx.id);
+      await api.putFile(fileCtx.id, { name, ...settings, createdAt: f ? f.createdAt : 0, updatedAt: now });
+      closeDialog(el.fileDialog);
+      render();
+      toast('保存しました');
+    }
+  } catch (err) {
+    el.fileError.textContent = explainError(err);
+  } finally {
+    el.fdSave.disabled = false;
+  }
+});
+
+el.fdDelete.addEventListener('click', () => {
+  const f = fileList().find((x) => x.id === fileCtx?.id);
+  if (!f) return;
+  const n = itemsOf(f.id).length;
+  el.fdConfirmText.textContent = n ? `このファイルと備品${n}件を削除します。元に戻せません。` : 'このファイルを削除します。';
+  showFileFoot(true);
+  el.fdDeleteNo.focus();
+});
+el.fdDeleteNo.addEventListener('click', () => { showFileFoot(false); el.fdDelete.focus(); });
+el.fdDeleteYes.addEventListener('click', async () => {
+  const f = fileList().find((x) => x.id === fileCtx?.id);
+  if (!f || state.deleting) return;
+  state.deleting = true;
+  el.fdDeleteYes.disabled = el.fdDeleteNo.disabled = true;
+  el.fdDeleteYes.textContent = '削除中…';
+  try {
+    for (const it of itemsOf(f.id)) await api.removeItem(it.id);
+    if (!f.virtual) await api.removeFile(f.id);
+    closeDialog(el.fileDialog);
+    const rest = fileList().filter((x) => x.id !== f.id);
+    selectFile(rest.length ? rest[0].id : MAIN);
+    toast('ファイルを削除しました');
+  } catch (err) {
+    el.fileError.textContent = explainError(err);
+    showFileFoot(false);
+  } finally {
+    state.deleting = false;
+    el.fdDeleteYes.disabled = el.fdDeleteNo.disabled = false;
+    el.fdDeleteYes.textContent = '削除する';
+    render();
+  }
+});
+
+el.fileSettingsBtn.addEventListener('click', () => openFileDialog('edit'));
+el.newFileBtn.addEventListener('click', () => openFileDialog('new'));
+
+/* ---------- fields & formulas editor ---------- */
+let draft = null;
+
+function openSchemaDialog() {
+  if (!state.canWrite || !isLoaded()) return;
+  draft = state.schema.map((f) => ({ ...f, exprText: f.kind === 'formula' ? toDisplay(f.expr, state.schema) : '', refLabel: f.label }));
+  renderSchemaList();
+  validateDraft();
+  openDialog(el.schemaDialog);
+  const first = el.schemaList.querySelector('[data-prop="label"]');
+  if (first) first.focus();
+}
+
+const OPS = [[' + ', '+'], [' − ', '−'], [' × ', '×'], [' ÷ ', '÷'], ['(', '('], [')', ')'], ['%', '%']];
+const FNS = [['ROUND(', ', 0)', 'ROUND'], ['ROUNDDOWN(', ', 0)', 'ROUNDDOWN'], ['ROUNDUP(', ', 0)', 'ROUNDUP'], ['IF(', ', , )', 'IF'], ['MAX(', ')', 'MAX'], ['MIN(', ')', 'MIN'], ['SUM(', ')', 'SUM']];
+
+function chipsFor(d) {
+  const refs = draft.filter((o) => o.id !== d.id && o.kind !== 'text' && o.label.trim());
+  return [
+    h('span', { class: 'chips-label', text: '入力' }),
+    refs.map((o) => h('button', { type: 'button', class: 'ins ref', 'data-op': 'ins', 'data-row': d.id, 'data-before': `[${o.label.trim()}]`, text: o.label.trim() })),
+    h('span', { class: 'chip-sep', 'aria-hidden': 'true' }),
+    OPS.map(([ins, t]) => h('button', { type: 'button', class: 'ins', 'data-op': 'ins', 'data-row': d.id, 'data-before': ins, 'aria-label': `${t} を入れる`, text: t })),
+    h('span', { class: 'chip-sep', 'aria-hidden': 'true' }),
+    FNS.map(([b, a, t]) => h('button', { type: 'button', class: 'ins', 'data-op': 'ins', 'data-row': d.id, 'data-before': b, 'data-after': a, text: t })),
+  ];
+}
+
+function checkCell(cls, prop, d, label, disabled) {
+  return h('div', { class: `s-flag ${cls}` },
+    h('label', { class: 's-check' },
+      h('input', { type: 'checkbox', 'data-prop': prop, 'data-id': d.id, checked: !!d[prop], disabled: !!disabled, 'aria-label': `${d.label}：${label}` }),
+      h('span', { class: 'cell-label', text: label })));
+}
+
+function schemaRowEl(d, idx) {
+  const fixed = d.id === 'name';
+  const id = d.id;
+  const row = h('div', { class: `s-row kind-${d.kind}`, 'data-id': id });
+  const kindCell = fixed
+    ? h('div', { class: 's-cell s-kind' }, h('span', { class: 'cell-label', text: '種類' }), h('span', { class: 's-fixed', text: '文字' }))
+    : h('div', { class: 's-cell s-kind' }, h('label', { class: 'cell-label', for: 'sf-kind-' + id, text: '種類' }),
+      h('select', { id: 'sf-kind-' + id, 'data-prop': 'kind', 'data-id': id },
+        Object.entries(KIND_NAMES).map(([v, t]) => h('option', { value: v, text: t, selected: d.kind === v }))));
+  const up = h('button', { type: 'button', class: 'icon-btn', 'data-op': 'up', 'data-row': id, disabled: idx === 0, 'aria-label': `${d.label}を上へ` }, icon('m6 15 6-6 6 6'));
+  const down = h('button', { type: 'button', class: 'icon-btn', 'data-op': 'down', 'data-row': id, disabled: idx === draft.length - 1, 'aria-label': `${d.label}を下へ` }, icon('m6 9 6 6 6-6'));
+  row.append(h('div', { class: 's-grid' },
+    h('div', { class: 's-order' }, up, down),
+    h('div', { class: 's-cell s-name' }, h('label', { class: 'cell-label', for: 'sf-label-' + id, text: '項目名' }),
+      h('input', { type: 'text', id: 'sf-label-' + id, 'data-prop': 'label', 'data-id': id, maxlength: '20', value: d.label })),
+    kindCell,
+    h('div', { class: 's-cell s-unit' }, h('label', { class: 'cell-label', for: 'sf-unit-' + id, text: '単位' }),
+      h('input', { type: 'text', id: 'sf-unit-' + id, 'data-prop': 'unit', 'data-id': id, maxlength: '6', value: d.unit, disabled: d.kind === 'text' })),
+    h('div', { class: 's-cell s-dec' }, h('label', { class: 'cell-label', for: 'sf-dec-' + id, text: '小数' }),
+      h('select', { id: 'sf-dec-' + id, 'data-prop': 'decimals', 'data-id': id, disabled: d.kind === 'text' },
+        [0, 1, 2, 3, 4].map((n) => h('option', { value: String(n), text: n ? `${n}桁` : 'なし', selected: d.decimals === n })))),
+    d.kind === 'formula' ? h('div', { class: 's-flag s-req' }) : checkCell('s-req', 'required', d, '必須', fixed),
+    d.kind === 'text' ? h('div', { class: 's-flag s-tot' }) : checkCell('s-tot', 'total', d, '合計'),
+    checkCell('s-pdf', 'pdf', d, 'PDF'),
+    h('div', { class: 's-del' }, fixed ? null : h('button', { type: 'button', class: 'btn btn-text danger', 'data-op': 'del', 'data-row': id, 'aria-label': `${d.label}を削除`, text: '削除' }))));
+  if (d.kind === 'formula') {
+    row.append(h('div', { class: 's-formula' },
+      h('label', { for: 'sf-expr-' + id, text: '計算式' }),
+      h('input', { type: 'text', id: 'sf-expr-' + id, 'data-prop': 'expr', 'data-id': id, maxlength: '300', value: d.exprText, placeholder: '[単価] × [数量]', spellcheck: false }),
+      h('div', { class: 'chips', 'data-chips': id }, chipsFor(d)),
+      h('p', { class: 's-status', 'data-status': id, 'aria-live': 'polite' })));
+  }
+  row.append(h('p', { class: 's-error', 'data-rowerr': id }));
+  return row;
+}
+
+function renderSchemaList() {
+  el.schemaList.replaceChildren(...draft.map((d, i) => schemaRowEl(d, i)));
+  el.addInputField.disabled = el.addFormulaField.disabled = draft.length >= MAX_FIELDS;
+}
+
+function refreshChips() {
+  for (const d of draft) {
+    if (d.kind !== 'formula') continue;
+    const box = el.schemaList.querySelector(`[data-chips="${CSS.escape(d.id)}"]`);
+    if (box) box.replaceChildren(...chipsFor(d).flat(Infinity));
+  }
+}
+
+// 下書きを検証し、保存用の項目一覧と問題点を返す
+function checkDraft() {
+  const problems = [];
+  const rowErr = new Map();
+  const counts = new Map();
+  for (const d of draft) { const l = d.label.trim(); counts.set(l, (counts.get(l) || 0) + 1); }
+  const fields = draft.map((d) => {
+    const label = d.label.trim();
+    let err = '';
+    if (!label) err = '項目名を入力してください';
+    else if (/[\[\]{}［］｛｝]/.test(label)) err = '項目名に [ ] { } は使えません';
+    else if (counts.get(label) > 1) err = '同じ名前の項目があります';
+    if (err) { rowErr.set(d.id, err); problems.push(d.id); }
+    return { id: d.id, label, kind: d.kind, unit: d.kind === 'text' ? '' : d.unit.trim(), decimals: d.decimals, required: d.kind !== 'formula' && !!d.required, total: d.kind !== 'text' && !!d.total, pdf: !!d.pdf, expr: '' };
+  });
+  const exprErr = new Map();
+  fields.forEach((f, i) => {
+    if (f.kind !== 'formula') return;
+    try { f.expr = displayToStored(draft[i].exprText, fields); }
+    catch (e) { exprErr.set(f.id, e.message); }
+  });
+  const C = compileSchema(fields.map((f) => (exprErr.has(f.id) ? { ...f, expr: '' } : f)));
+  const sampleItem = itemsOf(currentFile()?.id || MAIN).slice().sort((a, b) => a.createdAt - b.createdAt)[0];
+  const tf = fields.find((f) => f.id === 'name');
+  const sampleValues = sampleItem ? sampleItem.values : Object.fromEntries(fields.filter((f) => f.kind === 'number').map((f) => [f.id, 100]));
+  const where = sampleItem ? (String(sampleItem.values[tf?.id] ?? '') || '1行目') : '数値をすべて100とした場合';
+  const res = computeRow(sampleValues, C);
+  const status = new Map();
+  for (const f of fields) {
+    if (f.kind !== 'formula') continue;
+    const err = exprErr.get(f.id) || C.info.get(f.id)?.error;
+    if (err) { status.set(f.id, { bad: true, msg: err }); problems.push(f.id); continue; }
+    status.set(f.id, res.errs[f.id]
+      ? { bad: false, msg: `計算例（${where}）：計算できません。${res.errs[f.id]}` }
+      : { bad: false, msg: `計算例（${where}）：${withUnit(res.vals[f.id], f) || '0'}` });
+  }
+  return { fields, rowErr, status, problems: [...new Set(problems)] };
+}
+
+function validateDraft() {
+  const r = checkDraft();
+  for (const d of draft) {
+    const rowNode = el.schemaList.querySelector(`.s-row[data-id="${CSS.escape(d.id)}"]`);
+    if (!rowNode) continue;
+    const st = r.status.get(d.id);
+    const errText = r.rowErr.get(d.id) || '';
+    rowNode.querySelector('[data-rowerr]').textContent = errText;
+    const stEl = rowNode.querySelector('[data-status]');
+    if (stEl && st) { stEl.textContent = st.msg; stEl.classList.toggle('is-bad', st.bad); }
+    rowNode.classList.toggle('has-error', !!errText || !!(st && st.bad));
+    const labelInp = rowNode.querySelector('[data-prop="label"]');
+    if (labelInp) { if (errText) labelInp.setAttribute('aria-invalid', 'true'); else labelInp.removeAttribute('aria-invalid'); }
+  }
+  el.schemaStatus.textContent = r.problems.length ? `修正が必要な箇所が${r.problems.length}件あります` : '';
+  return r;
+}
+
+function renameRefs(d, newLabel) {
+  const nl = newLabel.trim();
+  if (!nl) return;
+  if (d.refLabel && nl !== d.refLabel) {
+    const from = `[${d.refLabel}]`, to = `[${nl}]`;
+    for (const o of draft) {
+      if (o.kind !== 'formula' || !o.exprText.includes(from)) continue;
+      o.exprText = o.exprText.split(from).join(to);
+      const inp = el.schemaList.querySelector(`[data-prop="expr"][data-id="${CSS.escape(o.id)}"]`);
+      if (inp) inp.value = o.exprText;
+    }
+  }
+  d.refLabel = nl;
+}
+
+el.schemaList.addEventListener('input', (e) => {
+  const t = e.target;
+  const d = draft && draft.find((x) => x.id === t.dataset.id);
+  if (!d) return;
+  const prop = t.dataset.prop;
+  if (prop === 'label') { d.label = t.value; renameRefs(d, t.value); refreshChips(); }
+  else if (prop === 'expr') d.exprText = t.value;
+  else if (prop === 'unit') d.unit = t.value;
+  else return;
+  validateDraft();
+});
+
+el.schemaList.addEventListener('change', (e) => {
+  const t = e.target;
+  const d = draft && draft.find((x) => x.id === t.dataset.id);
+  if (!d) return;
+  const prop = t.dataset.prop;
+  if (prop === 'kind') {
+    d.kind = t.value;
+    if (d.kind === 'text') { d.unit = ''; d.total = false; d.decimals = 0; }
+    if (d.kind === 'formula') { d.required = false; d.exprText = d.exprText || ''; }
+    renderSchemaList();
+    const again = document.getElementById('sf-kind-' + d.id);
+    if (again) again.focus();
+  } else if (prop === 'decimals') d.decimals = Number(t.value) || 0;
+  else if (prop === 'required' || prop === 'total' || prop === 'pdf') d[prop] = t.checked;
+  else return;
+  validateDraft();
+});
+
+el.schemaList.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-op]');
+  if (!b) return;
+  const i = draft.findIndex((x) => x.id === b.dataset.row);
+  if (i < 0) return;
+  const op = b.dataset.op;
+  if (op === 'ins') {
+    const d = draft[i];
+    const inp = document.getElementById('sf-expr-' + d.id);
+    const before = b.dataset.before || '', after = b.dataset.after || '';
+    const s = inp.selectionStart ?? inp.value.length, en = inp.selectionEnd ?? s;
+    const sel = inp.value.slice(s, en);
+    inp.value = inp.value.slice(0, s) + before + sel + after + inp.value.slice(en);
+    const pos = s + before.length + sel.length;
+    inp.focus();
+    inp.setSelectionRange(pos, pos);
+    d.exprText = inp.value;
+    validateDraft();
+    return;
+  }
+  if (op === 'up' && i > 0) [draft[i - 1], draft[i]] = [draft[i], draft[i - 1]];
+  else if (op === 'down' && i < draft.length - 1) [draft[i + 1], draft[i]] = [draft[i], draft[i + 1]];
+  else if (op === 'del') draft.splice(i, 1);
+  else return;
+  renderSchemaList();
+  validateDraft();
+  const focusTarget = op === 'del'
+    ? el.schemaList.querySelector('[data-prop="label"]')
+    : el.schemaList.querySelector(`button[data-op="${op}"][data-row="${CSS.escape(b.dataset.row)}"]:not(:disabled)`) || document.getElementById('sf-label-' + b.dataset.row);
+  if (focusTarget) focusTarget.focus();
+});
+
+function addDraftField(kind) {
+  if (draft.length >= MAX_FIELDS) return;
+  const base = kind === 'formula' ? '計算' : '項目';
+  let n = 1;
+  while (draft.some((d) => d.label.trim() === `${base}${n}`)) n++;
+  const d = { id: newId('f'), label: `${base}${n}`, kind, unit: '', decimals: 0, required: false, total: false, pdf: true, expr: '', exprText: '', refLabel: `${base}${n}` };
+  draft.push(d);
+  renderSchemaList();
+  validateDraft();
+  const target = document.getElementById(kind === 'formula' ? 'sf-expr-' + d.id : 'sf-label-' + d.id);
+  if (target) { target.focus(); target.scrollIntoView({ block: 'nearest' }); }
+}
+el.addInputField.addEventListener('click', () => addDraftField('number'));
+el.addFormulaField.addEventListener('click', () => addDraftField('formula'));
+
+el.schemaForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!draft) return;
+  const r = validateDraft();
+  if (r.problems.length) {
+    const rowNode = el.schemaList.querySelector(`.s-row[data-id="${CSS.escape(r.problems[0])}"]`);
+    const target = rowNode && (rowNode.querySelector('[aria-invalid]') || rowNode.querySelector('[data-prop="expr"]') || rowNode.querySelector('input'));
+    if (target) { target.focus(); target.scrollIntoView({ block: 'center' }); }
+    return;
+  }
+  el.schemaSave.disabled = true;
+  try {
+    await api.putSchema(r.fields);
+    closeDialog(el.schemaDialog);
+    draft = null;
+    render();
+    toast('保存しました');
+  } catch (err) {
+    el.schemaStatus.textContent = explainError(err);
+  } finally {
+    el.schemaSave.disabled = false;
+  }
+});
+
+el.schemaBtn.addEventListener('click', openSchemaDialog);
+
+/* ---------- PDF ---------- */
+let MMPX = 200 / 25.4;            // 出力時に画質に合わせて切り替える
+const PT = 0.3528;                // mm per point
+const GOTHIC = '"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif';
+const P_INK = '#1b1f23', P_SUB = '#4f5862', P_LINE = '#c3cad0', P_HEAD = '#eceff2', P_SOFT = '#f4f6f8';
+const ROW = { padX: 2, padY: 1.9, minRow: 7.6, lhName: 4.3, lhText: 3.8, totalH: 9.5 };
+const FIXED_GLYPHS = 'No.0123456789,-¥…／（）作成確認承認件数合計エラー続き作成日年月 /　';
+const NO_LINE_START = '、。，．・：；？！ー）」』】〕〉》’”ぁぃぅぇぉっゃゅょァィゥェォッャュョ';
+
+function painter(ctx) {
+  const k = MMPX;
+  return {
+    font(pt, weight = 400) { ctx.font = `${weight} ${(pt * PT * k).toFixed(2)}px ${GOTHIC}`; },
+    color(c) { ctx.fillStyle = c; },
+    text(s, x, y, align = 'left') { ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillText(s, x * k, y * k); },
+    width(s) { return ctx.measureText(s).width / k; },
+    line(x1, y1, x2, y2, lw = 0.2, c = P_LINE) {
+      ctx.strokeStyle = c; ctx.lineWidth = lw * k;
+      ctx.beginPath(); ctx.moveTo(x1 * k, y1 * k); ctx.lineTo(x2 * k, y2 * k); ctx.stroke();
+    },
+    fill(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x * k, y * k, w * k, h * k); },
+    box(x, y, w, h, lw = 0.25, c = P_INK) { ctx.strokeStyle = c; ctx.lineWidth = lw * k; ctx.strokeRect(x * k, y * k, w * k, h * k); },
+  };
+}
+
+// 文字単位で折り返し（行頭禁則は簡易対応）。maxLines を超えたら末尾を「…」に
+function wrapText(g, text, maxW, maxLines) {
+  const chars = Array.from(String(text || '').replace(/\s+/g, ' ').trim());
+  if (!chars.length) return [];
+  const lines = [];
+  let cur = '';
+  for (const ch of chars) {
+    const next = cur + ch;
+    if (cur && g.width(next) > maxW && !NO_LINE_START.includes(ch)) { lines.push(cur); cur = ch === ' ' ? '' : ch; }
+    else cur = next;
+  }
+  if (cur) lines.push(cur);
+  if (lines.length > maxLines) {
+    const kept = lines.slice(0, maxLines);
+    const last = Array.from(kept[maxLines - 1]);
+    while (last.length && g.width(last.join('') + '…') > maxW) last.pop();
+    kept[maxLines - 1] = last.join('') + '…';
+    return kept;
+  }
+  return lines;
+}
+
+function fitFont(g, s, maxW, pt, weight = 400, minPt = 5.5) {
+  let p = pt;
+  g.font(p, weight);
+  while (p > minPt && g.width(s) > maxW) { p -= 0.25; g.font(p, weight); }
+  return p;
+}
+
+// 用紙サイズ（mm、縦置きの幅×高さ）と画質
+const PAPERS = { A4: [210, 297, 'A4'], A3: [297, 420, 'A3'], B4: [257, 364, 'B4'], B5: [182, 257, 'B5'], A5: [148, 210, 'A5'], Letter: [215.9, 279.4, 'レター'] };
+const QUALITY = { light: { dpi: 120, type: 'JPEG' }, std: { dpi: 200, type: 'PNG' }, high: { dpi: 300, type: 'PNG' } };
+function pdfGeom(orient, size = 'A4') {
+  const land = orient === 'landscape';
+  const [w, h] = PAPERS[size] || PAPERS.A4;
+  const PW = land ? h : w, PH = land ? w : h;
+  return { orient: land ? 'landscape' : 'portrait', PW, PH, left: 15, right: PW - 15, limit: PH - 16, footY: PH - 8, firstTop: 64, contTop: 27 };
+}
+
+function pdfColumns(C, G) {
+  const fields = pdfFields(C);
+  const noW = 10;
+  const avail = G.right - G.left - noW;
+  const weight = (f) => (f.kind === 'text' ? (f.id === 'name' ? 3.2 : 2) : 1.3);
+  const sum = fields.reduce((s, f) => s + weight(f), 0) || 1;
+  const cols = [{ label: 'No.', w: noW }].concat(fields.map((f) => ({ f, label: unitLabel(f), w: (avail * weight(f)) / sum })));
+  let x = G.left;
+  for (const c of cols) { c.x = x; x += c.w; }
+  return cols;
+}
+
+function layoutPdf(rows, cols, g, G) {
+  g.font(8, 700);
+  const headLines = cols.map((c) => wrapText(g, c.label, c.w - 1.6, 2));
+  const headH = Math.max(8, Math.max(...headLines.map((l) => l.length)) * 3.6 + 3);
+  const prepared = rows.map((r, i) => {
+    let h = ROW.minRow;
+    const cells = cols.map((c) => {
+      if (!c.f) return { no: String(i + 1) };
+      const cv = cellOf(r, c.f);
+      if (c.f.kind === 'text') {
+        const big = c.f.id === 'name';
+        g.font(big ? 9 : 8, 400);
+        const lines = wrapText(g, cv.text, c.w - ROW.padX * 2, 3);
+        h = Math.max(h, lines.length * (big ? ROW.lhName : ROW.lhText) + ROW.padY * 2);
+        return { lines, big };
+      }
+      return cv.err ? { err: true } : { num: fmtNum(cv.num, c.f) };
+    });
+    return { cells, h };
+  });
+  const pages = [];
+  let page = { first: true, top: G.firstTop, rows: [] };
+  let y = page.top + headH;
+  const turn = () => {
+    page.bottom = y; pages.push(page);
+    page = { first: false, top: G.contTop, rows: [] };
+    y = page.top + headH;
+  };
+  for (const r of prepared) {
+    if (y + r.h > G.limit && page.rows.length) turn();
+    r.y = y; page.rows.push(r); y += r.h;
+  }
+  const hasTotals = cols.some((c) => c.f && c.f.total && c.f.kind !== 'text');
+  if (hasTotals) {
+    if (y + ROW.totalH > G.limit) turn();
+    page.totalY = y; y += ROW.totalH;
+  }
+  page.bottom = y; pages.push(page);
+  return { pages, headH, headLines };
+}
+
+function drawStamps(g, G) {
+  const labels = ['作成', '確認', '承認'], w = 17, x0 = G.right - w * 3, y0 = 13, lh = 5, sh = 15;
+  g.fill(x0, y0, w * 3, lh, P_HEAD);
+  g.box(x0, y0, w * 3, lh + sh, 0.3, P_INK);
+  g.line(x0, y0 + lh, x0 + w * 3, y0 + lh, 0.2, P_INK);
+  for (let i = 1; i < 3; i++) g.line(x0 + w * i, y0, x0 + w * i, y0 + lh + sh, 0.2, P_INK);
+  g.font(8, 400); g.color(P_INK);
+  labels.forEach((s, i) => g.text(s, x0 + w * i + w / 2, y0 + lh / 2, 'center'));
+}
+
+function drawSummary(g, cells, G) {
+  const y = 45, h = 12, n = cells.length, w = (G.right - G.left) / n;
+  if (n > 1) g.fill(G.right - w, y, w, h, P_SOFT);
+  g.box(G.left, y, G.right - G.left, h, 0.3, P_INK);
+  cells.forEach((c, i) => {
+    const x1 = G.left + w * i, x2 = x1 + w;
+    if (i) g.line(x1, y, x1, y + h, 0.2, P_INK);
+    g.font(7.5, 400); g.color(P_SUB);
+    const label = wrapText(g, c.label, w * 0.42, 1)[0] || '';
+    g.text(label, x1 + 2.5, y + h / 2);
+    const maxW = x2 - x1 - 7 - g.width(label);
+    fitFont(g, c.value, maxW, i === n - 1 && n > 1 ? 13 : 11, 700);
+    g.color(P_INK);
+    g.text(c.value, x2 - 2.5, y + h / 2, 'right');
+  });
+}
+
+function drawFirstHeader(g, meta, ctx) {
+  const { G } = ctx;
+  const maxW = (meta.stamps ? G.right - 51 - 4 : G.right) - G.left;
+  g.color(P_INK);
+  fitFont(g, meta.title, maxW, 18, 700, 12);
+  g.text(wrapText(g, meta.title, maxW, 1)[0] || '', G.left, 21);
+  let y = 28.8;
+  if (meta.org) {
+    g.font(9.5, 400); g.color(P_INK);
+    g.text(wrapText(g, meta.org, maxW, 1)[0] || '', G.left, y);
+    y += 5.5;
+  }
+  g.font(8.5, 400); g.color(P_SUB);
+  g.text(`作成日　${meta.dateJa}`, G.left, y);
+  if (meta.stamps) drawStamps(g, G);
+  drawSummary(g, ctx.summary, G);
+}
+
+function drawContHeader(g, meta, G) {
+  const s = `${meta.title}（続き）`;
+  const maxW = G.right - G.left - 60;
+  g.color(P_INK);
+  fitFont(g, s, maxW, 10.5, 700, 8);
+  g.text(wrapText(g, s, maxW, 1)[0] || '', G.left, 17);
+  g.font(8, 400); g.color(P_SUB);
+  g.text(`作成日　${meta.dateJa}`, G.right, 17, 'right');
+  g.line(G.left, 21.5, G.right, 21.5, 0.3, P_INK);
+}
+
+function drawNum(g, col, s, mid, weight = 400) {
+  fitFont(g, s, col.w - ROW.padX * 2, 9, weight);
+  g.text(s, col.x + col.w - ROW.padX, mid, 'right');
+}
+
+function drawRow(g, r, cols, G) {
+  const mid = r.y + r.h / 2;
+  r.cells.forEach((cell, i) => {
+    const c = cols[i];
+    if (cell.no != null) { g.font(8.5, 400); g.color(P_SUB); g.text(cell.no, c.x + c.w / 2, mid, 'center'); return; }
+    if (cell.lines) {
+      const lh = cell.big ? ROW.lhName : ROW.lhText;
+      g.font(cell.big ? 9 : 8, 400); g.color(cell.big ? P_INK : P_SUB);
+      const y0 = mid - ((cell.lines.length - 1) * lh) / 2;
+      cell.lines.forEach((s, j) => g.text(s, c.x + ROW.padX, y0 + j * lh));
+      return;
+    }
+    if (cell.err) { g.font(8, 400); g.color(P_SUB); g.text('エラー', c.x + c.w - ROW.padX, mid, 'right'); return; }
+    g.color(P_INK);
+    drawNum(g, c, cell.num, mid, c.f.kind === 'formula' ? 700 : 400);
+  });
+  g.line(G.left, r.y + r.h, G.right, r.y + r.h, 0.15, P_LINE);
+}
+
+function drawTotal(g, y, ctx) {
+  const { G, cols, totals } = ctx;
+  const firstIdx = cols.findIndex((c) => c.f && totals.has(c.f.id));
+  g.fill(G.left, y, G.right - G.left, ROW.totalH, P_SOFT);
+  // 会計帳簿の慣習どおり、合計の上は二重線
+  g.line(G.left, y, G.right, y, 0.25, P_INK);
+  g.line(G.left, y + 0.8, G.right, y + 0.8, 0.25, P_INK);
+  const mid = y + 0.4 + ROW.totalH / 2;
+  const spanEnd = cols[firstIdx].x;
+  g.font(9.5, 700); g.color(P_INK);
+  g.text(spanEnd - G.left >= 18 ? '合　計' : '合計', (G.left + spanEnd) / 2, mid, 'center');
+  for (let i = firstIdx; i < cols.length; i++) {
+    const c = cols[i];
+    g.line(c.x, y + 0.8, c.x, y + ROW.totalH, 0.15, P_LINE);
+    const t = c.f && totals.get(c.f.id);
+    if (t) drawNum(g, c, fmtNum(t.sum, c.f) || '0', mid, 700);
+  }
+}
+
+function drawPage(g, page, idx, count, meta, ctx) {
+  const { G, cols, headH, headLines } = ctx;
+  g.fill(0, 0, G.PW, G.PH, '#ffffff');
+  if (page.first) drawFirstHeader(g, meta, ctx); else drawContHeader(g, meta, G);
+  const top = page.top;
+  g.fill(G.left, top, G.right - G.left, headH, P_HEAD);
+  g.font(8, 700); g.color(P_INK);
+  cols.forEach((c, i) => {
+    const lines = headLines[i];
+    const y0 = top + headH / 2 - ((lines.length - 1) * 3.6) / 2;
+    lines.forEach((s, j) => g.text(s, c.x + c.w / 2, y0 + j * 3.6, 'center'));
+  });
+  g.line(G.left, top + headH, G.right, top + headH, 0.3, P_INK);
+  for (const r of page.rows) drawRow(g, r, cols, G);
+  if (page.totalY != null) drawTotal(g, page.totalY, ctx);
+  const colBottom = page.totalY != null ? page.totalY : page.bottom;
+  cols.slice(1).forEach((c) => g.line(c.x, top, c.x, colBottom, 0.15, P_LINE));
+  g.box(G.left, top, G.right - G.left, page.bottom - top, 0.35, P_INK);
+  g.font(8, 400); g.color(P_SUB);
+  g.text(`${idx + 1} / ${count}`, G.PW / 2, G.footY, 'center');
+}
+
+async function ensureFonts(sample) {
+  if (!document.fonts || !document.fonts.load) return;
+  const jobs = [document.fonts.load('400 16px "BIZ UDPGothic"', sample), document.fonts.load('700 16px "BIZ UDPGothic"', sample)];
+  await Promise.race([Promise.allSettled(jobs), new Promise((r) => setTimeout(r, 5000))]);
+}
+
+function pdfMeta(file) {
+  const d = new Date();
+  const title = (file.title || '').trim() || FILE_DEFAULTS.title;
+  const ymd = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+  const safe = (s) => s.replace(/[\\/:*?"<>|\s]+/g, '_');
+  return {
+    title, fileName: file.name, org: (file.org || '').trim(), stamps: file.stamps !== false,
+    dateJa: `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`,
+    base: `${safe(title)}_${safe(file.name)}_${ymd}`,
+    filename: `${safe(title)}_${safe(file.name)}_${ymd}.pdf`,
+  };
+}
+
+// 帳票のページを描く（PDFと画像で共通）。maxHeightPx を指定すると、全ページを縦につないだ高さがそれ以内に収まるよう解像度を下げる
+async function renderPages(file, rows, C, opts = {}) {
+  const meta = pdfMeta(file);
+  const q = QUALITY[opts.quality] || QUALITY.std;
+  const G = pdfGeom(resolveOrient(opts.orient || file.orient || 'auto', C), opts.size || 'A4');
+  const cols = pdfColumns(C, G);
+  const totals = totalsOf(rows, C);
+  const summary = [{ label: '件数', value: `${num(rows.length)}件` }].concat(
+    C.schema.filter((f) => totals.has(f.id)).map((f) => ({ label: f.label, value: `${fmtNum(totals.get(f.id).sum, f) || '0'}${f.unit}` })));
+  const texts = rows.flatMap((r) => C.schema.filter((f) => f.kind === 'text').map((f) => cellOf(r, f).text));
+  const sample = [meta.title, meta.org, meta.dateJa, FIXED_GLYPHS, ...C.schema.map((f) => unitLabel(f)), ...texts].join('');
+  await ensureFonts(sample);
+  MMPX = q.dpi / 25.4;
+  const lay = layoutPdf(rows, cols, painter(document.createElement('canvas').getContext('2d')), G);
+  if (opts.maxHeightPx) {
+    const totalMm = lay.pages.length * G.PH + (lay.pages.length - 1) * 6;
+    MMPX = Math.min(MMPX, opts.maxHeightPx / totalMm);
+  }
+  const ctx = { G, cols, totals, summary, headH: lay.headH, headLines: lay.headLines };
+  const canvases = lay.pages.map((page, i) => {
+    const c = document.createElement('canvas');
+    c.width = Math.round(G.PW * MMPX);
+    c.height = Math.round(G.PH * MMPX);
+    drawPage(painter(c.getContext('2d')), page, i, lay.pages.length, meta, ctx);
+    return c;
+  });
+  return { canvases, meta, G, imageType: q.type };
+}
+
+async function buildPdf(file, rows, C, opts = {}) {
+  const { canvases, meta, G, imageType } = await renderPages(file, rows, C, opts);
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ unit: 'mm', format: [G.PW, G.PH], orientation: G.orient, compress: true });
+  canvases.forEach((c, i) => {
+    if (i > 0) pdf.addPage([G.PW, G.PH], G.orient);
+    if (imageType === 'JPEG') pdf.addImage(c.toDataURL('image/jpeg', 0.82), 'JPEG', 0, 0, G.PW, G.PH);
+    else pdf.addImage(c, 'PNG', 0, 0, G.PW, G.PH, undefined, 'FAST');
+  });
+  pdf.setProperties({ title: meta.title, subject: '備品一覧', creator: '備品台帳' });
+  return { blob: pdf.output('blob'), canvases, meta, G };
+}
+
+// 画像：全ページを縦につないだ1枚のPNG
+async function buildPng(file, rows, C, opts = {}) {
+  const { canvases, meta, G } = await renderPages(file, rows, C, { ...opts, maxHeightPx: 30000 });
+  const gap = Math.round(6 * MMPX);
+  const out = document.createElement('canvas');
+  out.width = canvases[0].width;
+  out.height = canvases.reduce((sum, c) => sum + c.height, 0) + gap * (canvases.length - 1);
+  const g = out.getContext('2d');
+  g.fillStyle = '#d5dbe1';
+  g.fillRect(0, 0, out.width, out.height);
+  let y = 0;
+  canvases.forEach((c) => { g.drawImage(c, 0, y); y += c.height + gap; });
+  const blob = await new Promise((res) => out.toBlob(res, 'image/png'));
+  return { blob, meta, G, canvas: out };
+}
+
+const scriptCache = {};
+function loadScript(src) {
+  if (!scriptCache[src]) {
+    scriptCache[src] = new Promise((resolve, reject) => {
+      const el2 = document.createElement('script');
+      el2.src = src;
+      el2.onload = resolve;
+      el2.onerror = () => { delete scriptCache[src]; reject(new Error('script')); };
+      document.head.append(el2);
+    });
+  }
+  return scriptCache[src];
+}
+const XLSX_URL = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+
+// 表計算・CSV用の値（文字はそのまま、数値は数値、計算できないものは空）
+function plainValue(r, f) {
+  const c = cellOf(r, f);
+  if (f.kind === 'text') return c.text;
+  if (c.err || c.num == null) return '';
+  return c.num;
+}
+
+// Excel：表題・ファイル名・作成日、見出し、明細、合計行。すべての項目を出す
+async function buildXlsx(file, rows, C) {
+  await loadScript(XLSX_URL);
+  const X = window.XLSX;
+  const meta = pdfMeta(file);
+  const fields = C.schema;
+  const aoa = [[meta.title], [file.name]];
+  if (meta.org) aoa.push([meta.org]);
+  aoa.push([`作成日 ${meta.dateJa}`], []);
+  const headRow = aoa.length;
+  aoa.push(['No.', ...fields.map(unitLabel)]);
+  rows.forEach((r, i) => aoa.push([i + 1, ...fields.map((f) => plainValue(r, f))]));
+  const totals = totalsOf(rows, C);
+  if (totals.size) aoa.push(['合計', ...fields.map((f) => (totals.has(f.id) ? totals.get(f.id).sum : ''))]);
+  const ws = X.utils.aoa_to_sheet(aoa);
+  fields.forEach((f, j) => {
+    if (f.kind === 'text') return;
+    const fmt = f.decimals ? '#,##0.' + '0'.repeat(f.decimals) : '#,##0';
+    for (let r = headRow + 1; r < aoa.length; r++) {
+      const cell = ws[X.utils.encode_cell({ r, c: j + 1 })];
+      if (cell && cell.t === 'n') cell.z = fmt;
+    }
+  });
+  ws['!cols'] = [{ wch: 6 }, ...fields.map((f) => ({ wch: f.kind === 'text' ? (f.id === 'name' ? 30 : 20) : 13 }))];
+  const wb = X.utils.book_new();
+  const sheetName = (file.name.replace(/[\[\]:*?\/\\]/g, '_').slice(0, 31)) || '備品一覧';
+  X.utils.book_append_sheet(wb, ws, sheetName);
+  const data = X.write(wb, { bookType: 'xlsx', type: 'array' });
+  return { blob: new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), meta };
+}
+
+// CSV：見出しと明細のみ。UTF-8（BOM付き）、改行はCRLF。数式として解釈される文字は先頭に ' を付ける
+function buildCsv(file, rows, C) {
+  const meta = pdfMeta(file);
+  const fields = C.schema;
+  const esc = (v) => {
+    let t = v == null ? '' : String(v);
+    if (typeof v === 'string' && /^[=+\-@]/.test(t)) t = "'" + t;
+    return /[",\r\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
+  };
+  const lines = [['No.', ...fields.map(unitLabel)].map(esc).join(',')];
+  rows.forEach((r, i) => lines.push([i + 1, ...fields.map((f) => plainValue(r, f))].map(esc).join(',')));
+  return { blob: new Blob(['﻿' + lines.join('\r\n') + '\r\n'], { type: 'text/csv' }), meta };
+}
+
+function browserDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+const FORMATS = {
+  pdf: { ext: 'pdf', label: 'PDF', paper: true, note: '押印欄・集計欄・合計行を含む帳票です。「PDF」を有効にした項目を、選んだ用紙に収めて出力します。' },
+  xlsx: { ext: 'xlsx', label: 'Excel', paper: false, note: 'すべての項目を出力します。表題・ファイル名・作成日のあとに、見出し・明細・合計行が入ります。数値は計算に使える数値として保存されます。' },
+  csv: { ext: 'csv', label: 'CSV', paper: false, note: 'すべての項目を、見出し1行と明細で出力します（合計行なし）。文字コードはUTF-8（BOM付き）で、Excelでもそのまま開けます。' },
+  png: { ext: 'png', label: '画像', paper: true, note: 'PDFと同じ帳票を画像にします。複数ページになる場合は、縦につないだ1枚の画像になります。' },
+};
+const LS_EXPORT = 'bihin-daicho:export';
+
+// 前回の出力設定（ファイルごと・端末ごと）
+function exportPrefs(file) {
+  const base = { format: 'pdf', size: 'A4', orient: file.orient || 'auto', quality: 'std' };
+  try {
+    const saved = (JSON.parse(localStorage.getItem(LS_EXPORT) || '{}') || {})[file.id] || {};
+    const p = { ...base, ...saved };
+    if (!FORMATS[p.format]) p.format = 'pdf';
+    if (!PAPERS[p.size]) p.size = 'A4';
+    if (!['auto', 'portrait', 'landscape'].includes(p.orient)) p.orient = 'auto';
+    if (!QUALITY[p.quality]) p.quality = 'std';
+    return p;
+  } catch (e) { return base; }
+}
+function saveExportPrefs(file, p) {
+  try {
+    const all = JSON.parse(localStorage.getItem(LS_EXPORT) || '{}') || {};
+    all[file.id] = p;
+    localStorage.setItem(LS_EXPORT, JSON.stringify(all));
+  } catch (e) {}
+}
+function readExportForm() {
+  const pick = (name) => (el.exportForm.querySelector(`input[name="${name}"]:checked`) || {}).value;
+  return { format: pick('ex-format') || 'pdf', size: el.exSize.value, orient: pick('ex-orient') || 'auto', quality: el.exQuality.value };
+}
+function syncExportForm() {
+  const file = currentFile();
+  if (!file) return;
+  const p = readExportForm();
+  const fmt = FORMATS[p.format];
+  el.exPaper.hidden = !fmt.paper;
+  el.exNote.textContent = fmt.note;
+  el.exFilename.textContent = `${pdfMeta(file).base}.${fmt.ext}`;
+  el.exportError.textContent = '';
+}
+function openExportDialog() {
+  if (state.busy || !isLoaded()) return;
+  const file = currentFile();
+  if (!file) return;
+  const p = exportPrefs(file);
+  el.exportDialog.className = 'modal fc-' + colorOf(file);
+  el.exportForm.querySelectorAll('input[name="ex-format"]').forEach((r) => { r.checked = r.value === p.format; });
+  el.exportForm.querySelectorAll('input[name="ex-orient"]').forEach((r) => { r.checked = r.value === p.orient; });
+  el.exSize.value = p.size;
+  el.exQuality.value = p.quality;
+  el.exSubmit.disabled = false;
+  el.exSubmit.textContent = '出力する';
+  syncExportForm();
+  openDialog(el.exportDialog);
+  const checked = el.exportForm.querySelector('input[name="ex-format"]:checked');
+  if (checked) checked.focus();
+}
+el.exportForm.addEventListener('change', syncExportForm);
+
+// 保存：claude.ai 上では保存の確認画面、ローカル版ではブラウザのダウンロード
+async function saveExport(blob, filename) {
+  const dl = downloadsP ? await downloadsP : null;
+  if (dl) {
+    try { await dl.save({ filename, data: blob }); return 'saved'; }
+    catch (err) {
+      const code = err && err.code;
+      if (code === 'declined') return 'declined';
+      if (code === 'rate_limited') return 'busy';
+      if (code === 'rejected_extension' || code === 'extension_not_enabled') return 'format';
+      return 'fail';
+    }
+  }
+  if (window.top !== window && window.claude) return 'fail';
+  browserDownload(blob, filename);
+  return 'saved';
+}
+
+async function runExport(opts) {
+  const file = currentFile();
+  if (!file || state.busy) return;
+  const C = calc();
+  const rows = sortRows(rowsFor(itemsOf(file.id), C), C);
+  const fmt = FORMATS[opts.format];
+  if (!rows.length) { el.exportError.textContent = '備品がないため出力できません'; return; }
+  if ((opts.format === 'pdf') && !(window.jspdf && window.jspdf.jsPDF)) { el.exportError.textContent = 'PDFの準備中です。少し待ってからもう一度押してください'; return; }
+  state.busy = true;
+  el.exSubmit.disabled = true;
+  el.exSubmit.textContent = '作成中…';
+  render();
+  try {
+    let built;
+    if (opts.format === 'pdf') built = await buildPdf(file, rows, C, opts);
+    else if (opts.format === 'png') built = await buildPng(file, rows, C, opts);
+    else if (opts.format === 'xlsx') built = await buildXlsx(file, rows, C);
+    else built = buildCsv(file, rows, C);
+    saveExportPrefs(file, opts);
+    closeDialog(el.exportDialog);
+    const result = await saveExport(built.blob, `${built.meta.base}.${fmt.ext}`);
+    if (result === 'saved') toast(`${fmt.label}を保存しました`);
+    else if (result === 'declined') toast('保存をキャンセルしました');
+    else if (result === 'busy') toast('保存の確認画面が開いています', 'error');
+    else if (result === 'format') toast('この画面ではこの形式を保存できません。PDFか画像をお使いください', 'error');
+    else toast('この画面では保存できません', 'error');
+  } catch (err) {
+    console.error(err);
+    el.exportError.textContent = opts.format === 'xlsx'
+      ? 'Excelの作成に必要な部品を読み込めませんでした。通信状態を確認してください'
+      : '出力できませんでした。もう一度お試しください';
+  } finally {
+    state.busy = false;
+    el.exSubmit.disabled = false;
+    el.exSubmit.textContent = '出力する';
+    render();
+  }
+}
+el.exportForm.addEventListener('submit', (e) => { e.preventDefault(); runExport(readExportForm()); });
+el.pdf.addEventListener('click', openExportDialog);
+
+/* ---------- manual ---------- */
+// 説明書の中で目次・章へ移る（アドレスは変えずに、説明書の中だけをスクロールする）
+function jumpInManual(id, smooth = true) {
+  const target = document.getElementById(id);
+  if (!target) return;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const box = el.manualBody;
+  const top = id === 'm-top' ? 0 : target.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop - 12;
+  box.scrollTo({ top: Math.max(0, top), behavior: smooth && !reduce ? 'smooth' : 'auto' });
+  target.focus({ preventScroll: true });
+}
+function openManual(sectionId) {
+  openDialog(el.manualDialog);
+  if (sectionId && document.getElementById(sectionId)) jumpInManual(sectionId, false);
+  else { el.manualBody.scrollTop = 0; document.getElementById('m-top').focus({ preventScroll: true }); }
+}
+el.manualDialog.addEventListener('click', (e) => {
+  const a = e.target.closest('a[data-jump]');
+  if (!a) return;
+  e.preventDefault();
+  jumpInManual(a.dataset.jump);
+});
+// 「説明書」ボタンや設定画面の「書き方の説明」から開く
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-manual]');
+  if (b) openManual(b.dataset.manual || '');
+});
+// リンクの末尾に #manual（または #manual-章のid）が付いていたら、説明書を開いた状態で始める
+(() => {
+  const m = /^#manual(?:-(m-[a-z]+))?$/.exec(location.hash || '');
+  if (m) openManual(m[1] || '');
+})();
+
+boot();
+</script>
+
+</body></html>
