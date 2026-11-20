@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="c6cac9404a6c"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="8c9371196ee9"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -235,7 +235,7 @@ dialog.modal::backdrop{background:var(--scrim)}
 .swatch input:focus-visible + .dot{outline:3px solid var(--ink);outline-offset:5px}
 
 /* Fields & formulas editor: one table — a header row, then one row per field */
-.schema-head,.s-grid{display:grid;grid-template-columns:76px minmax(0,1.6fr) 116px 84px 84px 48px 48px 48px 56px;gap:10px;align-items:center}
+.schema-head,.s-grid{display:grid;grid-template-columns:76px minmax(0,1.6fr) 116px 84px 84px 48px 48px 56px;gap:10px;align-items:center}
 .schema-head{padding:9px 12px;background:var(--fc-soft);color:var(--fc-ink);border:1px solid var(--line);border-bottom:2px solid var(--fc);border-radius:var(--r) var(--r) 0 0;font-family:var(--round);font-size:14px;font-weight:700}
 .schema-head .c{text-align:center}
 #schema-list{border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r) var(--r)}
@@ -298,7 +298,7 @@ dialog.modal::backdrop{background:var(--scrim)}
 @media (max-width:760px){
   .schema-head{display:none}
   #schema-list{border-top:1px solid var(--line);border-radius:var(--r)}
-  .s-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"name name name" "kind unit dec" "req tot pdf" "order order del";align-items:end}
+  .s-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"name name name" "kind unit dec" "tot pdf ." "order order del";align-items:end}
   .s-order{grid-area:order}.s-name{grid-area:name}.s-kind{grid-area:kind}.s-unit{grid-area:unit}.s-dec{grid-area:dec}
   .s-req{grid-area:req}.s-tot{grid-area:tot}.s-pdf{grid-area:pdf}.s-del{grid-area:del}
   .s-flag{justify-content:flex-start}
@@ -411,11 +411,15 @@ dialog.modal::backdrop{background:rgba(10,14,18,.5)}
 .sh-panel{display:flex;flex-direction:column;gap:14px}
 .sh-panel[hidden]{display:none}
 .sh-summary{margin:0;font-size:14px;color:var(--ink-2);min-height:1.5em}
-.sh-summary b{font-size:16px;color:var(--ink)}
-.sh-qr-box{display:grid;place-items:center;min-height:220px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#ffffff}
-.sh-qr-box canvas{display:block;width:min(100%,340px);height:auto;aspect-ratio:1;image-rendering:pixelated}
+.sh-qr-box{display:grid;place-items:center;min-height:240px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#ffffff}
+.sh-qr-box canvas{display:block;width:min(100%,440px);height:auto;aspect-ratio:1;image-rendering:pixelated}
 .sh-qr-msg{margin:0;max-width:30em;text-align:center;color:var(--ink-2)}
 .sh-qr-msg:empty{display:none}
+.sh-zoom-btn{align-self:center}
+.sh-zoom-btn[hidden]{display:none}
+.sh-zoom-view{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px;background:#ffffff}
+.sh-zoom-view[hidden]{display:none}
+.sh-zoom-view canvas{display:block;width:min(calc(100vw - 32px),calc(100vh - 100px));width:min(calc(100vw - 32px),calc(100dvh - 100px));height:auto;aspect-ratio:1;image-rendering:pixelated;cursor:zoom-out}
 .sh-pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px}
 .sh-pager[hidden]{display:none}
 .sh-pos{min-width:4.5em;text-align:center;font-family:var(--round);font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -425,7 +429,7 @@ dialog.modal::backdrop{background:rgba(10,14,18,.5)}
 .sh-cam{position:relative;display:grid;place-items:center;aspect-ratio:4/3;max-height:48vh;max-height:48dvh;border-radius:12px;overflow:hidden;background:#26323c}
 .sh-cam video{width:100%;height:100%;object-fit:cover}
 .sh-cam[data-on="false"] video,.sh-cam[data-on="false"] .sh-frame{display:none}
-.sh-frame{position:absolute;inset:12% 18%;border:3px solid rgba(255,255,255,.9);border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.22);pointer-events:none}
+.sh-frame{position:absolute;inset:8% 14%;border:3px solid rgba(255,255,255,.9);border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.22);pointer-events:none}
 .sh-cam-msg{position:absolute;inset:auto 0 0 0;margin:0;padding:14px 18px;color:#ffffff;font-size:14px;text-align:center;background:rgba(0,0,0,.35)}
 .sh-cam[data-on="false"] .sh-cam-msg{position:static;background:none;max-width:28em}
 .sh-actions{display:flex;flex-wrap:wrap;gap:8px}
@@ -445,6 +449,23 @@ dialog.modal::backdrop{background:rgba(10,14,18,.5)}
 .sh-modes{display:grid;gap:10px}
 .sh-effect{margin:0;padding:10px 12px;border-radius:8px;background:#ffffff;font-size:14px;white-space:pre-line;overflow-wrap:anywhere}
 .sh-effect.warn{color:var(--danger-text);font-weight:700}
+/* Quantity in the list: − / ＋ and direct input, so counts can be adjusted without opening the edit dialog */
+.ledger td.c-qty{padding-block:5px}
+.qty{display:inline-flex;align-items:stretch;border:1px solid var(--line-strong);border-radius:999px;background:#ffffff;overflow:hidden}
+.qty-btn{appearance:none;display:grid;place-items:center;width:36px;min-height:36px;padding:0;border:0;background:transparent;color:var(--fc-btn);cursor:pointer}
+.qty-btn:hover:not(:disabled){background:var(--fc-soft)}
+.qty-btn:disabled{color:#c3cbd2;cursor:default}
+.qty-btn:focus-visible{outline:3px solid var(--fc);outline-offset:-3px}
+.qty input.qty-in{width:3.4em;min-width:0;min-height:36px;margin:0;padding:0 4px;border:0;border-inline:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none;color:var(--ink);font:inherit;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;text-align:center}
+.qty input.qty-in::placeholder{color:#97a3ad;font-weight:400}
+.qty input.qty-in:focus{background:var(--fc-soft);box-shadow:inset 0 0 0 2px var(--fc);outline:none}
+@media (max-width:680px){
+  .ledger tbody tr{display:flex;flex-direction:column}
+  .ledger .c-title{order:-2}
+  .ledger td.c-qty{order:-1;align-items:center;padding:2px 0 8px}
+  .qty-btn{width:46px;min-height:44px}
+  .qty input.qty-in{width:4em;min-height:44px;font-size:18px}
+}
 /* Public version only: notice that a newer version was published */
 .update-bar{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:11;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;width:max-content;max-width:calc(100% - 32px);padding:10px 10px 10px 18px;border-radius:14px;background:#ffffff;color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.3);font-size:15px}
 .update-bar[hidden]{display:none}
@@ -699,7 +720,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="modal-body">
       <div>
-        <div class="schema-head" aria-hidden="true"><span>順番</span><span>項目名</span><span>種類</span><span>単位</span><span>小数</span><span class="c">必須</span><span class="c">合計</span><span class="c">PDF</span><span></span></div>
+        <div class="schema-head" aria-hidden="true"><span>順番</span><span>項目名</span><span>種類</span><span>単位</span><span>小数</span><span class="c">合計</span><span class="c">PDF</span><span></span></div>
         <div id="schema-list"></div>
       </div>
       <div class="schema-add">
@@ -806,13 +827,6 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="modal-body">
       <section class="sh-panel" id="sh-show" role="tabpanel" aria-labelledby="sh-tab-show">
-        <fieldset class="ex-group">
-          <legend>共有する範囲</legend>
-          <div class="seg" id="sh-scope">
-            <label><input type="radio" name="sh-scope" value="all" checked><span>すべてのファイル</span></label>
-            <label><input type="radio" name="sh-scope" value="file"><span>表示中のファイル</span></label>
-          </div>
-        </fieldset>
         <p class="sh-summary" id="sh-summary"></p>
         <div class="sh-qr-box" id="sh-qr-box">
           <canvas id="sh-qr" role="img" aria-label="共有用のQRコード" hidden></canvas>
@@ -824,7 +838,15 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <button type="button" class="btn" id="sh-next" aria-label="次のQRコード">次へ ›</button>
           <label class="sh-auto"><input type="checkbox" id="sh-auto" checked>自動で切り替える</label>
         </div>
-        <p class="ex-note">受け取る端末で<b>「QRで共有」→「QRを読み取る」</b>を開き、このQRコードにカメラを向けてください。複数枚ある場合は自動で切り替わるので、すべて読み取れるまでそのまま向けておきます。</p>
+        <button type="button" class="btn sh-zoom-btn" id="sh-zoom" hidden>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+          大きく表示
+        </button>
+        <p class="ex-note">受け取る端末で<b>「QRで共有」→「QRを読み取る」</b>を開き、このQRコードにカメラを向けてください。読み取りにくい場合は「大きく表示」を押し、カメラを近づけてください。</p>
+        <div class="sh-zoom-view" id="sh-zoom-view" hidden>
+          <canvas id="sh-qr-big" role="img" aria-label="共有用のQRコード（拡大）"></canvas>
+          <button type="button" class="btn" id="sh-zoom-close">元に戻す</button>
+        </div>
       </section>
       <section class="sh-panel" id="sh-read" role="tabpanel" aria-labelledby="sh-tab-read" hidden>
         <div class="sh-cam" id="sh-cam" data-on="false">
@@ -874,7 +896,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第1.2版　2026年11月20日</p>
+        <p class="m-meta">第1.3版　2026年11月20日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -884,7 +906,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <li><a href="#m-screen" data-jump="m-screen">画面構成</a></li>
             <li><a href="#m-file" data-jump="m-file">ファイルの管理</a></li>
             <li><a href="#m-item" data-jump="m-item">備品の登録</a></li>
-            <li><a href="#m-edit" data-jump="m-edit">備品情報の修正・移動・削除</a></li>
+            <li><a href="#m-edit" data-jump="m-edit">数量の調整・備品情報の修正・削除</a></li>
             <li><a href="#m-find" data-jump="m-find">一覧の検索と並べ替え</a></li>
             <li><a href="#m-pdf" data-jump="m-pdf">出力（PDF・Excel・CSV・画像）</a></li>
             <li><a href="#m-schema" data-jump="m-schema">項目と計算式の設定</a></li>
@@ -962,11 +984,13 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <rect class="dg-soft" x="233" y="183" width="458" height="24"/>
             <line class="dg-fcline" x1="233" y1="207" x2="691" y2="207"/>
             <g class="dg-ink xs"><text x="244" y="199">No.</text><text x="276" y="199">品名</text><text x="430" y="199" text-anchor="end">単価</text><text x="476" y="199" text-anchor="end">数量</text><text x="560" y="199" text-anchor="end">合計金額</text></g>
+            <g class="dg-qty"><rect class="dg-out" x="439" y="213" width="48" height="18" rx="9"/><rect class="dg-out" x="439" y="243" width="48" height="18" rx="9"/><rect class="dg-out" x="439" y="273" width="48" height="18" rx="9"/></g>
             <g class="dg-t xs">
-              <text x="250" y="226">1</text><text x="276" y="226">プロジェクター</text><text x="430" y="226" text-anchor="end">89,000</text><text x="476" y="226" text-anchor="end">1</text><text x="560" y="226" text-anchor="end">89,000</text>
-              <text x="250" y="256">2</text><text x="276" y="256">会議用テーブル</text><text x="430" y="256" text-anchor="end">45,000</text><text x="476" y="256" text-anchor="end">4</text><text x="560" y="256" text-anchor="end">180,000</text>
-              <text x="250" y="286">3</text><text x="276" y="286">会議用チェア</text><text x="430" y="286" text-anchor="end">15,800</text><text x="476" y="286" text-anchor="end">12</text><text x="560" y="286" text-anchor="end">189,600</text>
+              <text x="250" y="226">1</text><text x="276" y="226">プロジェクター</text><text x="430" y="226" text-anchor="end">89,000</text><text x="463" y="226" text-anchor="middle">1</text><text x="560" y="226" text-anchor="end">89,000</text>
+              <text x="250" y="256">2</text><text x="276" y="256">会議用テーブル</text><text x="430" y="256" text-anchor="end">45,000</text><text x="463" y="256" text-anchor="middle">4</text><text x="560" y="256" text-anchor="end">180,000</text>
+              <text x="250" y="286">3</text><text x="276" y="286">会議用チェア</text><text x="430" y="286" text-anchor="end">15,800</text><text x="463" y="286" text-anchor="middle">12</text><text x="560" y="286" text-anchor="end">189,600</text>
             </g>
+            <g class="dg-ink xs"><text x="447" y="226" text-anchor="middle">−</text><text x="479" y="226" text-anchor="middle">＋</text><text x="447" y="256" text-anchor="middle">−</text><text x="479" y="256" text-anchor="middle">＋</text><text x="447" y="286" text-anchor="middle">−</text><text x="479" y="286" text-anchor="middle">＋</text></g>
             <g class="dg-rowline"><line x1="233" y1="237" x2="691" y2="237"/><line x1="233" y1="267" x2="691" y2="267"/><line x1="233" y1="297" x2="691" y2="297"/></g>
             <g class="dg-icons"><path d="M641 228l8-8 3 3-8 8h-3z"/><path d="M662 219h10M664 219l1 10h6l1-10"/><path d="M641 258l8-8 3 3-8 8h-3z"/><path d="M662 249h10M664 249l1 10h6l1-10"/><path d="M641 288l8-8 3 3-8 8h-3z"/><path d="M662 279h10M664 279l1 10h6l1-10"/></g>
             <rect class="dg-soft" x="233" y="326" width="458" height="27"/>
@@ -1006,7 +1030,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td class="c-n">10</td><td>集計欄</td><td>件数と、「合計」を有効にした項目の合計を表示します。</td></tr>
               <tr><td class="c-n">11</td><td><span class="ui">備品を追加</span></td><td>備品を登録します（<a href="#m-item" data-jump="m-item">4章</a>）。</td></tr>
               <tr><td class="c-n">12</td><td>検索欄・並び順</td><td>一覧の絞り込みと並べ替えを行います（<a href="#m-find" data-jump="m-find">6章</a>）。</td></tr>
-              <tr><td class="c-n">13</td><td>一覧表</td><td>登録済みの備品です。行末の鉛筆アイコンで修正、ごみ箱アイコンで削除します（<a href="#m-edit" data-jump="m-edit">5章</a>）。</td></tr>
+              <tr><td class="c-n">13</td><td>一覧表</td><td>登録済みの備品です。数量は「−」「＋」または数値の直接入力で調整できます。行末の鉛筆アイコンで修正、ごみ箱アイコンで削除します（<a href="#m-edit" data-jump="m-edit">5章</a>）。</td></tr>
               <tr><td class="c-n">14</td><td>ページ送り</td><td>前後のファイルへ移動します。</td></tr>
             </tbody>
           </table>
@@ -1058,7 +1082,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           </ol>
           <h4>4.2　入力規則</h4>
           <ul>
-            <li>「必須」と表示された項目は、入力しなければ登録できません。「任意」と表示された項目は省略できます。</li>
+            <li>入力が必須の項目は<span class="ui">品名</span>のみです。その他の項目は省略でき、数量は登録後に一覧表で調整できます（<a href="#m-edit" data-jump="m-edit">5章</a>）。</li>
             <li>数値項目は全角・半角のいずれでも入力できます。桁区切りのカンマ、「円」「¥」などの記号は自動的に除去されます（例：「¥12,800」「12800円」は、いずれも 12800 として登録されます）。</li>
             <li>登録先のファイルは、入力画面下部の<span class="ui">ファイル</span>で変更できます。</li>
           </ul>
@@ -1066,10 +1090,11 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
         </section>
 
         <section class="m-sec" aria-labelledby="m-edit">
-          <h3 id="m-edit" tabindex="-1"><span class="m-num">5</span>備品情報の修正・移動・削除</h3>
+          <h3 id="m-edit" tabindex="-1"><span class="m-num">5</span>数量の調整・備品情報の修正・削除</h3>
           <table class="m-table">
             <thead><tr><th scope="col">操作</th><th scope="col">手順</th></tr></thead>
             <tbody>
+              <tr><td>数量の調整</td><td>一覧表の数量欄の<span class="ui">＋</span>または<span class="ui">−</span>をクリックすると、1ずつ増減します。数値を直接入力し、Enterキーを押すか欄の外をクリックして確定することもできます。変更は直ちに保存されます。</td></tr>
               <tr><td>修正</td><td>一覧表の行末にある鉛筆アイコンをクリックし、内容を変更して<span class="ui">保存</span>をクリックします。</td></tr>
               <tr><td>他のファイルへの移動</td><td>修正画面の<span class="ui">ファイル</span>で移動先を選択し、<span class="ui">保存</span>をクリックします。</td></tr>
               <tr><td>削除</td><td>行末のごみ箱アイコンをクリックし、確認表示で<span class="ui">削除</span>をクリックします。<span class="ui">やめる</span>をクリックすると取り消せます。</td></tr>
@@ -1150,11 +1175,10 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <tbody>
               <tr><td>順番</td><td>↑↓で列の順序を変更します。一覧表および帳票の列順に反映されます。</td></tr>
               <tr><td>項目名</td><td>列の見出しです。名称を変更すると、その項目を参照している計算式も自動的に更新されます。</td></tr>
-              <tr><td>種類</td><td>「文字」「数値」「計算式」から選択します。品名は「文字」で固定です。</td></tr>
+              <tr><td>種類</td><td>「文字」「数値」「計算式」から選択します。品名は「文字」で固定です。登録時に入力が必須となるのは品名のみで、その他の項目は省略できます。</td></tr>
               <tr><td>単位</td><td>見出しに併記されます（円、個、% など）。</td></tr>
               <tr><td>小数</td><td>表示する小数点以下の桁数です。</td></tr>
-              <tr><td>必須</td><td>有効にすると、未入力では登録できなくなります。</td></tr>
-              <tr><td>合計</td><td>有効にすると、集計欄および合計行に合計を表示します。</td></tr>
+                            <tr><td>合計</td><td>有効にすると、集計欄および合計行に合計を表示します。</td></tr>
               <tr><td>PDF</td><td>有効にすると、PDF・画像の帳票に列として出力します。Excel・CSVには常にすべての項目を出力します。</td></tr>
             </tbody>
           </table>
@@ -1225,17 +1249,17 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
 
         <section class="m-sec" aria-labelledby="m-share">
           <h3 id="m-share" tabindex="-1"><span class="m-num">10</span>データの共有（QRコード）</h3>
-          <p>登録内容をQRコードに変換し、別の端末へ渡すことができます。ローカル版および公開版ではデータが端末ごとに保存されるため、複数の端末で同じ台帳を利用する場合や、別の端末に控えを残す場合に使用します。</p>
+          <p>この端末のデータ（すべてのファイル・備品、および項目と計算式）を1つのQRコードに変換し、別の端末へ渡すことができます。ローカル版および公開版ではデータが端末ごとに保存されるため、複数の端末で同じ台帳を利用する場合や、別の端末に控えを残す場合に使用します。</p>
           <h4>10.1　QRコードを表示する（送る側）</h4>
           <ol class="m-steps">
-            <li>画面右上の<span class="ui">QRで共有</span>をクリックします。</li>
-            <li><span class="ui">QRを表示（送る）</span>で、<span class="ui">共有する範囲</span>（すべてのファイル／表示中のファイル）を選択します。</li>
-            <li>表示されたQRコードを、受け取る側の端末で読み取ります。QRコードが複数枚の場合は自動で切り替わります。<span class="ui">前へ</span><span class="ui">次へ</span>で1枚ずつ表示することもできます。</li>
+            <li>画面右上の<span class="ui">QRで共有</span>をクリックします。この端末のデータがQRコードで表示されます。</li>
+            <li>受け取る側の端末で、表示されたQRコードを読み取ります。読み取りにくい場合は<span class="ui">大きく表示</span>をクリックし、画面いっぱいに表示してください。</li>
           </ol>
+          <p class="m-note"><span class="m-note-label">補足</span>備品の件数が非常に多く1つのQRコードに収まらない場合に限り、複数のQRコードに分けて自動で切り替えて表示します。</p>
           <h4>10.2　QRコードを読み取る（受け取る側）</h4>
           <ol class="m-steps">
             <li><span class="ui">QRで共有</span>をクリックし、<span class="ui">QRを読み取る（受け取る）</span>を選択します。</li>
-            <li>カメラが起動したら、送る側のQRコードを枠の中に写します。すべて読み取るまで、そのまま向けておきます。カメラを使用できない場合は、<span class="ui">画像から読み取る</span>で、QRコードを撮影した写真または画面の画像を選択します（複数枚を同時に選択できます）。</li>
+            <li>カメラが起動したら、送る側のQRコードを枠の中に写します。カメラを使用できない場合は、<span class="ui">画像から読み取る</span>で、QRコードを撮影した写真または画面の画像を選択します。</li>
             <li>読み取ったデータの内容と、取り込んだ場合に上書き・削除される内容を確認し、<span class="ui">取り込み方法</span>を選択します。</li>
             <li><span class="ui">取り込む</span>をクリックします。</li>
           </ol>
@@ -1252,7 +1276,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <ul>
             <li>QRコードには登録内容そのものが含まれます。関係者以外に見せたり、QRコードを写した画像を共有したりしないでください。</li>
             <li>共有されるのは、その時点の内容です。共有後の変更は、改めて共有するまで相手の端末には反映されません。</li>
-            <li>備品の件数が多いほど、QRコードの枚数が増えます。読み取りにくい場合は、<span class="ui">自動で切り替える</span>を解除し、1枚ずつ表示してください。</li>
+            <li>備品の件数が多いほどQRコードが細かくなり、読み取りにくくなります。<span class="ui">大きく表示</span>を使用し、カメラを近づけて写してください。</li>
             <li>カメラの使用には、ブラウザでの許可が必要です。claude.ai上で利用する場合など、カメラを使用できない環境では<span class="ui">画像から読み取る</span>を使用してください。</li>
           </ul>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
@@ -1270,9 +1294,10 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td>ローカル版のデータが消えた</td><td>ブラウザの閲覧データが削除された</td><td>復元はできません。定期的に帳票を出力するか、QRコードで別の端末に控えを残してください（<a href="#m-share" data-jump="m-share">10章</a>）。</td></tr>
               <tr><td>新しいファイルの色が自動で設定される</td><td>判別しやすい色を自動で選択する仕様</td><td><span class="ui">ファイル設定</span>で任意の色に変更できます。</td></tr>
               <tr><td>カメラが起動しない</td><td>ブラウザでカメラの使用が許可されていない、またはカメラを使用できない環境</td><td>ブラウザの設定でカメラを許可してください。許可できない場合は、QRコードを撮影した画像を<span class="ui">画像から読み取る</span>で読み取ってください。</td></tr>
-              <tr><td>QRコードが読み取れない</td><td>画面の明るさ・距離・反射、またはQRコードの切り替えが速い</td><td>送る側の画面を明るくし、QRコードが枠に収まる距離で写してください。送る側で<span class="ui">自動で切り替える</span>を解除し、1枚ずつ読み取ることもできます。</td></tr>
+              <tr><td>QRコードが読み取れない</td><td>画面の明るさ・距離・反射、またはQRコードが細かい</td><td>送る側で<span class="ui">大きく表示</span>をクリックし、画面を明るくして、カメラを近づけて写してください。読み取れない場合は、QRコードを撮影した写真を<span class="ui">画像から読み取る</span>で読み取ってください。</td></tr>
               <tr><td>「このアプリのQRコードではありません」と表示される</td><td>本アプリ以外で作成されたQRコードを読み取った</td><td>送る側の<span class="ui">QRで共有</span>で表示したQRコードを読み取ってください。</td></tr>
               <tr><td>画面下部に「アプリの新しい版が公開されました」と表示される</td><td>公開版が更新された</td><td><span class="ui">再読み込み</span>をクリックしてください。登録内容はそのまま残ります。</td></tr>
+              <tr><td>数量の欄に入力した値が元に戻る</td><td>数値以外の文字、または負の数を入力した</td><td>0以上の数値を入力してください。全角数字も入力できます。</td></tr>
               <tr><td>本書を直接開きたい</td><td>―</td><td>本アプリのURLの末尾に <code>#manual</code> を付けて開くと、本書を表示した状態で起動します。</td></tr>
             </tbody>
           </table>
@@ -1396,8 +1421,8 @@ const LABEL_BAD = /[\[\]{}［］｛｝]/g;
 const KIND_NAMES = { text: '文字', number: '数値', formula: '計算式' };
 const DEFAULT_SCHEMA = [
   { id: 'name', label: '品名', kind: 'text', unit: '', decimals: 0, required: true, total: false, pdf: true, expr: '' },
-  { id: 'price', label: '単価', kind: 'number', unit: '円', decimals: 0, required: true, total: false, pdf: true, expr: '' },
-  { id: 'qty', label: '数量', kind: 'number', unit: '', decimals: 0, required: true, total: true, pdf: true, expr: '' },
+  { id: 'price', label: '単価', kind: 'number', unit: '円', decimals: 0, required: false, total: false, pdf: true, expr: '' },
+  { id: 'qty', label: '数量', kind: 'number', unit: '', decimals: 0, required: false, total: true, pdf: true, expr: '' },
   { id: 'amount', label: '合計金額', kind: 'formula', unit: '円', decimals: 0, required: false, total: true, pdf: true, expr: '{price} * {qty}' },
   { id: 'note', label: '備考', kind: 'text', unit: '', decimals: 0, required: false, total: false, pdf: true, expr: '' },
 ];
@@ -1490,7 +1515,7 @@ function normField(f) {
     kind,
     unit: kind === 'text' ? '' : String(f.unit ?? '').slice(0, 6),
     decimals: kind === 'text' ? 0 : Math.min(4, Math.max(0, Math.round(Number(f.decimals) || 0))),
-    required: fixed ? true : (kind !== 'formula' && !!f.required),
+    required: fixed,   // 入力が必須なのは品名だけ
     total: kind !== 'text' && !!f.total,
     pdf: f.pdf !== false,
     expr: kind === 'formula' ? String(f.expr ?? '').slice(0, 500) : '',
@@ -1935,6 +1960,7 @@ function subscribe(kind) {
     retries[kind] = 0;
     if (kind === 'items') {
       state.items = snap.docs.map((d) => normItem(d.id, d.data()));
+      applyPendingQty();
       state.itemsLoaded = true;
       if (state.confirmId && !state.items.some((x) => x.id === state.confirmId)) state.confirmId = null;
     } else {
@@ -2117,7 +2143,9 @@ function rowEl(row, no, C, titleF) {
   const it = row.it;
   const name = titleF ? cellOf(row, titleF).text : '';
   const tr = h('tr', { class: state.confirmId === it.id ? 'confirming' : null }, h('td', { class: 'c-no', text: String(no) }));
+  const qtyF = state.canWrite ? qtyFieldOf(C) : null;
   for (const f of C.schema) {
+    if (qtyF && f.id === qtyF.id) { tr.append(qtyCell(row, f, name)); continue; }
     const c = cellOf(row, f);
     const isTitle = titleF && f.id === titleF.id;
     let td;
@@ -2159,7 +2187,15 @@ function renderTable(cur, rows, C) {
     h('th', { class: 'c-no', scope: 'col', text: 'No.' }),
     C.schema.map((f) => h('th', { scope: 'col', class: f.kind === 'text' ? null : 'num' }, f.label, f.unit ? h('span', { class: 'th-unit', text: f.unit }) : null)),
     h('th', { class: 'c-act', scope: 'col' }, h('span', { class: 'sr', text: '操作' }))));
+  // 数量を入力している途中に表が描き直されても、入力中の値とカーソル位置を保つ
+  const ae = document.activeElement;
+  const keepQty = ae && ae.classList && ae.classList.contains('qty-in') && el.rows.contains(ae)
+    ? { id: ae.dataset.id, value: ae.value, s: ae.selectionStart, e: ae.selectionEnd } : null;
   el.rows.replaceChildren(...shown.map((r) => rowEl(r, numbering.get(r.it.id), C, titleF)));
+  if (keepQty) {
+    const n = el.rows.querySelector(`.qty-in[data-id="${CSS.escape(keepQty.id)}"]`);
+    if (n) { n.value = keepQty.value; n.focus({ preventScroll: true }); try { n.setSelectionRange(keepQty.s, keepQty.e); } catch (e) {} }
+  }
   const totals = totalsOf(shown, C);
   const firstIdx = C.schema.findIndex((f) => totals.has(f.id));
   if (firstIdx < 0) {
@@ -2349,7 +2385,7 @@ function openItemDialog(id) {
   el.itemError.textContent = '';
   const nodes = C.schema.map((f) => {
     const raw = it ? it.values[f.id] : undefined;
-    const label = h('label', { for: 'if-' + f.id }, f.label, f.required ? h('span', { class: 'req', text: '必須' }) : h('span', { class: 'opt', text: '任意' }));
+    const label = h('label', { for: 'if-' + f.id }, f.label, f.required ? h('span', { class: 'req', text: '必須' }) : null);
     if (f.kind === 'text') {
       return h('div', { class: 'field wide' }, label,
         h('input', { type: 'text', id: 'if-' + f.id, maxlength: '200', value: raw == null ? '' : String(raw) }));
@@ -2450,6 +2486,15 @@ el.rows.addEventListener('click', (e) => {
   else if (b.dataset.act === 'ask') { state.confirmId = id; pendingFocus = sel('cancel'); render(); }
   else if (b.dataset.act === 'cancel') { state.confirmId = null; pendingFocus = sel('ask'); render(); }
   else if (b.dataset.act === 'delete') doDelete(it);
+  else if (b.dataset.act === 'qty-inc' || b.dataset.act === 'qty-dec') {
+    const f = qtyFieldOf(calc());
+    if (!f) return;
+    const cur = Number(it.values[f.id]) || 0;
+    const next = b.dataset.act === 'qty-inc' ? fix(cur + 1) : Math.max(0, fix(cur - 1));
+    // 0 になって − が押せなくなったら、フォーカスは ＋ へ
+    pendingFocus = sel(b.dataset.act === 'qty-dec' && next <= 0 ? 'qty-inc' : b.dataset.act);
+    setQty(id, next);
+  }
 });
 
 el.search.addEventListener('input', () => { state.query = el.search.value; render(); });
@@ -2626,7 +2671,6 @@ function schemaRowEl(d, idx) {
     h('div', { class: 's-cell s-dec' }, h('label', { class: 'cell-label', for: 'sf-dec-' + id, text: '小数' }),
       h('select', { id: 'sf-dec-' + id, 'data-prop': 'decimals', 'data-id': id, disabled: d.kind === 'text' },
         [0, 1, 2, 3, 4].map((n) => h('option', { value: String(n), text: n ? `${n}桁` : 'なし', selected: d.decimals === n })))),
-    d.kind === 'formula' ? h('div', { class: 's-flag s-req' }) : checkCell('s-req', 'required', d, '必須', fixed),
     d.kind === 'text' ? h('div', { class: 's-flag s-tot' }) : checkCell('s-tot', 'total', d, '合計'),
     checkCell('s-pdf', 'pdf', d, 'PDF'),
     h('div', { class: 's-del' }, fixed ? null : h('button', { type: 'button', class: 'btn btn-text danger', 'data-op': 'del', 'data-row': id, 'aria-label': `${d.label}を削除`, text: '削除' }))));
@@ -2667,7 +2711,7 @@ function checkDraft() {
     else if (/[\[\]{}［］｛｝]/.test(label)) err = '項目名に [ ] { } は使えません';
     else if (counts.get(label) > 1) err = '同じ名前の項目があります';
     if (err) { rowErr.set(d.id, err); problems.push(d.id); }
-    return { id: d.id, label, kind: d.kind, unit: d.kind === 'text' ? '' : d.unit.trim(), decimals: d.decimals, required: d.kind !== 'formula' && !!d.required, total: d.kind !== 'text' && !!d.total, pdf: !!d.pdf, expr: '' };
+    return { id: d.id, label, kind: d.kind, unit: d.kind === 'text' ? '' : d.unit.trim(), decimals: d.decimals, required: d.id === 'name', total: d.kind !== 'text' && !!d.total, pdf: !!d.pdf, expr: '' };
   });
   const exprErr = new Map();
   fields.forEach((f, i) => {
@@ -3341,62 +3385,81 @@ el.exportForm.addEventListener('submit', (e) => { e.preventDefault(); runExport(
 el.pdf.addEventListener('click', openExportDialog);
 
 /* ---------- QR share ---------- */
-// 台帳のデータをQRコードにして、別の端末へ渡す。
-// データは圧縮してから分割し、1枚ごとに「どのデータの何枚目か」を付ける。読み取る側は全部そろうまで集める。
+// この端末のデータ（ファイル・備品・項目と計算式）を1つのQRコードにして、別の端末へ渡す。
+// データは小さな形に詰めて圧縮する。1つに収まらないほど多いときだけ、複数に分けて切り替えて表示する。
 const QR_GEN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';
 const QR_READ_URL = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
-const QR_CHUNK = 360;       // 1枚あたりのデータ量（バイト）。小さいほど読み取りやすく、枚数は増える
+const QR_CHUNK = 1200;      // 1つに収まらないときの1枚あたりのデータ量（バイト）
 const QR_MAX_PARTS = 200;
-const QR_INTERVAL = 1200;   // 自動で切り替える間隔（ミリ秒）
+const QR_INTERVAL = 1500;   // 複数枚のときに自動で切り替える間隔（ミリ秒）
 const SHARE_APP = 'bihin-daicho';
 const FILE_ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
 const sh = {
   btn: $('#share-btn'), dialog: $('#share-dialog'),
   tabShow: $('#sh-tab-show'), tabRead: $('#sh-tab-read'), panelShow: $('#sh-show'), panelRead: $('#sh-read'),
-  scope: $('#sh-scope'), summary: $('#sh-summary'), canvas: $('#sh-qr'), boxMsg: $('#sh-qr-msg'),
+  summary: $('#sh-summary'), canvas: $('#sh-qr'), boxMsg: $('#sh-qr-msg'),
   pager: $('#sh-pager'), prev: $('#sh-prev'), next: $('#sh-next'), pos: $('#sh-pos'), auto: $('#sh-auto'),
+  zoom: $('#sh-zoom'), zoomView: $('#sh-zoom-view'), big: $('#sh-qr-big'), zoomClose: $('#sh-zoom-close'),
   cam: $('#sh-cam'), video: $('#sh-video'), camMsg: $('#sh-cam-msg'), camBtn: $('#sh-cam-btn'), fileBtn: $('#sh-file-btn'), file: $('#sh-file'),
   progress: $('#sh-progress'), progText: $('#sh-prog-text'), dots: $('#sh-dots'), hint: $('#sh-hint'),
   result: $('#sh-result'), resultText: $('#sh-result-text'), effect: $('#sh-effect'),
   error: $('#share-error'), importBtn: $('#sh-import'), again: $('#sh-again'),
 };
-const share = { tab: 'show', parts: [], index: 0, timer: 0, gen: 0, stream: null, scanTimer: 0, got: null, finishing: false, payload: null, busy: false, hintTimer: 0 };
+const share = { tab: 'show', parts: [], index: 0, qr: null, timer: 0, gen: 0, stream: null, scanTimer: 0, scanTick: 0, got: null, finishing: false, payload: null, busy: false, hintTimer: 0 };
 class ShareError extends Error {}
 
-// 送るデータ：項目と計算式・ファイル・備品。ファイルと備品は配列にして小さくする
-function sharePayload(scope) {
+// 送るデータ（版2）：項目と計算式は初期設定なら 0、備品は入力項目の値だけを項目の順に並べる（登録日時は順番だけ残す）
+function sharePayload() {
   const ids = realIds();
-  const list = fileList();
-  const files = scope === 'file' ? [currentFile(list)].filter(Boolean) : list;
+  const files = fileList();
   const pos = new Map(files.map((f, i) => [f.id, i]));
+  const schema = state.schema;
+  const inputs = schema.filter((f) => f.kind !== 'formula');
   const items = state.items.filter((it) => pos.has(fileIdOf(it, ids))).sort((a, b) => a.createdAt - b.createdAt);
+  const isDefault = JSON.stringify(normSchema(schema)) === JSON.stringify(normSchema(DEFAULT_SCHEMA));
   return {
     data: {
-      app: SHARE_APP, v: 1, schema: state.schema,
-      files: files.map((f) => [f.id, f.name, f.title, f.org, f.stamps ? 1 : 0, f.orient, f.color || '', f.createdAt || 0]),
-      items: items.map((it) => [pos.get(fileIdOf(it, ids)), it.createdAt || 0, it.values]),
+      app: SHARE_APP, v: 2,
+      s: isDefault ? 0 : schema.map((f) => [f.id, f.label, f.kind, f.unit, f.decimals, f.total ? 1 : 0, f.pdf ? 1 : 0, f.expr]),
+      f: files.map((f) => [f.id, f.name, f.title === FILE_DEFAULTS.title ? null : f.title, f.org || null, f.stamps ? 1 : 0, f.orient, f.color || null, f.createdAt || 0]),
+      i: items.map((it) => {
+        const row = [pos.get(fileIdOf(it, ids)), ...inputs.map((f) => it.values[f.id] ?? null)];
+        while (row.length > 1 && row[row.length - 1] === null) row.pop();
+        return row;
+      }),
     },
     fileCount: files.length, itemCount: items.length,
   };
 }
-// 受け取ったデータは信用せず、保存するときと同じ整え方を通す
+// 受け取ったデータは信用せず、保存するときと同じ整え方を通す（版1：以前の形式も読める）
 function readShare(o) {
-  if (!o || o.app !== SHARE_APP || !Array.isArray(o.files) || !Array.isArray(o.items)) throw new ShareError('このアプリのQRコードではありません');
-  if (o.v !== 1) throw new ShareError('新しい版のアプリで作られたQRコードです。ページを再読み込みしてから読み取ってください');
+  const notApp = 'このアプリのQRコードではありません';
+  if (!o || o.app !== SHARE_APP) throw new ShareError(notApp);
+  if (o.v !== 1 && o.v !== 2) throw new ShareError('新しい版のアプリで作られたQRコードです。ページを再読み込みしてから読み取ってください');
+  const v2 = o.v === 2;
+  const fileRows = v2 ? o.f : o.files, itemRows = v2 ? o.i : o.items;
+  if (!Array.isArray(fileRows) || !Array.isArray(itemRows)) throw new ShareError(notApp);
+  let rawFields;
+  if (v2) rawFields = o.s === 0 ? DEFAULT_SCHEMA : (Array.isArray(o.s) ? o.s : []).map((r) => (Array.isArray(r) ? { id: r[0], label: r[1], kind: r[2], unit: r[3], decimals: r[4], total: !!r[5], pdf: r[6] !== 0, expr: r[7] } : null));
+  else rawFields = Array.isArray(o.schema) ? o.schema : [];
+  const inputIds = rawFields.filter((f) => f && typeof f.id === 'string' && f.kind !== 'formula').map((f) => f.id);
   const files = [], seen = new Set();
-  for (const r of o.files.slice(0, 500)) {
+  for (const r of fileRows.slice(0, 500)) {
     const ok = Array.isArray(r) && typeof r[0] === 'string' && FILE_ID_RE.test(r[0]) && !seen.has(r[0]);
     if (ok) seen.add(r[0]);
-    files.push(ok ? normFile(r[0], { name: r[1], title: r[2], org: r[3], stamps: r[4] !== 0 && r[4] !== false, orient: r[5], color: r[6], createdAt: r[7] }) : null);
+    files.push(ok ? normFile(r[0], { name: r[1], title: r[2] ?? FILE_DEFAULTS.title, org: r[3] ?? '', stamps: r[4] !== 0 && r[4] !== false, orient: r[5], color: r[6] ?? '', createdAt: r[7] }) : null);
   }
   const items = [];
-  for (const r of o.items.slice(0, 20000)) {
+  for (const r of itemRows.slice(0, 20000)) {
     if (!Array.isArray(r) || !Number.isInteger(r[0]) || !files[r[0]]) continue;
-    items.push(normItem('', { fileId: files[r[0]].id, values: r[2], createdAt: r[1] }));
+    let values;
+    if (v2) { values = {}; inputIds.forEach((id, k) => { if (r[k + 1] != null) values[id] = r[k + 1]; }); }
+    else values = r[2];
+    items.push(normItem('', { fileId: files[r[0]].id, values, createdAt: v2 ? 0 : r[1] }));
   }
   const ok = files.filter(Boolean);
   if (!ok.length) throw new ShareError('受け取れるファイルがありません');
-  return { schema: normSchema(o.schema), files: ok, items };
+  return { schema: normSchema(rawFields), files: ok, items };
 }
 // 受け取った項目を先に、この端末にだけある項目を後ろに残す
 function mergeSchema(recv, local) {
@@ -3429,22 +3492,50 @@ async function unpackShare(bytes) {
   try { return JSON.parse(new TextDecoder().decode(raw)); } catch (e) { throw new ShareError(broken); }
 }
 // 1枚の中身：'B' 'D' 版 識別子(3) 何枚目 全枚数 ＋ データ
-function splitShare(bytes) {
-  const total = Math.max(1, Math.ceil(bytes.length / QR_CHUNK));
+function frameParts(bytes, chunk) {
+  const total = Math.max(1, Math.ceil(bytes.length / chunk));
   if (total > QR_MAX_PARTS) return null;
   const sid = crypto.getRandomValues(new Uint8Array(3));
   const parts = [];
   for (let i = 0; i < total; i++) {
-    const chunk = bytes.subarray(i * QR_CHUNK, (i + 1) * QR_CHUNK);
-    const p = new Uint8Array(8 + chunk.length);
+    const body = bytes.subarray(i * chunk, (i + 1) * chunk);
+    const p = new Uint8Array(8 + body.length);
     p.set([0x42, 0x44, 1, sid[0], sid[1], sid[2], i, total]);
-    p.set(chunk, 8);
+    p.set(body, 8);
     parts.push(p);
   }
   return parts;
 }
+function makeQr(bytes) {
+  let s = '';
+  for (const b of bytes) s += String.fromCharCode(b);
+  const qr = window.qrcode(0, 'L');   // 画面に表示するだけなので誤り訂正は最小にして、できるだけ粗いQRコードにする
+  qr.addData(s, 'Byte');
+  qr.make();
+  return qr;
+}
+// できるだけ1つにする。収まらないときだけ分ける
+function qrParts(packed) {
+  const one = frameParts(packed, packed.length || 1);
+  try { makeQr(one[0]); return one; } catch (e) { return frameParts(packed, QR_CHUNK); }
+}
 
 /* show */
+function paintQr(canvas, qr, target) {
+  const m = qr.getModuleCount(), quiet = 4, size = m + quiet * 2;
+  const px = Math.max(2, Math.floor(target / size));
+  canvas.width = canvas.height = size * px;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#000000';
+  for (let r = 0; r < m; r++) for (let k = 0; k < m; k++) if (qr.isDark(r, k)) ctx.fillRect((k + quiet) * px, (r + quiet) * px, px, px);
+}
+function paintBig() {
+  if (!share.qr || sh.zoomView.hidden) return;
+  const side = Math.min(window.innerWidth, window.innerHeight) * (window.devicePixelRatio || 1);
+  paintQr(sh.big, share.qr, Math.max(600, Math.round(side)));
+}
 function stopCycle() { clearInterval(share.timer); share.timer = 0; }
 function startCycle() {
   stopCycle();
@@ -3456,49 +3547,46 @@ function showPart(i) {
   const n = share.parts.length;
   if (!n || !window.qrcode) return;
   share.index = ((i % n) + n) % n;
-  let s = '';
-  for (const b of share.parts[share.index]) s += String.fromCharCode(b);
-  const qr = window.qrcode(0, 'M');
-  qr.addData(s, 'Byte');
-  qr.make();
-  const m = qr.getModuleCount(), quiet = 4, size = m + quiet * 2;
-  const px = Math.max(3, Math.floor(480 / size));
-  const c = sh.canvas;
-  c.width = c.height = size * px;
-  const ctx = c.getContext('2d');
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, c.width, c.height);
-  ctx.fillStyle = '#000000';
-  for (let r = 0; r < m; r++) for (let k = 0; k < m; k++) if (qr.isDark(r, k)) ctx.fillRect((k + quiet) * px, (r + quiet) * px, px, px);
+  share.qr = makeQr(share.parts[share.index]);
+  paintQr(sh.canvas, share.qr, 720);
+  paintBig();
   sh.pos.textContent = `${share.index + 1} / ${n}`;
-  c.setAttribute('aria-label', n > 1 ? `共有用のQRコード（${n}枚中${share.index + 1}枚目）` : '共有用のQRコード');
+  sh.canvas.setAttribute('aria-label', n > 1 ? `共有用のQRコード（${n}枚中${share.index + 1}枚目）` : '共有用のQRコード');
+}
+function setZoom(on) {
+  sh.zoomView.hidden = !on;
+  if (on) { paintBig(); sh.zoomClose.focus(); } else sh.zoom.focus();
 }
 function setBoxMsg(text) { sh.boxMsg.textContent = text; }
 async function prepareShow() {
   const gen = ++share.gen;
   stopCycle();
-  share.parts = [];
+  share.parts = []; share.qr = null;
   sh.canvas.hidden = true;
   sh.pager.hidden = true;
+  sh.zoom.hidden = true;
   setBoxMsg('QRコードを作成しています…');
-  const scope = (sh.scope.querySelector('input:checked') || {}).value || 'all';
-  const { data, fileCount, itemCount } = sharePayload(scope);
-  sh.summary.textContent = `ファイル ${fileCount}件・備品 ${itemCount}件`;
+  const { data, fileCount, itemCount } = sharePayload();
+  const what = `この端末のデータ（ファイル ${fileCount}件・備品 ${itemCount}件）`;
+  sh.summary.textContent = what;
   let parts;
   try {
     await loadScript(QR_GEN_URL);
-    parts = splitShare(await packShare(data));
+    parts = qrParts(await packShare(data));
   } catch (e) {
     if (gen === share.gen) setBoxMsg('QRコードの機能を読み込めませんでした。インターネット接続を確認してください');
     return;
   }
   if (gen !== share.gen) return;
-  if (!parts) { setBoxMsg('データが多すぎてQRコードにできません。「表示中のファイル」を選び、ファイルごとに共有してください'); return; }
+  if (!parts) { setBoxMsg('データが多すぎてQRコードにできません'); return; }
   share.parts = parts;
-  sh.summary.replaceChildren(`ファイル ${fileCount}件・備品 ${itemCount}件　QRコード `, h('b', { text: `${parts.length}枚` }));
+  sh.summary.textContent = parts.length > 1
+    ? `${what}　データが多いため、QRコード${parts.length}枚に分けて順に表示しています`
+    : `${what}をQRコードにしました`;
   setBoxMsg('');
   sh.canvas.hidden = false;
   sh.pager.hidden = parts.length < 2;
+  sh.zoom.hidden = false;
   showPart(0);
   startCycle();
 }
@@ -3516,11 +3604,10 @@ function renderCamBtn() {
 }
 function renderProgress() {
   const g = share.got;
-  sh.progress.hidden = !g;
+  sh.progress.hidden = !g || g.total < 2;
   if (!g) { sh.dots.replaceChildren(); return; }
-  sh.progText.textContent = g.total > 1 ? `${g.total}枚中 ${g.count}枚を読み取りました` : '読み取りました';
+  sh.progText.textContent = `${g.total}枚中 ${g.count}枚を読み取りました`;
   sh.dots.replaceChildren(...g.parts.map((p) => h('i', { class: p ? 'on' : null })));
-  sh.dots.hidden = g.total < 2;
 }
 function resetRead() {
   share.got = null; share.payload = null; share.finishing = false;
@@ -3539,7 +3626,7 @@ async function startCamera() {
   try { await loadScript(QR_READ_URL); } catch (e) { setCamMsg('読み取り機能を読み込めませんでした。インターネット接続を確認してください'); return; }
   let stream;
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } } });
+    stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } } });
   } catch (e) {
     const n = e && e.name;
     setCamMsg(n === 'NotAllowedError' || n === 'SecurityError'
@@ -3567,20 +3654,33 @@ function stopCamera() {
   renderCamBtn();
 }
 const scanCanvas = document.createElement('canvas');
-function decodeFrom(src, w, ht, both) {
+// 画像の一部（sx, sy, sw, sHt）を w×ht に縮めて読む。指定がなければ全体
+function decodeFrom(src, w, ht, both, sx, sy, sw, sHt) {
   scanCanvas.width = w; scanCanvas.height = ht;
   const ctx = scanCanvas.getContext('2d', { willReadFrequently: true });
-  ctx.drawImage(src, 0, 0, w, ht);
+  if (sw) ctx.drawImage(src, sx, sy, sw, sHt, 0, 0, w, ht);
+  else ctx.drawImage(src, 0, 0, w, ht);
   return window.jsQR(ctx.getImageData(0, 0, w, ht).data, w, ht, { inversionAttempts: both ? 'attemptBoth' : 'dontInvert' });
 }
+// 全体を縮めて読む回と、中央を細かく読む回を交互に行う（データの多い細かなQRコードは中央の高解像度で読める）
 function scanFrame() {
   if (!share.stream) return;
   const v = sh.video;
   if (v.readyState >= 2 && v.videoWidth) {
-    const s = Math.min(1, 800 / Math.max(v.videoWidth, v.videoHeight));
-    try { const code = decodeFrom(v, Math.round(v.videoWidth * s), Math.round(v.videoHeight * s), false); if (code) takeCode(code); } catch (e) {}
+    const vw = v.videoWidth, vh = v.videoHeight;
+    try {
+      let code;
+      if (share.scanTick++ % 2) {
+        const side = Math.round(Math.min(vw, vh) * 0.9), out = Math.min(1100, side);
+        code = decodeFrom(v, out, out, false, (vw - side) / 2, (vh - side) / 2, side, side);
+      } else {
+        const s = Math.min(1, 800 / Math.max(vw, vh));
+        code = decodeFrom(v, Math.round(vw * s), Math.round(vh * s), false);
+      }
+      if (code) takeCode(code);
+    } catch (e) {}
   }
-  if (share.stream) share.scanTimer = setTimeout(scanFrame, 120);
+  if (share.stream) share.scanTimer = setTimeout(scanFrame, 100);
 }
 // 読み取った1枚を受け取る。このアプリのQRコードなら true
 function takeCode(code) {
@@ -3624,11 +3724,11 @@ async function finishRead() {
 function shareMode() { return (sh.result.querySelector('input[name="sh-mode"]:checked') || {}).value || 'merge'; }
 function showResult() {
   const p = share.payload;
+  stopCamera();
   const names = p.files.map((f) => f.name);
   const shown = names.slice(0, 3).join('、') + (names.length > 3 ? ` ほか${names.length - 3}件` : '');
   sh.resultText.textContent = `ファイル ${p.files.length}件（${shown}）・備品 ${p.items.length}件`;
   sh.result.querySelectorAll('input[name="sh-mode"]').forEach((r) => { r.checked = r.value === 'merge'; });
-  stopCamera();
   sh.result.hidden = false;
   sh.progress.hidden = true;
   setCamMsg('');
@@ -3658,7 +3758,7 @@ function renderEffect() {
     if (list.some((f) => !recv.has(f.id))) lines.push('ほかのファイルはそのまま残ります。');
   }
   const next = mode === 'replace' ? p.schema : mergeSchema(p.schema, state.schema);
-  if (JSON.stringify(next) !== JSON.stringify(state.schema)) lines.push('「項目と計算式」も受け取った内容に合わせます。');
+  if (JSON.stringify(next) !== JSON.stringify(normSchema(state.schema))) lines.push('「項目と計算式」も受け取った内容に合わせます。');
   sh.effect.textContent = lines.join('\n');
   sh.effect.hidden = !lines.length;
   sh.effect.classList.toggle('warn', warn);
@@ -3678,7 +3778,8 @@ async function applyShare(p, mode, onStep) {
   const recv = new Set(p.files.map((f) => f.id));
   const schema = mode === 'replace' ? p.schema : mergeSchema(p.schema, state.schema);
   const fileData = (f) => ({ name: f.name, title: f.title, org: f.org, stamps: f.stamps, orient: f.orient, color: f.color, createdAt: f.createdAt || now, updatedAt: now });
-  const incoming = p.items.map((it) => ({ id: newId(), data: { fileId: it.fileId, values: it.values, createdAt: it.createdAt || now, updatedAt: now } }));
+  // 登録日時のない備品（版2）は、並び順を保ったまま現在時刻の直前に並べる
+  const incoming = p.items.map((it, k) => ({ id: newId(), data: { fileId: it.fileId, values: it.values, createdAt: it.createdAt || now - p.items.length + k, updatedAt: now } }));
   const doomedItems = state.items.filter((it) => mode === 'replace' || recv.has(fileIdOf(it, ids)));
   const doomedFiles = mode === 'replace' ? state.files.filter((f) => !recv.has(f.id)) : [];
   if (!db) {
@@ -3742,7 +3843,7 @@ async function readImages(files) {
     let src;
     try { src = await loadImageSource(f); } catch (e) { continue; }
     const w0 = src.width, h0 = src.height;
-    for (const max of [1000, 1800, 2600]) {
+    for (const max of [1000, 1800, 2600, 4000]) {
       const s = Math.min(1, max / Math.max(w0, h0));
       let code = null;
       try { code = decodeFrom(src, Math.max(1, Math.round(w0 * s)), Math.max(1, Math.round(h0 * s)), true); } catch (e) {}
@@ -3773,13 +3874,16 @@ function setTab(tab) {
     if (share.parts.length) startCycle(); else prepareShow();
   } else {
     stopCycle();
+    sh.zoomView.hidden = true;
     if (!share.payload) startCamera();
   }
 }
 function openShareDialog(tab = 'show') {
   if (!isLoaded()) return;
+  flushAllQty();
   sh.dialog.className = 'modal fc-' + colorOf(currentFile());
-  share.parts = [];
+  share.parts = []; share.qr = null;
+  sh.zoomView.hidden = true;
   resetRead();
   setCamMsg('');
   openDialog(sh.dialog);
@@ -3796,19 +3900,96 @@ sh.tabShow.parentElement.addEventListener('keydown', (e) => {
   setTab(t);
   (t === 'show' ? sh.tabShow : sh.tabRead).focus();
 });
-sh.scope.addEventListener('change', prepareShow);
 sh.prev.addEventListener('click', () => { showPart(share.index - 1); startCycle(); });
 sh.next.addEventListener('click', () => { showPart(share.index + 1); startCycle(); });
 sh.auto.addEventListener('change', startCycle);
+sh.zoom.addEventListener('click', () => setZoom(true));
+sh.zoomClose.addEventListener('click', () => setZoom(false));
+sh.zoomView.addEventListener('click', (e) => { if (e.target === sh.zoomView || e.target === sh.big) setZoom(false); });
+window.addEventListener('resize', paintBig);
 sh.camBtn.addEventListener('click', () => { if (share.stream) { stopCamera(); setCamMsg(''); } else startCamera(); });
 sh.fileBtn.addEventListener('click', () => sh.file.click());
 sh.file.addEventListener('change', () => { const files = [...sh.file.files]; sh.file.value = ''; readImages(files); });
 sh.result.addEventListener('change', renderEffect);
 sh.importBtn.addEventListener('click', runImport);
 sh.again.addEventListener('click', () => { resetRead(); setCamMsg(''); startCamera(); });
-sh.dialog.addEventListener('cancel', (e) => { if (share.busy) e.preventDefault(); });
-sh.dialog.addEventListener('close', () => { stopCycle(); stopCamera(); share.gen++; share.payload = null; share.got = null; });
+sh.dialog.addEventListener('cancel', (e) => {
+  if (share.busy) e.preventDefault();
+  else if (!sh.zoomView.hidden) { e.preventDefault(); setZoom(false); }   // Esc は拡大表示を閉じるだけ
+});
+sh.dialog.addEventListener('close', () => { stopCycle(); stopCamera(); share.gen++; share.payload = null; share.got = null; sh.zoomView.hidden = true; });
 document.addEventListener('visibilitychange', () => { if (document.hidden && share.stream) { stopCamera(); setCamMsg('カメラを止めました。「カメラで読み取る」で再開します'); } });
+
+/* ---------- quantity in the list ---------- */
+// 一覧の数量を、修正画面を開かずに −／＋ や直接入力で調整する
+function qtyFieldOf(C) { const f = C.byId.get('qty'); return f && f.kind === 'number' ? f : null; }
+const qtyPending = new Map();   // 共有版：続けて押したときは、少し待って最後の値だけを保存する
+function qtyCell(row, f, name) {
+  const id = row.it.id;
+  const v = cellOf(row, f).num;
+  const who = name || '備品';
+  return h('td', { class: 'num c-qty', 'data-label': unitLabel(f) },
+    h('div', { class: 'qty', role: 'group', 'aria-label': `${who}の${f.label}` },
+      h('button', { type: 'button', class: 'qty-btn', 'data-act': 'qty-dec', 'data-id': id, disabled: !(v > 0), 'aria-label': `${who}の${f.label}を1減らす` }, icon('M6 12h12', 18)),
+      h('input', { type: 'text', class: 'qty-in', inputmode: 'decimal', 'data-id': id, value: v == null ? '' : String(v), placeholder: '0', autocomplete: 'off', 'aria-label': `${who}の${f.label}` }),
+      h('button', { type: 'button', class: 'qty-btn', 'data-act': 'qty-inc', 'data-id': id, 'aria-label': `${who}の${f.label}を1増やす` }, icon('M12 6v12M6 12h12', 18))));
+}
+function setQty(id, next) {
+  const f = qtyFieldOf(calc());
+  const it = state.items.find((x) => x.id === id);
+  if (!f || !it || !state.canWrite) return;
+  const values = { ...it.values };
+  if (next == null) delete values[f.id]; else values[f.id] = next;
+  it.values = values;            // 画面には先に反映する
+  it.updatedAt = Date.now();
+  const data = { fileId: it.fileId, values, createdAt: it.createdAt, updatedAt: it.updatedAt };
+  if (!db) { api.updateItem(id, data); render(); return; }
+  render();
+  const p = qtyPending.get(id);
+  if (p) clearTimeout(p.timer);
+  qtyPending.set(id, { data, timer: setTimeout(() => flushQty(id), 600) });
+}
+async function flushQty(id) {
+  const p = qtyPending.get(id);
+  if (!p) return;
+  clearTimeout(p.timer);
+  try { if (state.items.some((x) => x.id === id)) await api.updateItem(id, p.data); }
+  catch (e) { toast(explainError(e), 'error'); }
+  finally { if (qtyPending.get(id) === p) qtyPending.delete(id); }
+}
+function flushAllQty() { for (const id of [...qtyPending.keys()]) flushQty(id); }
+// 保存待ちの数量は、共有データが届いても画面上は押した値のままにする
+function applyPendingQty() {
+  for (const [id, p] of qtyPending) { const it = state.items.find((x) => x.id === id); if (it) it.values = p.data.values; }
+}
+function commitQtyInput(inp) {
+  const f = qtyFieldOf(calc());
+  const it = state.items.find((x) => x.id === inp.dataset.id);
+  if (!f || !it) return;
+  const cur = it.values[f.id] ?? null;
+  const show = (v) => (v == null ? '' : String(v));
+  const r = parseNumInput(inp.value, f);
+  if (r.bad || (!r.empty && r.n < 0)) { toast(`${f.label}は0以上の数値で入力してください`, 'error'); inp.value = show(cur); return; }
+  const next = r.empty ? null : r.n;
+  inp.value = show(next);
+  if (cur === next) return;
+  setQty(it.id, next);
+}
+el.rows.addEventListener('change', (e) => { const inp = e.target.closest('.qty-in'); if (inp) commitQtyInput(inp); });
+el.rows.addEventListener('keydown', (e) => {
+  const inp = e.target.closest && e.target.closest('.qty-in');
+  if (!inp) return;
+  if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
+  else if (e.key === 'Escape') {
+    const f = qtyFieldOf(calc());
+    const it = state.items.find((x) => x.id === inp.dataset.id);
+    if (f && it) inp.value = it.values[f.id] == null ? '' : String(it.values[f.id]);
+    inp.blur();
+  }
+});
+el.rows.addEventListener('focusin', (e) => { if (e.target.classList && e.target.classList.contains('qty-in')) e.target.select(); });
+window.addEventListener('pagehide', flushAllQty);
+document.addEventListener('visibilitychange', () => { if (document.hidden) flushAllQty(); });
 
 /* ---------- update notice (public version only) ---------- */
 // 公開版では、開いている間に新しい版が公開されたら画面下部で知らせる（登録内容は再読み込みしても残る）
