@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="b120b465cca9"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="79332339518f"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -459,12 +459,59 @@ dialog.modal::backdrop{background:rgba(10,14,18,.5)}
 .qty input.qty-in{width:3.4em;min-width:0;min-height:36px;margin:0;padding:0 4px;border:0;border-inline:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none;color:var(--ink);font:inherit;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;text-align:center}
 .qty input.qty-in::placeholder{color:#97a3ad;font-weight:400}
 .qty input.qty-in:focus{background:var(--fc-soft);box-shadow:inset 0 0 0 2px var(--fc);outline:none}
+/* Many items. Desktop: the window is the frame — only the list scrolls, inside the sheet, with the column headings and the
+   total row always in view; the file header, totals, toolbar and page turner stay put. Phones: compact cards.
+   Long text is cut to two lines (full text on hover and in the edit dialog). */
+.clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+@keyframes row-flash{from{background-color:var(--fc-soft)}to{background-color:transparent}}
+.ledger tbody tr.just-added td{animation:row-flash 2.4s ease-out}
+.to-top{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:9;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px 0 12px;border:0;border-radius:999px;background:var(--fc-btn);color:#ffffff;font-family:var(--round);font-size:15px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.3);cursor:pointer}
+.to-top[hidden]{display:none}
+.title-btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:baseline;gap:6px;max-width:100%;cursor:pointer;border-radius:4px}
+.title-btn svg{flex:none;opacity:0;color:var(--fc-btn);transform:translateY(1px)}
+tbody tr:hover .title-btn svg,.title-btn:focus-visible svg{opacity:.8}
+.title-btn:hover .clamp{text-decoration:underline;text-underline-offset:3px}
+.title-btn:focus-visible{outline:3px solid var(--fc);outline-offset:2px}
+.to-top:focus-visible{outline:3px solid #ffffff;outline-offset:-5px}
+@media (min-width:861px) and (min-height:600px){
+  .app{height:100vh;height:100dvh;min-height:0;overflow:hidden}
+  .body{flex:1 1 auto;min-height:0;grid-template-rows:minmax(0,1fr);padding-bottom:14px}
+  .side{max-height:calc(100% - 10px);overflow-y:auto;scrollbar-width:thin}
+  .main{display:flex;flex-direction:column;min-height:0;padding-bottom:10px}
+  .stage{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+  .sheet:not(.ghost){flex:1 1 auto;min-height:0}
+  .sheet{gap:14px}
+  .ledger{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:10px}
+  .table-wrap{flex:0 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  .empty{flex:none}
+  /* headings and the total row stay in view; borders are drawn as shadows because borders of sticky cells do not move with them */
+  .ledger thead th{position:sticky;top:0;z-index:2;border-bottom:0;box-shadow:inset 0 -2px 0 var(--fc)}
+  .ledger th.c-act{z-index:3;box-shadow:inset 1px 0 0 var(--line),inset 0 -2px 0 var(--fc)}
+  .ledger tfoot td{position:sticky;bottom:0;z-index:2;border-top:0;box-shadow:inset 0 1px 0 var(--fc),inset 0 2px 0 var(--fc-soft),inset 0 3px 0 var(--fc)}
+  .ledger tfoot td.c-act,.ledger tfoot td:last-child{z-index:3}
+}
 @media (max-width:680px){
-  .ledger tbody tr{display:flex;flex-direction:column}
-  .ledger .c-title{order:-2}
-  .ledger td.c-qty{order:-1;align-items:center;padding:2px 0 8px}
-  .qty-btn{width:46px;min-height:44px}
-  .qty input.qty-in{width:4em;min-height:44px;font-size:18px}
+  .ledger tbody tr{display:flex;flex-wrap:wrap;align-items:center;column-gap:14px;row-gap:2px;padding:8px 8px 8px 12px;margin-bottom:8px}
+  .ledger tbody td{display:inline-flex;align-items:baseline;gap:4px;padding:1px 0;font-size:15px;text-align:left}
+  .ledger tbody td[data-label]::before{font-size:12px}
+  .ledger td[data-unit]::after{content:attr(data-unit);font-size:12px;font-weight:400;color:var(--ink-2)}
+  /* first line: name and quantity (the name takes the rest of the line, so the details always start on a new line) */
+  .ledger .c-title{order:-2;display:block;flex:1 1 calc(100% - 152px);min-width:0;margin:0;padding:0;border:0;font-size:17px;line-height:1.4}
+  .ledger td.c-qty{order:-1;flex:0 0 auto;padding:0 0 2px}
+  .ledger td.c-qty::before{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .ledger .c-text{flex:1 1 100%;min-width:0}
+  /* edit / delete as icons at the end of the last line */
+  .ledger .c-act{flex:0 0 auto;margin-left:auto;padding:0}
+  .ledger .act .btn-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .ledger .act .btn-text{min-width:40px;min-height:40px;padding:0}
+  .ledger tr.confirming .c-act{flex:1 1 100%}
+  .ledger tbody tr:not(.confirming) .c-act{display:none}
+  .ledger tbody td.c-text{text-align:left}
+  .title-btn svg{opacity:.6}
+  .ledger tfoot td{justify-content:flex-end;gap:2px}
+  .ledger tfoot td[data-label]::before{margin-right:auto}
+  .qty-btn{width:40px;min-height:40px}
+  .qty input.qty-in{width:3em;min-height:40px;font-size:17px}
 }
 /* Public version only: notice that a newer version was published */
 .update-bar{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:11;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;width:max-content;max-width:calc(100% - 32px);padding:10px 10px 10px 18px;border-radius:14px;background:#ffffff;color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.3);font-size:15px}
@@ -670,10 +717,18 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
       <p class="form-error" id="item-error" role="alert"></p>
     </div>
     <div class="modal-foot">
-      <span class="spacer"></span>
-      <button type="button" class="btn" data-close>キャンセル</button>
-      <button type="submit" class="btn" id="item-save-next">続けて登録</button>
-      <button type="submit" class="btn btn-primary" id="item-save">登録</button>
+      <div class="foot-row" id="if-foot-normal">
+        <button type="button" class="btn btn-text danger" id="if-delete" hidden>この備品を削除</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>キャンセル</button>
+        <button type="submit" class="btn" id="item-save-next">続けて登録</button>
+        <button type="submit" class="btn btn-primary" id="item-save">登録</button>
+      </div>
+      <div class="foot-row" id="if-foot-confirm" hidden>
+        <p class="confirm-msg" id="if-confirm-text"></p>
+        <button type="button" class="btn" id="if-delete-no">やめる</button>
+        <button type="button" class="btn btn-danger" id="if-delete-yes">削除する</button>
+      </div>
     </div>
   </form>
 </dialog>
@@ -896,7 +951,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第1.4版　2026年11月21日</p>
+        <p class="m-meta">第1.5版　2026年11月21日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -1095,9 +1150,9 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <thead><tr><th scope="col">操作</th><th scope="col">手順</th></tr></thead>
             <tbody>
               <tr><td>数量の調整</td><td>一覧表の数量欄の<span class="ui">＋</span>または<span class="ui">−</span>をクリックすると、1ずつ増減します。数値を直接入力し、Enterキーを押すか欄の外をクリックして確定することもできます。変更は直ちに保存されます。</td></tr>
-              <tr><td>修正</td><td>一覧表の行末にある鉛筆アイコンをクリックし、内容を変更して<span class="ui">保存</span>をクリックします。</td></tr>
+              <tr><td>修正</td><td>一覧表の品名、または行末の鉛筆アイコンをクリックし、内容を変更して<span class="ui">保存</span>をクリックします。</td></tr>
               <tr><td>他のファイルへの移動</td><td>修正画面の<span class="ui">ファイル</span>で移動先を選択し、<span class="ui">保存</span>をクリックします。</td></tr>
-              <tr><td>削除</td><td>行末のごみ箱アイコンをクリックし、確認表示で<span class="ui">削除</span>をクリックします。<span class="ui">やめる</span>をクリックすると取り消せます。</td></tr>
+              <tr><td>削除</td><td>行末のごみ箱アイコンをクリックし、確認表示で<span class="ui">削除</span>をクリックします。<span class="ui">やめる</span>をクリックすると取り消せます。修正画面の<span class="ui">この備品を削除</span>からも削除できます（スマートフォンではこちらを使用します）。</td></tr>
             </tbody>
           </table>
           <p class="m-note warn"><span class="m-note-label">注意</span>削除した備品は復元できません。</p>
@@ -1109,6 +1164,14 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <ul>
             <li><strong>検索</strong>：検索欄に語句を入力すると、文字項目（品名、備考等）にその語句を含む備品のみを表示します。絞り込み中は合計行が「合計（n件）」と表示され、表示中の備品のみを集計します。</li>
             <li><strong>並べ替え</strong>：並び順から、登録順、新しい順、各項目の昇順・降順を選択できます。</li>
+          </ul>
+          <h4>6.1　備品が多い場合の表示</h4>
+          <ul>
+            <li>パソコンでは、一覧表の中だけがスクロールします。列の見出しと合計行、ファイル名・集計欄・検索欄は常に表示されます。</li>
+            <li>スマートフォンでは、品名と数量を1行目に、その他の項目をその下にまとめた簡潔な表示になります。品名をタップすると修正画面が開きます。削除は修正画面から行います。</li>
+            <li>一覧を下へ進むと、画面右下に<span class="ui">一覧の先頭へ</span>が表示されます。クリックすると一覧の先頭に戻り、検索欄にカーソルが移ります。</li>
+            <li>長い品名・備考は2行までを表示します。全文は、マウスポインターを合わせるか、修正画面で確認できます。</li>
+            <li>備品を登録すると、一覧のその行が表示され、一時的に色付けされます。</li>
           </ul>
           <p class="m-note"><span class="m-note-label">補足</span>出力には、検索条件にかかわらず、そのファイルのすべての備品が選択中の並び順で含まれます。</p>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
@@ -1309,6 +1372,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
 </dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<button type="button" class="to-top" id="to-top" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 6-6 6 6"/></svg>一覧の先頭へ</button>
 <div class="update-bar" id="update-bar" role="status" hidden>
   <p>アプリの新しい版が公開されました。<small>再読み込みすると反映されます（登録内容はそのまま残ります）。</small></p>
   <button type="button" class="btn btn-primary" id="update-reload">再読み込み</button>
@@ -1437,6 +1501,7 @@ const state = {
 let db = null;
 let downloadsP = null;
 let pendingFocus = null;
+let reveal = null;   // { id, until }：登録直後に一覧で見せる行
 let warnedLocal = false;
 
 /* ---------- small helpers ---------- */
@@ -1919,8 +1984,8 @@ function explainError(e) {
 
 const api = {
   async addItem(data) {
-    if (db) { const ref = db.collection('items').doc(); return dbCall(() => ref.set(data)); }
-    state.items.push(normItem(newId(), data)); persistLocal();
+    if (db) { const ref = db.collection('items').doc(); await dbCall(() => ref.set(data)); return ref.id; }
+    const id = newId(); state.items.push(normItem(id, data)); persistLocal(); return id;
   },
   async updateItem(id, data) {
     if (db) return dbCall(() => db.doc('items/' + id).set(data));
@@ -2142,16 +2207,20 @@ function titleFieldOf(C) { return C.byId.get('name') || C.schema.find((f) => f.k
 function rowEl(row, no, C, titleF) {
   const it = row.it;
   const name = titleF ? cellOf(row, titleF).text : '';
-  const tr = h('tr', { class: state.confirmId === it.id ? 'confirming' : null }, h('td', { class: 'c-no', text: String(no) }));
+  const tr = h('tr', { class: state.confirmId === it.id ? 'confirming' : null, 'data-id': it.id }, h('td', { class: 'c-no', text: String(no) }));
   const qtyF = state.canWrite ? qtyFieldOf(C) : null;
   for (const f of C.schema) {
     if (qtyF && f.id === qtyF.id) { tr.append(qtyCell(row, f, name)); continue; }
     const c = cellOf(row, f);
     const isTitle = titleF && f.id === titleF.id;
     let td;
-    if (f.kind === 'text') td = h('td', { class: isTitle ? 'c-title' : 'c-text', text: c.text, 'data-label': isTitle ? null : f.label });
-    else if (c.err) td = h('td', { class: 'num', 'data-label': unitLabel(f) }, h('span', { class: 'cell-err', title: c.err, text: '計算エラー' }));
-    else td = h('td', { class: 'num' + (f.kind === 'formula' ? ' c-calc' : ''), text: fmtNum(c.num, f), 'data-label': unitLabel(f) });
+    if (f.kind === 'text' && isTitle && state.canWrite) {
+      td = h('td', { class: 'c-title', title: c.text.length > 24 ? c.text : null },
+        h('button', { type: 'button', class: 'title-btn', 'data-act': 'edit', 'data-id': it.id, 'aria-label': `${c.text || '品名なし'}（修正）` },
+          h('span', { class: 'clamp', text: c.text }), icon('M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16z', 14)));
+    } else if (f.kind === 'text') td = h('td', { class: isTitle ? 'c-title' : 'c-text', 'data-label': isTitle ? null : f.label, title: c.text.length > 24 ? c.text : null }, h('span', { class: 'clamp', text: c.text }));
+    else if (c.err) td = h('td', { class: 'num', 'data-label': f.label }, h('span', { class: 'cell-err', title: c.err, text: '計算エラー' }));
+    else td = h('td', { class: 'num' + (f.kind === 'formula' ? ' c-calc' : ''), text: fmtNum(c.num, f), 'data-label': f.label, 'data-unit': f.unit || null });
     if (!isTitle && !c.err && (f.kind === 'text' ? !c.text : c.num == null)) td.classList.add('is-empty');
     tr.append(td);
   }
@@ -2204,10 +2273,16 @@ function renderTable(cur, rows, C) {
     const tr = h('tr', null, h('td', { class: 'ft-label', colspan: String(firstIdx + 1), text: q ? `合計（${shown.length}件）` : '合計' }));
     C.schema.slice(firstIdx).forEach((f) => {
       const t = totals.get(f.id);
-      tr.append(t ? h('td', { class: 'num', 'data-label': unitLabel(f), text: fmtNum(t.sum, f) || '0' }) : h('td', { class: 'ft-blank' }));
+      tr.append(t ? h('td', { class: 'num', 'data-label': f.label, 'data-unit': f.unit || null, text: fmtNum(t.sum, f) || '0' }) : h('td', { class: 'ft-blank' }));
     });
     tr.append(h('td', { class: 'ft-blank' }));
     el.tfoot.replaceChildren(tr);
+  }
+  // 登録した備品の行を見える位置まで送り、少しのあいだ色を付ける
+  if (reveal) {
+    const row = el.rows.querySelector(`tr[data-id="${CSS.escape(reveal.id)}"]`);
+    if (row) { reveal = null; row.classList.add('just-added'); row.scrollIntoView({ block: 'nearest' }); }
+    else if (Date.now() > reveal.until) reveal = null;
   }
   if (pendingFocus) {
     const b = el.rows.querySelector(pendingFocus);
@@ -2256,6 +2331,8 @@ function selectFile(id) {
   el.search.value = '';
   try { localStorage.setItem(LS_FILE, id); } catch (e) {}
   render();
+  el.tableWrap.scrollTop = 0;
+  updateToTop();
   const b = el.fileList.querySelector('.file-btn[aria-current="true"]');
   if (b) {
     const box = el.fileList;
@@ -2287,6 +2364,8 @@ function flipTo(id) {
   ghost.style.width = sheet.offsetWidth + 'px';
   ghost.style.height = sheet.offsetHeight + 'px';
   el.stage.append(ghost);
+  const gw = ghost.querySelector('.table-wrap');
+  if (gw) gw.scrollTop = el.tableWrap.scrollTop;
   selectFile(id);
   const turn = (deg) => `perspective(2400px) rotateY(${deg}deg)`;
   const opts = { duration: 640, easing: 'cubic-bezier(.45,.05,.25,1)' };
@@ -2382,6 +2461,8 @@ function openItemDialog(id) {
   el.itemTitle.textContent = it ? '備品の編集' : '備品の追加';
   el.itemSaveNext.hidden = !!it;
   el.itemSave.textContent = it ? '保存' : '登録';
+  ifx.del.hidden = !it;
+  showItemFoot(false);
   el.itemError.textContent = '';
   const nodes = C.schema.map((f) => {
     const raw = it ? it.values[f.id] : undefined;
@@ -2441,7 +2522,8 @@ el.itemForm.addEventListener('submit', async (e) => {
       await api.updateItem(orig.id, data);
       toast(moved ? `${target.name}に移動しました` : '保存しました');
     } else {
-      await api.addItem(data);
+      const newItemId = await api.addItem(data);
+      if (target.id === cur.id && newItemId) reveal = { id: newItemId, until: Date.now() + 5000 };
       toast(target.id === cur.id ? '登録しました' : `${target.name}に登録しました`);
     }
     render();
@@ -2502,6 +2584,25 @@ el.sort.addEventListener('change', () => {
   state.sort = el.sort.value;
   try { localStorage.setItem(LS_SORT, state.sort); } catch (e) {}
   render();
+});
+
+// 修正画面からの削除（スマートフォンでは一覧に削除ボタンを出さないため、ここから削除する）
+const ifx = { del: $('#if-delete'), normal: $('#if-foot-normal'), confirm: $('#if-foot-confirm'), text: $('#if-confirm-text'), yes: $('#if-delete-yes'), no: $('#if-delete-no') };
+function showItemFoot(confirming) { ifx.normal.hidden = confirming; ifx.confirm.hidden = !confirming; }
+ifx.del.addEventListener('click', () => {
+  const it = itemCtx && state.items.find((x) => x.id === itemCtx.id);
+  if (!it) return;
+  const tf = titleFieldOf(calc());
+  const name = tf ? String(it.values[tf.id] ?? '') : '';
+  ifx.text.textContent = `${name ? `「${name}」` : 'この備品'}を削除します。元に戻せません。`;
+  showItemFoot(true);
+  ifx.no.focus();
+});
+ifx.no.addEventListener('click', () => { showItemFoot(false); ifx.del.focus(); });
+ifx.yes.addEventListener('click', async () => {
+  const it = itemCtx && state.items.find((x) => x.id === itemCtx.id);
+  closeDialog(el.itemDialog);
+  if (it) await doDelete(it);
 });
 
 /* ---------- file dialog ---------- */
@@ -4100,6 +4201,29 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) flush
   $('#update-reload').addEventListener('click', () => location.reload());
   $('#update-later').addEventListener('click', () => { bar.hidden = true; last = Date.now() + 25 * 60 * 1000; });
 })();
+
+/* ---------- back to the top of a long list ---------- */
+// パソコンでは一覧の中、スマートフォンでは画面全体がスクロールする。先へ進んだら「一覧の先頭へ」を出す
+const toTop = $('#to-top');
+function listScroller() {
+  const w = el.tableWrap;
+  return !w.hidden && getComputedStyle(w).overflowY === 'auto' && w.scrollHeight > w.clientHeight + 1 ? w : null;
+}
+function updateToTop() {
+  const sc = listScroller();
+  toTop.hidden = !(sc ? sc.scrollTop > 600 : window.scrollY > 900);
+}
+el.tableWrap.addEventListener('scroll', updateToTop, { passive: true });
+window.addEventListener('scroll', updateToTop, { passive: true });
+window.addEventListener('resize', updateToTop);
+toTop.addEventListener('click', () => {
+  const behavior = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  const sc = listScroller();
+  if (sc) sc.scrollTo({ top: 0, behavior });
+  else window.scrollTo({ top: Math.max(0, el.sheet.getBoundingClientRect().top + window.scrollY - 8), behavior });
+  toTop.hidden = true;
+  el.search.focus({ preventScroll: true });
+});
 
 /* ---------- manual ---------- */
 // 説明書の中で目次・章へ移る（アドレスは変えずに、説明書の中だけをスクロールする）
