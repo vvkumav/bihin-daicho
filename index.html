@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="8c9371196ee9"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="b120b465cca9"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -842,7 +842,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
           大きく表示
         </button>
-        <p class="ex-note">受け取る端末で<b>「QRで共有」→「QRを読み取る」</b>を開き、このQRコードにカメラを向けてください。読み取りにくい場合は「大きく表示」を押し、カメラを近づけてください。</p>
+        <p class="ex-note">受け取るスマートフォンの<b>標準のカメラ</b>でこのQRコードを読み取り、表示されたリンクを開いてください。公開版のアプリが開き、取り込みの確認画面が表示されます。読み取りにくい場合は「大きく表示」を押してください。</p>
         <div class="sh-zoom-view" id="sh-zoom-view" hidden>
           <canvas id="sh-qr-big" role="img" aria-label="共有用のQRコード（拡大）"></canvas>
           <button type="button" class="btn" id="sh-zoom-close">元に戻す</button>
@@ -896,7 +896,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第1.3版　2026年11月20日</p>
+        <p class="m-meta">第1.4版　2026年11月21日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -1258,11 +1258,11 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <p class="m-note"><span class="m-note-label">補足</span>備品の件数が非常に多く1つのQRコードに収まらない場合に限り、複数のQRコードに分けて自動で切り替えて表示します。</p>
           <h4>10.2　QRコードを読み取る（受け取る側）</h4>
           <ol class="m-steps">
-            <li><span class="ui">QRで共有</span>をクリックし、<span class="ui">QRを読み取る（受け取る）</span>を選択します。</li>
-            <li>カメラが起動したら、送る側のQRコードを枠の中に写します。カメラを使用できない場合は、<span class="ui">画像から読み取る</span>で、QRコードを撮影した写真または画面の画像を選択します。</li>
+            <li>受け取る側のスマートフォンの標準のカメラで、送る側のQRコードを読み取り、表示されたリンクを開きます。公開版のアプリが開き、読み取ったデータの内容が表示されます。</li>
             <li>読み取ったデータの内容と、取り込んだ場合に上書き・削除される内容を確認し、<span class="ui">取り込み方法</span>を選択します。</li>
             <li><span class="ui">取り込む</span>をクリックします。</li>
           </ol>
+          <p class="m-note"><span class="m-note-label">補足</span>本アプリの<span class="ui">QRで共有</span>→<span class="ui">QRを読み取る（受け取る）</span>からも読み取れます（アプリ内のカメラ、またはQRコードを撮影した画像を使用）。リンクから開いた場合、データはその端末の公開版に取り込まれます。</p>
           <h4>10.3　取り込み方法</h4>
           <table class="m-table">
             <thead><tr><th scope="col">取り込み方法</th><th scope="col">内容</th></tr></thead>
@@ -1274,10 +1274,10 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <p class="m-note"><span class="m-note-label">補足</span>「項目と計算式」も受け取った内容に合わせます。「受け取った内容で更新」の場合、この端末にのみ存在する項目は残ります。</p>
           <h4>10.4　留意事項</h4>
           <ul>
-            <li>QRコードには登録内容そのものが含まれます。関係者以外に見せたり、QRコードを写した画像を共有したりしないでください。</li>
+            <li>QRコードには、公開版のURLと登録内容そのものが含まれます。関係者以外に見せたり、QRコードを写した画像やリンクを共有したりしないでください。</li>
             <li>共有されるのは、その時点の内容です。共有後の変更は、改めて共有するまで相手の端末には反映されません。</li>
             <li>備品の件数が多いほどQRコードが細かくなり、読み取りにくくなります。<span class="ui">大きく表示</span>を使用し、カメラを近づけて写してください。</li>
-            <li>カメラの使用には、ブラウザでの許可が必要です。claude.ai上で利用する場合など、カメラを使用できない環境では<span class="ui">画像から読み取る</span>を使用してください。</li>
+            <li>アプリ内のカメラの使用には、ブラウザでの許可が必要です。カメラを使用できない環境では、スマートフォンの標準のカメラ、または<span class="ui">画像から読み取る</span>を使用してください。</li>
           </ul>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
@@ -1294,7 +1294,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td>ローカル版のデータが消えた</td><td>ブラウザの閲覧データが削除された</td><td>復元はできません。定期的に帳票を出力するか、QRコードで別の端末に控えを残してください（<a href="#m-share" data-jump="m-share">10章</a>）。</td></tr>
               <tr><td>新しいファイルの色が自動で設定される</td><td>判別しやすい色を自動で選択する仕様</td><td><span class="ui">ファイル設定</span>で任意の色に変更できます。</td></tr>
               <tr><td>カメラが起動しない</td><td>ブラウザでカメラの使用が許可されていない、またはカメラを使用できない環境</td><td>ブラウザの設定でカメラを許可してください。許可できない場合は、QRコードを撮影した画像を<span class="ui">画像から読み取る</span>で読み取ってください。</td></tr>
-              <tr><td>QRコードが読み取れない</td><td>画面の明るさ・距離・反射、またはQRコードが細かい</td><td>送る側で<span class="ui">大きく表示</span>をクリックし、画面を明るくして、カメラを近づけて写してください。読み取れない場合は、QRコードを撮影した写真を<span class="ui">画像から読み取る</span>で読み取ってください。</td></tr>
+              <tr><td>QRコードが読み取れない・スマートフォンが反応しない</td><td>画面の明るさ・距離・反射、またはQRコードが細かい</td><td>送る側で<span class="ui">大きく表示</span>をクリックし、画面を明るくして、QRコード全体が画面に収まる距離で写してください。スマートフォンの標準のカメラで読み取ると、リンクが表示されます。</td></tr>
               <tr><td>「このアプリのQRコードではありません」と表示される</td><td>本アプリ以外で作成されたQRコードを読み取った</td><td>送る側の<span class="ui">QRで共有</span>で表示したQRコードを読み取ってください。</td></tr>
               <tr><td>画面下部に「アプリの新しい版が公開されました」と表示される</td><td>公開版が更新された</td><td><span class="ui">再読み込み</span>をクリックしてください。登録内容はそのまま残ります。</td></tr>
               <tr><td>数量の欄に入力した値が元に戻る</td><td>数値以外の文字、または負の数を入力した</td><td>0以上の数値を入力してください。全角数字も入力できます。</td></tr>
@@ -3386,14 +3386,18 @@ el.pdf.addEventListener('click', openExportDialog);
 
 /* ---------- QR share ---------- */
 // この端末のデータ（ファイル・備品・項目と計算式）を1つのQRコードにして、別の端末へ渡す。
-// データは小さな形に詰めて圧縮する。1つに収まらないほど多いときだけ、複数に分けて切り替えて表示する。
+// QRコードの中身は「公開版のURL＋#D＋データ」。スマートフォンの標準のカメラで読み取ると公開版が開き、取り込みの確認画面が出る。
+// データは小さな形に詰めて圧縮し、QRコードの英数字モードで効率よく入る43文字（0-9 A-Z $*+-./:）で表す。
+const PUBLIC_URL = 'https://vvkumav.github.io/bihin-daicho/';
 const QR_GEN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';
 const QR_READ_URL = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
-const QR_CHUNK = 1200;      // 1つに収まらないときの1枚あたりのデータ量（バイト）
+const QR_CHUNK = 1000;      // 1つに収まらないときの1枚あたりのデータ量（バイト）
 const QR_MAX_PARTS = 200;
 const QR_INTERVAL = 1500;   // 複数枚のときに自動で切り替える間隔（ミリ秒）
 const SHARE_APP = 'bihin-daicho';
 const FILE_ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
+const B43 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$*+-./:';
+const SHARE_RE = /#([DP])([0-9A-Z$*+\-./:]+)\s*$/;
 const sh = {
   btn: $('#share-btn'), dialog: $('#share-dialog'),
   tabShow: $('#sh-tab-show'), tabRead: $('#sh-tab-read'), panelShow: $('#sh-show'), panelRead: $('#sh-read'),
@@ -3405,7 +3409,7 @@ const sh = {
   result: $('#sh-result'), resultText: $('#sh-result-text'), effect: $('#sh-effect'),
   error: $('#share-error'), importBtn: $('#sh-import'), again: $('#sh-again'),
 };
-const share = { tab: 'show', parts: [], index: 0, qr: null, timer: 0, gen: 0, stream: null, scanTimer: 0, scanTick: 0, got: null, finishing: false, payload: null, busy: false, hintTimer: 0 };
+const share = { tab: 'show', parts: [], index: 0, qr: null, timer: 0, gen: 0, stream: null, scanTimer: 0, scanTick: 0, detector: undefined, got: null, finishing: false, payload: null, busy: false, hintTimer: 0 };
 class ShareError extends Error {}
 
 // 送るデータ（版2）：項目と計算式は初期設定なら 0、備品は入力項目の値だけを項目の順に並べる（登録日時は順番だけ残す）
@@ -3488,36 +3492,64 @@ async function unpackShare(bytes) {
     if (typeof DecompressionStream !== 'function') throw new ShareError('このブラウザでは読み取れません。最新のブラウザでお試しください');
     try { raw = await streamBytes(bytes.subarray(1), new DecompressionStream('deflate')); } catch (e) { throw new ShareError(broken); }
   } else if (bytes[0] === 0) raw = bytes.subarray(1);
-  else throw new ShareError('このアプリのQRコードではありません');
+  else throw new ShareError(broken);
   try { return JSON.parse(new TextDecoder().decode(raw)); } catch (e) { throw new ShareError(broken); }
 }
-// 1枚の中身：'B' 'D' 版 識別子(3) 何枚目 全枚数 ＋ データ
-function frameParts(bytes, chunk) {
-  const total = Math.max(1, Math.ceil(bytes.length / chunk));
+// 2バイトを3文字（43進数）に。余りの1バイトは2文字
+function b43enc(bytes) {
+  let s = '';
+  for (let i = 0; i + 1 < bytes.length; i += 2) {
+    let n = bytes[i] * 256 + bytes[i + 1];
+    s += B43[n % 43]; n = Math.floor(n / 43);
+    s += B43[n % 43]; s += B43[Math.floor(n / 43)];
+  }
+  if (bytes.length % 2) { const n = bytes[bytes.length - 1]; s += B43[n % 43] + B43[Math.floor(n / 43)]; }
+  return s;
+}
+function b43dec(s) {
+  if (s.length % 3 === 1) return null;
+  const out = new Uint8Array(Math.floor(s.length / 3) * 2 + (s.length % 3 ? 1 : 0));
+  let o = 0;
+  for (let i = 0; i < s.length; i += 3) {
+    const c = [...s.slice(i, i + 3)].map((ch) => B43.indexOf(ch));
+    if (c.some((x) => x < 0)) return null;
+    if (c.length === 3) {
+      const n = c[0] + c[1] * 43 + c[2] * 1849;
+      if (n > 65535) return null;
+      out[o++] = n >> 8; out[o++] = n & 255;
+    } else {
+      const n = c[0] + c[1] * 43;
+      if (n > 255) return null;
+      out[o++] = n;
+    }
+  }
+  return out;
+}
+// QRコードの中身。1つなら「URL#D＋データ」、多すぎるときだけ「URL#P＋識別子・何枚目・全枚数＋データの一部」
+function qrTexts(packed) {
+  const one = [{ prefix: PUBLIC_URL + '#', body: 'D' + b43enc(packed) }];
+  try { makeQr(one[0]); return one; } catch (e) { /* 1つに収まらない */ }
+  const total = Math.ceil(packed.length / QR_CHUNK);
   if (total > QR_MAX_PARTS) return null;
   const sid = crypto.getRandomValues(new Uint8Array(3));
   const parts = [];
   for (let i = 0; i < total; i++) {
-    const body = bytes.subarray(i * chunk, (i + 1) * chunk);
-    const p = new Uint8Array(8 + body.length);
-    p.set([0x42, 0x44, 1, sid[0], sid[1], sid[2], i, total]);
-    p.set(body, 8);
-    parts.push(p);
+    const head = b43enc(Uint8Array.from([sid[0], sid[1], sid[2], i, total]));   // 8文字
+    parts.push({ prefix: PUBLIC_URL + '#', body: 'P' + head + b43enc(packed.subarray(i * QR_CHUNK, (i + 1) * QR_CHUNK)) });
   }
   return parts;
 }
-function makeQr(bytes) {
-  let s = '';
-  for (const b of bytes) s += String.fromCharCode(b);
-  const qr = window.qrcode(0, 'L');   // 画面に表示するだけなので誤り訂正は最小にして、できるだけ粗いQRコードにする
-  qr.addData(s, 'Byte');
-  qr.make();
-  return qr;
-}
-// できるだけ1つにする。収まらないときだけ分ける
-function qrParts(packed) {
-  const one = frameParts(packed, packed.length || 1);
-  try { makeQr(one[0]); return one; } catch (e) { return frameParts(packed, QR_CHUNK); }
+function makeQr(part) {
+  const build = (type) => {
+    const qr = window.qrcode(type, 'L');   // 画面に表示するだけなので誤り訂正は最小にして、できるだけ粗いQRコードにする
+    qr.addData(part.prefix, 'Byte');
+    qr.addData(part.body, 'Alphanumeric');
+    qr.make();
+    return qr;
+  };
+  const qr = build(0);
+  // アプリ内の読み取りに使う jsQR 1.4.0 は 23 型（109×109）の位置合わせの目印の位置を誤っていて読めない。その大きさになるときは 24 型にする
+  return qr.getModuleCount() === 109 ? build(24) : qr;
 }
 
 /* show */
@@ -3572,7 +3604,7 @@ async function prepareShow() {
   let parts;
   try {
     await loadScript(QR_GEN_URL);
-    parts = qrParts(await packShare(data));
+    parts = qrTexts(await packShare(data));
   } catch (e) {
     if (gen === share.gen) setBoxMsg('QRコードの機能を読み込めませんでした。インターネット接続を確認してください');
     return;
@@ -3618,22 +3650,31 @@ function resetRead() {
   renderProgress();
   renderCamBtn();
 }
+// 端末に備わったQRコードの読み取り機能（Android の Chrome など）があれば使う。なければ jsQR
+async function getDetector() {
+  if (share.detector !== undefined) return share.detector;
+  share.detector = null;
+  try {
+    if ('BarcodeDetector' in window && (await window.BarcodeDetector.getSupportedFormats()).includes('qr_code')) share.detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+  } catch (e) { share.detector = null; }
+  return share.detector;
+}
 const camAvailable = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) && window.isSecureContext !== false;
 async function startCamera() {
   if (share.stream || share.payload) return;
-  if (!camAvailable()) { setCamMsg('この画面ではカメラを使えません。「画像から読み取る」を使ってください（スマートフォンでは、その場で写真を撮って読み取れます）'); return; }
+  if (!camAvailable()) { setCamMsg('この画面ではカメラを使えません。スマートフォンの標準のカメラでQRコードを読み取るか、「画像から読み取る」を使ってください'); return; }
   setCamMsg('カメラを起動しています…');
-  try { await loadScript(QR_READ_URL); } catch (e) { setCamMsg('読み取り機能を読み込めませんでした。インターネット接続を確認してください'); return; }
+  try { if (!(await getDetector())) await loadScript(QR_READ_URL); } catch (e) { setCamMsg('読み取り機能を読み込めませんでした。インターネット接続を確認してください'); return; }
   let stream;
   try {
     stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } } });
   } catch (e) {
     const n = e && e.name;
     setCamMsg(n === 'NotAllowedError' || n === 'SecurityError'
-      ? 'カメラの使用が許可されていません。ブラウザでカメラを許可するか、「画像から読み取る」を使ってください'
+      ? 'カメラの使用が許可されていません。スマートフォンの標準のカメラでQRコードを読み取るか、「画像から読み取る」を使ってください'
       : n === 'NotFoundError' || n === 'OverconstrainedError'
         ? 'カメラが見つかりません。「画像から読み取る」を使ってください'
-        : 'カメラを起動できませんでした。「画像から読み取る」を使ってください');
+        : 'カメラを起動できませんでした。スマートフォンの標準のカメラでQRコードを読み取るか、「画像から読み取る」を使ってください');
     return;
   }
   if (!sh.dialog.open || share.tab !== 'read' || share.payload || share.finishing || share.stream) { stream.getTracks().forEach((t) => t.stop()); return; }
@@ -3654,62 +3695,81 @@ function stopCamera() {
   renderCamBtn();
 }
 const scanCanvas = document.createElement('canvas');
-// 画像の一部（sx, sy, sw, sHt）を w×ht に縮めて読む。指定がなければ全体
+// 画像の一部（sx, sy, sw, sHt）を w×ht に縮めて jsQR で読む。指定がなければ全体
 function decodeFrom(src, w, ht, both, sx, sy, sw, sHt) {
   scanCanvas.width = w; scanCanvas.height = ht;
   const ctx = scanCanvas.getContext('2d', { willReadFrequently: true });
   if (sw) ctx.drawImage(src, sx, sy, sw, sHt, 0, 0, w, ht);
   else ctx.drawImage(src, 0, 0, w, ht);
-  return window.jsQR(ctx.getImageData(0, 0, w, ht).data, w, ht, { inversionAttempts: both ? 'attemptBoth' : 'dontInvert' });
+  const code = window.jsQR(ctx.getImageData(0, 0, w, ht).data, w, ht, { inversionAttempts: both ? 'attemptBoth' : 'dontInvert' });
+  return code ? code.data : null;
 }
-// 全体を縮めて読む回と、中央を細かく読む回を交互に行う（データの多い細かなQRコードは中央の高解像度で読める）
-function scanFrame() {
+async function detectText(src) {
+  const det = share.detector;
+  if (!det) return null;
+  const codes = await det.detect(src);
+  const hit = codes.find((c) => SHARE_RE.test(c.rawValue || '')) || codes[0];
+  return hit ? hit.rawValue : null;
+}
+async function scanFrame() {
   if (!share.stream) return;
   const v = sh.video;
   if (v.readyState >= 2 && v.videoWidth) {
-    const vw = v.videoWidth, vh = v.videoHeight;
     try {
-      let code;
-      if (share.scanTick++ % 2) {
-        const side = Math.round(Math.min(vw, vh) * 0.9), out = Math.min(1100, side);
-        code = decodeFrom(v, out, out, false, (vw - side) / 2, (vh - side) / 2, side, side);
-      } else {
-        const s = Math.min(1, 800 / Math.max(vw, vh));
-        code = decodeFrom(v, Math.round(vw * s), Math.round(vh * s), false);
+      let text = null;
+      if (share.detector) text = await detectText(v);
+      else {
+        const vw = v.videoWidth, vh = v.videoHeight;
+        // 全体を縮めて読む回と、中央を細かく読む回を交互に（細かなQRコードは中央の高解像度で読める）
+        if (share.scanTick++ % 2) {
+          const side = Math.round(Math.min(vw, vh) * 0.9), out = Math.min(1100, side);
+          text = decodeFrom(v, out, out, false, (vw - side) / 2, (vh - side) / 2, side, side);
+        } else {
+          const s = Math.min(1, 800 / Math.max(vw, vh));
+          text = decodeFrom(v, Math.round(vw * s), Math.round(vh * s), false);
+        }
       }
-      if (code) takeCode(code);
+      if (text) takeText(text);
     } catch (e) {}
   }
   if (share.stream) share.scanTimer = setTimeout(scanFrame, 100);
 }
-// 読み取った1枚を受け取る。このアプリのQRコードなら true
-function takeCode(code) {
+// 読み取った文字を受け取る。このアプリのQRコードなら true
+function takeText(text) {
   if (share.payload || share.finishing) return true;
-  const b = code && code.binaryData ? Uint8Array.from(code.binaryData) : new Uint8Array(0);
-  if (b.length < 9 || b[0] !== 0x42 || b[1] !== 0x44) { flashHint('このアプリのQRコードではありません'); return false; }
-  if (b[2] !== 1) { flashHint('新しい版のアプリで作られたQRコードです。ページを再読み込みしてください'); return false; }
-  const sid = `${b[3]}-${b[4]}-${b[5]}`, idx = b[6], total = b[7];
-  if (!total || idx >= total) return false;
+  const m = SHARE_RE.exec(String(text || ''));
+  if (!m) { flashHint('このアプリのQRコードではありません'); return false; }
+  if (m[1] === 'D') {
+    const bytes = b43dec(m[2]);
+    if (!bytes) { sh.error.textContent = '読み取ったデータが壊れています。もう一度読み取ってください'; return true; }
+    finishRead(bytes);
+    return true;
+  }
+  const head = b43dec(m[2].slice(0, 8)), body = b43dec(m[2].slice(8));
+  if (!head || head.length !== 5 || !body) { flashHint('読み取れませんでした。もう一度写してください'); return true; }
+  const sid = `${head[0]}-${head[1]}-${head[2]}`, idx = head[3], total = head[4];
+  if (!total || idx >= total) return true;
   if (!share.got || share.got.sid !== sid || share.got.total !== total) share.got = { sid, total, count: 0, parts: new Array(total).fill(null) };
   const g = share.got;
   if (!g.parts[idx]) {
-    g.parts[idx] = b.slice(8);
+    g.parts[idx] = body;
     g.count++;
     renderProgress();
     try { if (navigator.vibrate) navigator.vibrate(25); } catch (e) {}
   }
-  if (g.count === g.total) finishRead();
+  if (g.count === g.total) {
+    const all = new Uint8Array(g.parts.reduce((s, p) => s + p.length, 0));
+    let o = 0;
+    for (const p of g.parts) { all.set(p, o); o += p.length; }
+    finishRead(all);
+  }
   return true;
 }
-async function finishRead() {
-  const g = share.got;
+async function finishRead(bytes) {
   share.finishing = true;
   stopCamera();
-  const all = new Uint8Array(g.parts.reduce((s, p) => s + p.length, 0));
-  let o = 0;
-  for (const p of g.parts) { all.set(p, o); o += p.length; }
   try {
-    share.payload = readShare(await unpackShare(all));
+    share.payload = readShare(await unpackShare(bytes));
   } catch (e) {
     share.got = null;
     renderProgress();
@@ -3835,26 +3895,29 @@ async function readImages(files) {
   if (!files.length || share.payload) return;
   stopCamera();
   sh.error.textContent = '';
-  try { await loadScript(QR_READ_URL); } catch (e) { sh.error.textContent = '読み取り機能を読み込めませんでした。インターネット接続を確認してください'; return; }
+  try { if (!(await getDetector())) await loadScript(QR_READ_URL); } catch (e) { sh.error.textContent = '読み取り機能を読み込めませんでした。インターネット接続を確認してください'; return; }
   setCamMsg('画像を読み取っています…');
   let found = 0, other = 0;
   for (const f of files) {
     if (share.payload || share.finishing) break;
     let src;
     try { src = await loadImageSource(f); } catch (e) { continue; }
+    let text = null;
+    try { text = await detectText(src); } catch (e) {}
+    if (!text && !window.jsQR) { try { await loadScript(QR_READ_URL); } catch (e) {} }
     const w0 = src.width, h0 = src.height;
     for (const max of [1000, 1800, 2600, 4000]) {
+      if (text || !window.jsQR) break;
       const s = Math.min(1, max / Math.max(w0, h0));
-      let code = null;
-      try { code = decodeFrom(src, Math.max(1, Math.round(w0 * s)), Math.max(1, Math.round(h0 * s)), true); } catch (e) {}
-      if (code) { if (takeCode(code)) found++; else other++; break; }
+      try { text = decodeFrom(src, Math.max(1, Math.round(w0 * s)), Math.max(1, Math.round(h0 * s)), true); } catch (e) {}
       if (s === 1) break;
     }
+    if (text) { if (takeText(text)) found++; else other++; }
     if (src.close) src.close();
   }
   if (!share.payload && !share.finishing) {
     setCamMsg('');
-    if (!found) sh.error.textContent = other ? 'このアプリのQRコードではありません' : '画像からQRコードを読み取れませんでした。QRコード全体がはっきり写った画像を選んでください';
+    if (!found && !sh.error.textContent) sh.error.textContent = other ? 'このアプリのQRコードではありません' : '画像からQRコードを読み取れませんでした。QRコード全体がはっきり写った画像を選んでください';
     else if (share.got && share.got.count < share.got.total) flashHint(`あと ${share.got.total - share.got.count}枚です。残りのQRコードも読み取ってください`);
   }
 }
@@ -3890,6 +3953,30 @@ function openShareDialog(tab = 'show') {
   setTab(tab);
   (tab === 'show' ? sh.tabShow : sh.tabRead).focus();
 }
+// 標準のカメラでQRコードを読み取って開いたとき（URLの末尾に #D… が付いている）：取り込みの確認画面を出す
+function openFromLink() {
+  const hash = location.hash || '';
+  if (!SHARE_RE.test(hash)) return;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}   // 再読み込みで繰り返さない
+  const go = () => {
+    if (!isLoaded()) { setTimeout(go, 100); return; }
+    if (sh.dialog.open) closeDialog(sh.dialog);
+    sh.dialog.className = 'modal fc-' + colorOf(currentFile());
+    share.parts = []; share.qr = null;
+    resetRead();
+    setCamMsg('');
+    openDialog(sh.dialog);
+    share.tab = 'read';
+    sh.tabShow.setAttribute('aria-selected', 'false'); sh.tabRead.setAttribute('aria-selected', 'true');
+    sh.tabShow.tabIndex = -1; sh.tabRead.tabIndex = 0;
+    sh.panelShow.hidden = true; sh.panelRead.hidden = false;
+    takeText(hash);
+    // 複数枚のうち1枚目だけを開いたときは、残りをカメラで読み取る
+    if (!share.payload && !share.finishing && share.got) { flashHint(`あと ${share.got.total - share.got.count}枚です。残りのQRコードを読み取ってください`); startCamera(); }
+  };
+  go();
+}
+window.addEventListener('hashchange', openFromLink);
 sh.btn.addEventListener('click', () => openShareDialog('show'));
 sh.tabShow.addEventListener('click', () => setTab('show'));
 sh.tabRead.addEventListener('click', () => setTab('read'));
@@ -3917,7 +4004,8 @@ sh.dialog.addEventListener('cancel', (e) => {
   if (share.busy) e.preventDefault();
   else if (!sh.zoomView.hidden) { e.preventDefault(); setZoom(false); }   // Esc は拡大表示を閉じるだけ
 });
-sh.dialog.addEventListener('close', () => { stopCycle(); stopCamera(); share.gen++; share.payload = null; share.got = null; sh.zoomView.hidden = true; });
+// 「閉じた」の知らせは少し遅れて届く。その間に開き直していたら（リンクから開いた場合など）何もしない
+sh.dialog.addEventListener('close', () => { if (sh.dialog.open) return; stopCycle(); stopCamera(); share.gen++; share.payload = null; share.got = null; sh.zoomView.hidden = true; });
 document.addEventListener('visibilitychange', () => { if (document.hidden && share.stream) { stopCamera(); setCamMsg('カメラを止めました。「カメラで読み取る」で再開します'); } });
 
 /* ---------- quantity in the list ---------- */
@@ -4047,6 +4135,7 @@ document.addEventListener('click', (e) => {
 })();
 
 boot();
+openFromLink();
 </script>
 
 </body></html>
