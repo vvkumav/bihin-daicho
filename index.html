@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="79332339518f"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="e0803524ad94"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -221,6 +221,9 @@ dialog.modal::backdrop{background:var(--scrim)}
 .calc-out{min-height:42px;display:flex;align-items:center;justify-content:flex-end;padding:0 12px;border-radius:var(--r-sm);background:var(--fc-soft);color:var(--fc-ink);font-family:var(--round);font-weight:700;font-size:19px;font-variant-numeric:tabular-nums}
 .calc-out.is-err{justify-content:flex-start;background:var(--danger-soft);color:var(--danger-text);font-family:var(--font);font-size:14px}
 .calc-hint{margin:0;font-size:14px;color:var(--ink-2);overflow-wrap:anywhere}
+.num-eval{margin:0;font-family:var(--round);font-size:15px;font-weight:700;color:var(--fc-ink);text-align:right}
+.num-eval:empty{display:none}
+.num-eval.is-err{font-family:var(--font);font-size:13px;font-weight:400;color:var(--danger-text);text-align:left}
 .check{display:flex;align-items:center;gap:10px;cursor:pointer;min-height:42px}
 .check input{width:20px;height:20px;accent-color:var(--fc-btn);margin:0;flex:none}
 .form-error{margin:0;color:var(--danger-text);font-weight:700;font-size:14px;white-space:pre-line}
@@ -951,7 +954,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第1.5版　2026年11月21日</p>
+        <p class="m-meta">第1.6版　2026年11月23日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -1138,6 +1141,8 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <h4>4.2　入力規則</h4>
           <ul>
             <li>入力が必須の項目は<span class="ui">品名</span>のみです。その他の項目は省略でき、数量は登録後に一覧表で調整できます（<a href="#m-edit" data-jump="m-edit">5章</a>）。</li>
+            <li>数値項目には、計算式も入力できます。使用できる記号は「＋」「−」「×」（または「*」）「÷」（または「/」）「（ ）」です（例：「12+3」「2.5×4」「(10-2)÷4」）。入力欄の下に計算結果が表示され、登録時には計算結果が保存されます。</li>
+            <li>小数も入力できます（例：「2.5」）。入力した小数は、小数点以下4桁まで表示されます。</li>
             <li>数値項目は全角・半角のいずれでも入力できます。桁区切りのカンマ、「円」「¥」などの記号は自動的に除去されます（例：「¥12,800」「12800円」は、いずれも 12800 として登録されます）。</li>
             <li>登録先のファイルは、入力画面下部の<span class="ui">ファイル</span>で変更できます。</li>
           </ul>
@@ -1149,7 +1154,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <table class="m-table">
             <thead><tr><th scope="col">操作</th><th scope="col">手順</th></tr></thead>
             <tbody>
-              <tr><td>数量の調整</td><td>一覧表の数量欄の<span class="ui">＋</span>または<span class="ui">−</span>をクリックすると、1ずつ増減します。数値を直接入力し、Enterキーを押すか欄の外をクリックして確定することもできます。変更は直ちに保存されます。</td></tr>
+              <tr><td>数量の調整</td><td>一覧表の数量欄の<span class="ui">＋</span>または<span class="ui">−</span>をクリックすると、1ずつ増減します。数値または計算式（例：「12+3」「2.5×4」）を直接入力し、Enterキーを押すか欄の外をクリックして確定することもできます。小数も入力できます。変更は直ちに保存されます。</td></tr>
               <tr><td>修正</td><td>一覧表の品名、または行末の鉛筆アイコンをクリックし、内容を変更して<span class="ui">保存</span>をクリックします。</td></tr>
               <tr><td>他のファイルへの移動</td><td>修正画面の<span class="ui">ファイル</span>で移動先を選択し、<span class="ui">保存</span>をクリックします。</td></tr>
               <tr><td>削除</td><td>行末のごみ箱アイコンをクリックし、確認表示で<span class="ui">削除</span>をクリックします。<span class="ui">やめる</span>をクリックすると取り消せます。修正画面の<span class="ui">この備品を削除</span>からも削除できます（スマートフォンではこちらを使用します）。</td></tr>
@@ -1360,7 +1365,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td>QRコードが読み取れない・スマートフォンが反応しない</td><td>画面の明るさ・距離・反射、またはQRコードが細かい</td><td>送る側で<span class="ui">大きく表示</span>をクリックし、画面を明るくして、QRコード全体が画面に収まる距離で写してください。スマートフォンの標準のカメラで読み取ると、リンクが表示されます。</td></tr>
               <tr><td>「このアプリのQRコードではありません」と表示される</td><td>本アプリ以外で作成されたQRコードを読み取った</td><td>送る側の<span class="ui">QRで共有</span>で表示したQRコードを読み取ってください。</td></tr>
               <tr><td>画面下部に「アプリの新しい版が公開されました」と表示される</td><td>公開版が更新された</td><td><span class="ui">再読み込み</span>をクリックしてください。登録内容はそのまま残ります。</td></tr>
-              <tr><td>数量の欄に入力した値が元に戻る</td><td>数値以外の文字、または負の数を入力した</td><td>0以上の数値を入力してください。全角数字も入力できます。</td></tr>
+              <tr><td>数量の欄に入力した値が元に戻る</td><td>数値・計算式として読めない文字、0での割り算、または負の数を入力した</td><td>0以上の数値、または「＋」「−」「×」「÷」「（ ）」を使った計算式を入力してください。全角でも入力できます。</td></tr>
               <tr><td>本書を直接開きたい</td><td>―</td><td>本アプリのURLの末尾に <code>#manual</code> を付けて開くと、本書を表示した状態で起動します。</td></tr>
             </tbody>
           </table>
@@ -1548,7 +1553,9 @@ const newId = (prefix = '') => {
 function fmtNum(v, f) {
   if (v == null || !Number.isFinite(v)) return '';
   const d = f ? f.decimals || 0 : 0;
-  return (v === 0 ? 0 : v).toLocaleString('ja-JP', { minimumFractionDigits: d, maximumFractionDigits: d });
+  // 入力する数値（数量・単価など）は入力した小数をそのまま見せる（4桁まで）。計算結果は設定した桁数にそろえる
+  const max = f && f.kind === 'number' ? Math.max(d, 4) : d;
+  return (v === 0 ? 0 : v).toLocaleString('ja-JP', { minimumFractionDigits: d, maximumFractionDigits: max });
 }
 const withUnit = (v, f) => { const s = fmtNum(v, f); return s ? s + (f.unit || '') : ''; };
 const unitLabel = (f) => (f.unit ? `${f.label}（${f.unit}）` : f.label);
@@ -2404,15 +2411,53 @@ el.fileList.addEventListener('click', (e) => {
 /* ---------- item dialog ---------- */
 let itemCtx = null;
 
+// 数値の入力欄：全角・桁区切り・単位を許し、＋ − × ÷ （ ） の計算式も受け付ける（例：12+3、2.5×4、(10−2)÷4、=3*4）
 function parseNumInput(raw, f) {
-  let s = String(raw ?? '').replace(/[０-９．－＋，]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0)).replace(/−/g, '-');
+  let s = String(raw ?? '').replace(/[０-９．－＋，（）＊／]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
+    .replace(/[−–]/g, '-').replace(/[×xX]/g, '*').replace(/÷/g, '/');
   if (f.unit) s = s.split(f.unit).join('');
-  s = s.replace(/[,、¥￥円個点枚台本冊脚式\s]/g, '');
+  s = s.replace(/[,、¥￥円個点枚台本冊脚式\s]/g, '').replace(/^=/, '');
   if (s === '') return { empty: true };
-  if (!/^[-+]?(\d+\.?\d*|\.\d+)$/.test(s)) return { bad: true };
-  const n = Number(s);
-  return Number.isFinite(n) && Math.abs(n) < 1e15 ? { n } : { bad: true };
+  const ok = (n, expr) => (Number.isFinite(n) && Math.abs(n) < 1e15 ? { n: fix(n), expr } : { bad: true });
+  if (/^[-+]?(\d+\.?\d*|\.\d+)$/.test(s)) return ok(Number(s), false);
+  if (s.length > 200 || !/^[\d.+\-*/()]+$/.test(s)) return { bad: true };
+  try { return ok(evalArith(s), true); }
+  catch (e) { return { bad: true, zero: e === 'zero' }; }
 }
+// 四則演算だけを計算する（文字列を実行することはしない）
+function evalArith(s) {
+  let i = 0;
+  const num = () => {
+    const m = /^(\d+\.?\d*|\.\d+)/.exec(s.slice(i));
+    if (!m) throw 'syntax';
+    i += m[0].length;
+    return Number(m[0]);
+  };
+  const factor = () => {
+    if (s[i] === '+') { i++; return factor(); }
+    if (s[i] === '-') { i++; return -factor(); }
+    if (s[i] === '(') { i++; const v = expr(); if (s[i] !== ')') throw 'syntax'; i++; return v; }
+    return num();
+  };
+  const term = () => {
+    let v = factor();
+    while (s[i] === '*' || s[i] === '/') {
+      const op = s[i++], r = factor();
+      if (op === '/' && r === 0) throw 'zero';
+      v = op === '*' ? v * r : v / r;
+    }
+    return v;
+  };
+  const expr = () => {
+    let v = term();
+    while (s[i] === '+' || s[i] === '-') { const op = s[i++], r = term(); v = op === '+' ? v + r : v - r; }
+    return v;
+  };
+  const v = expr();
+  if (i !== s.length) throw 'syntax';
+  return v;
+}
+const numInputError = (f, r) => (r.zero ? `${f.label}：0で割ることはできません` : `${f.label}は数値か計算式（例：12+3、2.5×4）で入力してください`);
 
 function itemInput(f) { return document.getElementById('if-' + f.id); }
 
@@ -2428,7 +2473,7 @@ function readItemForm(C) {
       else if (f.required) errors.push({ f, msg: `${f.label}を入力してください` });
     } else {
       const r = parseNumInput(inp.value, f);
-      if (r.bad) errors.push({ f, msg: `${f.label}は数値で入力してください` });
+      if (r.bad) errors.push({ f, msg: numInputError(f, r) });
       else if (r.empty) { if (f.required) errors.push({ f, msg: `${f.label}を入力してください` }); }
       else values[f.id] = r.n;
     }
@@ -2440,6 +2485,15 @@ function updateItemCalc() {
   const C = calc();
   const { values } = readItemForm(C);
   const res = computeRow(values, C);
+  // 計算式で入力した数値は、その下に結果を出す
+  for (const f of C.schema) {
+    if (f.kind !== 'number') continue;
+    const ev = document.getElementById('if-eval-' + f.id), inp = itemInput(f);
+    if (!ev || !inp) continue;
+    const r = parseNumInput(inp.value, f);
+    ev.classList.toggle('is-err', !!r.bad);
+    ev.textContent = r.expr ? `＝ ${withUnit(r.n, f)}` : r.bad ? numInputError(f, r) : '';
+  }
   for (const f of C.schema) {
     if (f.kind !== 'formula') continue;
     const out = itemInput(f);
@@ -2474,8 +2528,9 @@ function openItemDialog(id) {
     if (f.kind === 'number') {
       return h('div', { class: 'field' }, label,
         h('div', { class: 'input-unit' },
-          h('input', { type: 'text', id: 'if-' + f.id, class: 'num-input', inputmode: 'decimal', value: raw == null || raw === '' ? '' : String(raw) }),
-          h('span', { text: f.unit || '', 'aria-hidden': f.unit ? null : 'true' })));
+          h('input', { type: 'text', id: 'if-' + f.id, class: 'num-input', inputmode: f.id === 'qty' ? null : 'decimal', value: raw == null || raw === '' ? '' : String(raw), 'aria-describedby': 'if-eval-' + f.id }),
+          h('span', { text: f.unit || '', 'aria-hidden': f.unit ? null : 'true' })),
+        h('p', { class: 'num-eval', id: 'if-eval-' + f.id, 'aria-live': 'polite' }));
     }
     return h('div', { class: 'field' },
       h('span', { class: 'label', id: 'if-label-' + f.id, text: f.label }),
@@ -3329,10 +3384,15 @@ async function buildXlsx(file, rows, C) {
   const ws = X.utils.aoa_to_sheet(aoa);
   fields.forEach((f, j) => {
     if (f.kind === 'text') return;
-    const fmt = f.decimals ? '#,##0.' + '0'.repeat(f.decimals) : '#,##0';
+    const d = f.decimals || 0;
+    const fixed = d ? '#,##0.' + '0'.repeat(d) : '#,##0';
     for (let r = headRow + 1; r < aoa.length; r++) {
       const cell = ws[X.utils.encode_cell({ r, c: j + 1 })];
-      if (cell && cell.t === 'n') cell.z = fmt;
+      if (!cell || cell.t !== 'n') continue;
+      // 入力した数値に小数があれば、その桁まで（4桁まで）表示する
+      const m = /\.(\d+)$/.exec(cell.v.toFixed(4).replace(/\.?0+$/, ''));
+      const extra = f.kind === 'number' && m ? m[1].length - d : 0;
+      cell.z = extra > 0 ? '#,##0.' + '0'.repeat(d + extra) : fixed;
     }
   });
   ws['!cols'] = [{ wch: 6 }, ...fields.map((f) => ({ wch: f.kind === 'text' ? (f.id === 'name' ? 30 : 20) : 13 }))];
@@ -4120,7 +4180,7 @@ function qtyCell(row, f, name) {
   return h('td', { class: 'num c-qty', 'data-label': unitLabel(f) },
     h('div', { class: 'qty', role: 'group', 'aria-label': `${who}の${f.label}` },
       h('button', { type: 'button', class: 'qty-btn', 'data-act': 'qty-dec', 'data-id': id, disabled: !(v > 0), 'aria-label': `${who}の${f.label}を1減らす` }, icon('M6 12h12', 18)),
-      h('input', { type: 'text', class: 'qty-in', inputmode: 'decimal', 'data-id': id, value: v == null ? '' : String(v), placeholder: '0', autocomplete: 'off', 'aria-label': `${who}の${f.label}` }),
+      h('input', { type: 'text', class: 'qty-in', 'data-id': id, enterkeyhint: 'done', value: v == null ? '' : String(v), placeholder: '0', autocomplete: 'off', 'aria-label': `${who}の${f.label}` }),
       h('button', { type: 'button', class: 'qty-btn', 'data-act': 'qty-inc', 'data-id': id, 'aria-label': `${who}の${f.label}を1増やす` }, icon('M12 6v12M6 12h12', 18))));
 }
 function setQty(id, next) {
@@ -4158,7 +4218,7 @@ function commitQtyInput(inp) {
   const cur = it.values[f.id] ?? null;
   const show = (v) => (v == null ? '' : String(v));
   const r = parseNumInput(inp.value, f);
-  if (r.bad || (!r.empty && r.n < 0)) { toast(`${f.label}は0以上の数値で入力してください`, 'error'); inp.value = show(cur); return; }
+  if (r.bad || (!r.empty && r.n < 0)) { toast(r.bad ? numInputError(f, r) : `${f.label}は0以上で入力してください`, 'error'); inp.value = show(cur); return; }
   const next = r.empty ? null : r.n;
   inp.value = show(next);
   if (cur === next) return;
