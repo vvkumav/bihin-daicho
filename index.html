@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="e0803524ad94"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="e26c0f608f53"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -410,7 +410,20 @@ dialog.modal::backdrop{background:rgba(10,14,18,.5)}
 .sh-tab:hover{color:var(--ink)}
 .sh-tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--fc-btn)}
 .sh-tab:focus-visible{outline:3px solid var(--fc);outline-offset:-3px;border-radius:6px}
-@media (max-width:560px){.sh-tab{flex:1 1 0;padding-inline:6px}.sh-tab-sub{display:none}}
+@media (max-width:560px){.sh-tab{flex:1 1 0;padding-inline:6px}}
+.sh-sub{margin:0;font-family:var(--round);font-size:15px;font-weight:700;color:var(--fc-ink)}
+.sh-link{display:flex;flex-direction:column;gap:10px;padding-top:16px;border-top:1px dashed var(--line-strong)}
+.sh-link[hidden],.sh-paste[hidden]{display:none}
+.sh-link-desc{margin:0;font-size:14px;color:var(--ink-2)}
+.sh-link-row{display:flex;flex-wrap:wrap;gap:8px}
+.sh-link-row input{flex:1 1 220px;width:auto;min-width:0;font-size:14px}
+#sh-link{color:var(--ink-2);background:var(--zebra)}
+.sh-link-row .btn{flex:0 0 auto}
+.sh-link-msg{margin:0;font-size:14px;font-weight:700;color:var(--fc-ink)}
+.sh-link-msg:empty{display:none}
+.sh-link-msg.warn{color:var(--danger-text)}
+.sh-paste{display:flex;flex-direction:column;gap:6px}
+.sh-paste label{font-size:14px;font-weight:700}
 .sh-panel{display:flex;flex-direction:column;gap:14px}
 .sh-panel[hidden]{display:none}
 .sh-summary{margin:0;font-size:14px;color:var(--ink-2);min-height:1.5em}
@@ -633,8 +646,8 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
         項目と計算式
       </button>
       <button type="button" class="btn" id="share-btn" disabled>
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM21 14v.01M14 21h.01M17 21h4v-4"/></svg>
-        QRで共有
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+        データ共有
       </button>
     </div>
   </header>
@@ -876,16 +889,17 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
 <dialog class="modal" id="share-dialog" aria-labelledby="share-title">
   <div class="modal-form">
     <div class="modal-head">
-      <h2 id="share-title">QRで共有</h2>
+      <h2 id="share-title">データ共有</h2>
       <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
-    <div class="sh-tabs" role="tablist" aria-label="QRで共有">
-      <button type="button" class="sh-tab" role="tab" id="sh-tab-show" aria-controls="sh-show" aria-selected="true">QRを表示<span class="sh-tab-sub">（送る）</span></button>
-      <button type="button" class="sh-tab" role="tab" id="sh-tab-read" aria-controls="sh-read" aria-selected="false" tabindex="-1">QRを読み取る<span class="sh-tab-sub">（受け取る）</span></button>
+    <div class="sh-tabs" role="tablist" aria-label="データ共有">
+      <button type="button" class="sh-tab" role="tab" id="sh-tab-show" aria-controls="sh-show" aria-selected="true">送る</button>
+      <button type="button" class="sh-tab" role="tab" id="sh-tab-read" aria-controls="sh-read" aria-selected="false" tabindex="-1">受け取る</button>
     </div>
     <div class="modal-body">
       <section class="sh-panel" id="sh-show" role="tabpanel" aria-labelledby="sh-tab-show">
         <p class="sh-summary" id="sh-summary"></p>
+        <h3 class="sh-sub">QRコードで送る</h3>
         <div class="sh-qr-box" id="sh-qr-box">
           <canvas id="sh-qr" role="img" aria-label="共有用のQRコード" hidden></canvas>
           <p class="sh-qr-msg" id="sh-qr-msg"></p>
@@ -901,6 +915,16 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           大きく表示
         </button>
         <p class="ex-note">受け取るスマートフォンの<b>標準のカメラ</b>でこのQRコードを読み取り、表示されたリンクを開いてください。公開版のアプリが開き、取り込みの確認画面が表示されます。読み取りにくい場合は「大きく表示」を押してください。</p>
+        <div class="sh-link" id="sh-link-box" hidden>
+          <h3 class="sh-sub">リンクで送る</h3>
+          <p class="sh-link-desc">リンクをメールやチャットで送ります。受け取った人がリンクを開くと、公開版のアプリで取り込みの確認画面が表示されます。リンクを知っている人は誰でも内容を見られるため、送り先に注意してください。</p>
+          <div class="sh-link-row">
+            <input type="text" id="sh-link" readonly aria-label="共有用のリンク" spellcheck="false">
+            <button type="button" class="btn btn-primary" id="sh-copy">リンクをコピー</button>
+            <button type="button" class="btn" id="sh-send" hidden>ほかのアプリで送る</button>
+          </div>
+          <p class="sh-link-msg" id="sh-link-msg" role="status"></p>
+        </div>
         <div class="sh-zoom-view" id="sh-zoom-view" hidden>
           <canvas id="sh-qr-big" role="img" aria-label="共有用のQRコード（拡大）"></canvas>
           <button type="button" class="btn" id="sh-zoom-close">元に戻す</button>
@@ -916,6 +940,13 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <button type="button" class="btn" id="sh-cam-btn">カメラで読み取る</button>
           <button type="button" class="btn" id="sh-file-btn">画像から読み取る</button>
           <input type="file" id="sh-file" accept="image/*" multiple hidden>
+        </div>
+        <div class="sh-paste" id="sh-paste">
+          <label for="sh-paste-in">受け取ったリンクを貼り付けて読み込む</label>
+          <div class="sh-link-row">
+            <input type="text" id="sh-paste-in" placeholder="https://vvkumav.github.io/bihin-daicho/#…" autocomplete="off" spellcheck="false">
+            <button type="button" class="btn" id="sh-paste-btn">読み込む</button>
+          </div>
         </div>
         <div class="sh-progress" id="sh-progress" role="status" hidden>
           <span class="sh-prog-text" id="sh-prog-text"></span>
@@ -954,7 +985,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第1.6版　2026年11月23日</p>
+        <p class="m-meta">第1.7版　2026年11月23日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -969,7 +1000,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <li><a href="#m-pdf" data-jump="m-pdf">出力（PDF・Excel・CSV・画像）</a></li>
             <li><a href="#m-schema" data-jump="m-schema">項目と計算式の設定</a></li>
             <li><a href="#m-save" data-jump="m-save">データの保存と権限</a></li>
-            <li><a href="#m-share" data-jump="m-share">データの共有（QRコード）</a></li>
+            <li><a href="#m-share" data-jump="m-share">データの共有（QRコード・リンク）</a></li>
             <li><a href="#m-faq" data-jump="m-faq">トラブルシューティング</a></li>
           </ol>
         </nav>
@@ -1017,7 +1048,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <text class="dg-tw s" x="396" y="35" text-anchor="end">自動保存（共有）</text>
             <rect class="dg-white" x="404" y="16" width="78" height="28" rx="6"/><text class="dg-t s" x="443" y="35" text-anchor="middle">説明書</text>
             <rect class="dg-white" x="488" y="16" width="106" height="28" rx="6"/><text class="dg-t s" x="541" y="35" text-anchor="middle">項目と計算式</text>
-            <rect class="dg-white" x="600" y="16" width="106" height="28" rx="6"/><text class="dg-t s" x="653" y="35" text-anchor="middle">QRで共有</text>
+            <rect class="dg-white" x="600" y="16" width="106" height="28" rx="6"/><text class="dg-t s" x="653" y="35" text-anchor="middle">データ共有</text>
             <rect class="dg-pocket" x="16" y="64" width="150" height="214" rx="10"/>
             <text class="dg-tw s" x="28" y="86">ファイル</text>
             <g class="fc-blue"><rect class="dg-white" x="27" y="96" width="128" height="30" rx="5"/><rect class="dg-fc" x="35" y="105" width="14" height="11" rx="2"/><text class="dg-t s" x="56" y="116">本社 総務部</text></g>
@@ -1079,7 +1110,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td class="c-n">1</td><td>背ラベル</td><td>アプリケーション名です。</td></tr>
               <tr><td class="c-n">2</td><td><span class="ui">説明書</span></td><td>本書を表示します。</td></tr>
               <tr><td class="c-n">3</td><td><span class="ui">項目と計算式</span></td><td>項目および計算式を設定します（<a href="#m-schema" data-jump="m-schema">8章</a>）。</td></tr>
-              <tr><td class="c-n">4</td><td><span class="ui">QRで共有</span></td><td>データをQRコードにして、別の端末と共有します（<a href="#m-share" data-jump="m-share">10章</a>）。</td></tr>
+              <tr><td class="c-n">4</td><td><span class="ui">データ共有</span></td><td>データをQRコードまたはリンクにして、別の端末と共有します（<a href="#m-share" data-jump="m-share">10章</a>）。</td></tr>
               <tr><td class="c-n">5</td><td>ファイル一覧</td><td>登録済みのファイルを表示します。右側の数値は備品の件数です。表示中のファイルは右へ引き出された状態で示されます。</td></tr>
               <tr><td class="c-n">6</td><td><span class="ui">新しいファイル</span></td><td>ファイルを作成します（<a href="#m-file" data-jump="m-file">3.1</a>）。</td></tr>
               <tr><td class="c-n">7</td><td>ファイル名</td><td>表示中のファイル名です。表紙の色は、そのファイルに設定した色です。</td></tr>
@@ -1310,27 +1341,29 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <p><a href="https://vvkumav.github.io/bihin-daicho/" target="_blank" rel="noopener">https://vvkumav.github.io/bihin-daicho/</a></p>
           <ul>
             <li>本アプリが更新されると、公開版にも自動で反映されます。公開版を開いている間に新しい版が公開された場合は、画面下部にお知らせが表示されます。<span class="ui">再読み込み</span>をクリックすると反映されます。登録内容はそのまま残ります。</li>
-            <li>公開版のデータは端末ごとに保存されます。複数の端末で同じデータを利用する場合は、QRコードで共有してください（<a href="#m-share" data-jump="m-share">10章</a>）。</li>
+            <li>公開版のデータは端末ごとに保存されます。複数の端末で同じデータを利用する場合は、QRコードまたはリンクで共有してください（<a href="#m-share" data-jump="m-share">10章</a>）。</li>
           </ul>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
 
         <section class="m-sec" aria-labelledby="m-share">
-          <h3 id="m-share" tabindex="-1"><span class="m-num">10</span>データの共有（QRコード）</h3>
-          <p>この端末のデータ（すべてのファイル・備品、および項目と計算式）を1つのQRコードに変換し、別の端末へ渡すことができます。ローカル版および公開版ではデータが端末ごとに保存されるため、複数の端末で同じ台帳を利用する場合や、別の端末に控えを残す場合に使用します。</p>
-          <h4>10.1　QRコードを表示する（送る側）</h4>
+          <h3 id="m-share" tabindex="-1"><span class="m-num">10</span>データの共有（QRコード・リンク）</h3>
+          <p>この端末のデータ（すべてのファイル・備品、および項目と計算式）を1つのQRコード、または1つのリンクに変換し、別の端末へ渡すことができます。ローカル版および公開版ではデータが端末ごとに保存されるため、複数の端末で同じ台帳を利用する場合や、別の端末に控えを残す場合に使用します。</p>
+          <h4>10.1　送る側の操作</h4>
           <ol class="m-steps">
-            <li>画面右上の<span class="ui">QRで共有</span>をクリックします。この端末のデータがQRコードで表示されます。</li>
-            <li>受け取る側の端末で、表示されたQRコードを読み取ります。読み取りにくい場合は<span class="ui">大きく表示</span>をクリックし、画面いっぱいに表示してください。</li>
+            <li>画面右上の<span class="ui">データ共有</span>をクリックします。<span class="ui">送る</span>に、この端末のデータのQRコードと、共有用のリンクが表示されます。</li>
+            <li>QRコードで送る場合は、受け取る側の端末で、表示されたQRコードを読み取ってもらいます。読み取りにくい場合は<span class="ui">大きく表示</span>をクリックし、画面いっぱいに表示してください。</li>
+            <li>リンクで送る場合は、<span class="ui">リンクをコピー</span>をクリックし、メールやチャットに貼り付けて送ります。スマートフォンでは、<span class="ui">ほかのアプリで送る</span>から、メール・LINE等を選んで送ることもできます。</li>
           </ol>
-          <p class="m-note"><span class="m-note-label">補足</span>備品の件数が非常に多く1つのQRコードに収まらない場合に限り、複数のQRコードに分けて自動で切り替えて表示します。</p>
-          <h4>10.2　QRコードを読み取る（受け取る側）</h4>
+          <p class="m-note"><span class="m-note-label">補足</span>備品の件数が非常に多く1つのQRコードに収まらない場合に限り、複数のQRコードに分けて自動で切り替えて表示します。リンクは件数にかかわらず1つです。</p>
+          <h4>10.2　受け取る側の操作</h4>
           <ol class="m-steps">
-            <li>受け取る側のスマートフォンの標準のカメラで、送る側のQRコードを読み取り、表示されたリンクを開きます。公開版のアプリが開き、読み取ったデータの内容が表示されます。</li>
+            <li>QRコードの場合は、スマートフォンの標準のカメラで送る側のQRコードを読み取り、表示されたリンクを開きます。リンクの場合は、受け取ったリンクを開きます。公開版のアプリが開き、データの内容が表示されます。</li>
             <li>読み取ったデータの内容と、取り込んだ場合に上書き・削除される内容を確認し、<span class="ui">取り込み方法</span>を選択します。</li>
             <li><span class="ui">取り込む</span>をクリックします。</li>
           </ol>
-          <p class="m-note"><span class="m-note-label">補足</span>本アプリの<span class="ui">QRで共有</span>→<span class="ui">QRを読み取る（受け取る）</span>からも読み取れます（アプリ内のカメラ、またはQRコードを撮影した画像を使用）。リンクから開いた場合、データはその端末の公開版に取り込まれます。</p>
+          <p class="m-note"><span class="m-note-label">補足</span>本アプリの<span class="ui">データ共有</span>→<span class="ui">受け取る</span>からも受け取れます（アプリ内のカメラ、QRコードを撮影した画像、またはリンクの貼り付け）。リンクから開いた場合、データはその端末の公開版に取り込まれます。</p>
+          <p class="m-note"><span class="m-note-label">補足</span>LINE等のアプリ内でリンクを開くと、そのアプリ内のブラウザにデータが取り込まれ、普段使うブラウザとは別になります。普段のブラウザに取り込む場合は、メニューの「ブラウザで開く」を選択するか、リンクをコピーし、<span class="ui">受け取る</span>の<span class="ui">受け取ったリンクを貼り付けて読み込む</span>に貼り付けてください。</p>
           <h4>10.3　取り込み方法</h4>
           <table class="m-table">
             <thead><tr><th scope="col">取り込み方法</th><th scope="col">内容</th></tr></thead>
@@ -1342,7 +1375,8 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <p class="m-note"><span class="m-note-label">補足</span>「項目と計算式」も受け取った内容に合わせます。「受け取った内容で更新」の場合、この端末にのみ存在する項目は残ります。</p>
           <h4>10.4　留意事項</h4>
           <ul>
-            <li>QRコードには、公開版のURLと登録内容そのものが含まれます。関係者以外に見せたり、QRコードを写した画像やリンクを共有したりしないでください。</li>
+            <li>QRコードおよびリンクには、公開版のURLと登録内容そのものが含まれます。リンクを知っている人は誰でも内容を見られるため、関係者以外に見せたり、送ったりしないでください。なお、データの部分（URLの「#」以降）はインターネット上のサーバーには送信されません。</li>
+            <li>リンクが途中で切れると読み込めません。その場合は、リンクをもう一度送ってもらうか、QRコードを使用してください。</li>
             <li>共有されるのは、その時点の内容です。共有後の変更は、改めて共有するまで相手の端末には反映されません。</li>
             <li>備品の件数が多いほどQRコードが細かくなり、読み取りにくくなります。<span class="ui">大きく表示</span>を使用し、カメラを近づけて写してください。</li>
             <li>アプリ内のカメラの使用には、ブラウザでの許可が必要です。カメラを使用できない環境では、スマートフォンの標準のカメラ、または<span class="ui">画像から読み取る</span>を使用してください。</li>
@@ -1363,9 +1397,10 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td>新しいファイルの色が自動で設定される</td><td>判別しやすい色を自動で選択する仕様</td><td><span class="ui">ファイル設定</span>で任意の色に変更できます。</td></tr>
               <tr><td>カメラが起動しない</td><td>ブラウザでカメラの使用が許可されていない、またはカメラを使用できない環境</td><td>ブラウザの設定でカメラを許可してください。許可できない場合は、QRコードを撮影した画像を<span class="ui">画像から読み取る</span>で読み取ってください。</td></tr>
               <tr><td>QRコードが読み取れない・スマートフォンが反応しない</td><td>画面の明るさ・距離・反射、またはQRコードが細かい</td><td>送る側で<span class="ui">大きく表示</span>をクリックし、画面を明るくして、QRコード全体が画面に収まる距離で写してください。スマートフォンの標準のカメラで読み取ると、リンクが表示されます。</td></tr>
-              <tr><td>「このアプリのQRコードではありません」と表示される</td><td>本アプリ以外で作成されたQRコードを読み取った</td><td>送る側の<span class="ui">QRで共有</span>で表示したQRコードを読み取ってください。</td></tr>
+              <tr><td>「このアプリのQRコードではありません」と表示される</td><td>本アプリ以外で作成されたQRコードを読み取った</td><td>送る側の<span class="ui">データ共有</span>で表示したQRコードを読み取ってください。</td></tr>
               <tr><td>画面下部に「アプリの新しい版が公開されました」と表示される</td><td>公開版が更新された</td><td><span class="ui">再読み込み</span>をクリックしてください。登録内容はそのまま残ります。</td></tr>
               <tr><td>数量の欄に入力した値が元に戻る</td><td>数値・計算式として読めない文字、0での割り算、または負の数を入力した</td><td>0以上の数値、または「＋」「−」「×」「÷」「（ ）」を使った計算式を入力してください。全角でも入力できます。</td></tr>
+              <tr><td>リンクを開いても取り込みの画面が出ない</td><td>リンクが途中で切れている、またはLINE等のアプリ内のブラウザで開いている</td><td>リンクをもう一度送ってもらうか、QRコードを使用してください。アプリ内のブラウザで開いた場合は、「ブラウザで開く」を選択するか、<span class="ui">受け取る</span>にリンクを貼り付けてください（<a href="#m-share" data-jump="m-share">10章</a>）。</td></tr>
               <tr><td>本書を直接開きたい</td><td>―</td><td>本アプリのURLの末尾に <code>#manual</code> を付けて開くと、本書を表示した状態で起動します。</td></tr>
             </tbody>
           </table>
@@ -3559,6 +3594,10 @@ const SHARE_APP = 'bihin-daicho';
 const FILE_ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
 const B43 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$*+-./:';
 const SHARE_RE = /#([DP])([0-9A-Z$*+\-./:]+)\s*$/;
+// リンク用：URLで一般的な64文字（A-Z a-z 0-9 - _）でデータを表し、最後に終わりの印「E」を付ける。
+// チャットなどで末尾の記号が切り落とされても気づけるように、終わりは必ず英字にする
+const LINK_FIND = /#L([A-Za-z0-9_-]+?)E(?![A-Za-z0-9_-])/;
+const BROKEN_LINK = 'リンクが途中で切れているか、壊れています。リンクをもう一度送ってもらうか、QRコードで受け取ってください';
 const sh = {
   btn: $('#share-btn'), dialog: $('#share-dialog'),
   tabShow: $('#sh-tab-show'), tabRead: $('#sh-tab-read'), panelShow: $('#sh-show'), panelRead: $('#sh-read'),
@@ -3569,8 +3608,10 @@ const sh = {
   progress: $('#sh-progress'), progText: $('#sh-prog-text'), dots: $('#sh-dots'), hint: $('#sh-hint'),
   result: $('#sh-result'), resultText: $('#sh-result-text'), effect: $('#sh-effect'),
   error: $('#share-error'), importBtn: $('#sh-import'), again: $('#sh-again'),
+  linkBox: $('#sh-link-box'), link: $('#sh-link'), copy: $('#sh-copy'), send: $('#sh-send'), linkMsg: $('#sh-link-msg'),
+  paste: $('#sh-paste'), pasteIn: $('#sh-paste-in'), pasteBtn: $('#sh-paste-btn'),
 };
-const share = { tab: 'show', parts: [], index: 0, qr: null, timer: 0, gen: 0, stream: null, scanTimer: 0, scanTick: 0, detector: undefined, got: null, finishing: false, payload: null, busy: false, hintTimer: 0 };
+const share = { tab: 'show', link: '', parts: [], index: 0, qr: null, timer: 0, gen: 0, stream: null, scanTimer: 0, scanTick: 0, detector: undefined, got: null, finishing: false, payload: null, busy: false, hintTimer: 0 };
 class ShareError extends Error {}
 
 // 送るデータ（版2）：項目と計算式は初期設定なら 0、備品は入力項目の値だけを項目の順に並べる（登録日時は順番だけ残す）
@@ -3655,6 +3696,17 @@ async function unpackShare(bytes) {
   } else if (bytes[0] === 0) raw = bytes.subarray(1);
   else throw new ShareError(broken);
   try { return JSON.parse(new TextDecoder().decode(raw)); } catch (e) { throw new ShareError(broken); }
+}
+function b64url(bytes) {
+  let s = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function unb64url(str) {
+  try {
+    const b = atob(str.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((str.length + 3) % 4));
+    return Uint8Array.from(b, (c) => c.charCodeAt(0));
+  } catch (e) { return null; }
 }
 // 2バイトを3文字（43進数）に。余りの1バイトは2文字
 function b43enc(bytes) {
@@ -3754,18 +3806,24 @@ function setBoxMsg(text) { sh.boxMsg.textContent = text; }
 async function prepareShow() {
   const gen = ++share.gen;
   stopCycle();
-  share.parts = []; share.qr = null;
+  share.parts = []; share.qr = null; share.link = '';
   sh.canvas.hidden = true;
   sh.pager.hidden = true;
   sh.zoom.hidden = true;
+  sh.linkBox.hidden = true;
+  sh.linkMsg.textContent = '';
   setBoxMsg('QRコードを作成しています…');
   const { data, fileCount, itemCount } = sharePayload();
   const what = `この端末のデータ（ファイル ${fileCount}件・備品 ${itemCount}件）`;
-  sh.summary.textContent = what;
-  let parts;
+  sh.summary.textContent = `${what}を送ります`;
+  let parts, packed;
   try {
+    packed = await packShare(data);
+    if (gen !== share.gen) return;
+    share.link = PUBLIC_URL + '#L' + b64url(packed) + 'E';   // リンクはデータの量にかかわらず1つ
+    showLink();
     await loadScript(QR_GEN_URL);
-    parts = qrTexts(await packShare(data));
+    parts = qrTexts(packed);
   } catch (e) {
     if (gen === share.gen) setBoxMsg('QRコードの機能を読み込めませんでした。インターネット接続を確認してください');
     return;
@@ -3774,14 +3832,43 @@ async function prepareShow() {
   if (!parts) { setBoxMsg('データが多すぎてQRコードにできません'); return; }
   share.parts = parts;
   sh.summary.textContent = parts.length > 1
-    ? `${what}　データが多いため、QRコード${parts.length}枚に分けて順に表示しています`
-    : `${what}をQRコードにしました`;
+    ? `${what}を送ります。データが多いため、QRコードは${parts.length}枚に分けて順に表示しています（リンクは1つです）`
+    : `${what}を送ります`;
   setBoxMsg('');
   sh.canvas.hidden = false;
   sh.pager.hidden = parts.length < 2;
   sh.zoom.hidden = false;
   showPart(0);
   startCycle();
+}
+
+function showLink() {
+  sh.link.value = share.link;
+  sh.linkBox.hidden = false;
+  sh.send.hidden = typeof navigator.share !== 'function';
+  sh.linkMsg.classList.toggle('warn', share.link.length > 8000);
+  sh.linkMsg.textContent = share.link.length > 8000 ? 'リンクがとても長いため、送り先のアプリによっては途中で切れることがあります。その場合はQRコードを使ってください' : '';
+}
+async function copyLink() {
+  if (!share.link) return;
+  let done = false;
+  // クリップボードへの書き込みが許されない画面では返事が来ないことがあるため、少し待って選択に切り替える
+  const timeout = new Promise((resolve, reject) => setTimeout(() => reject(new Error('timeout')), 1500));
+  try { if (navigator.clipboard && window.isSecureContext) { await Promise.race([navigator.clipboard.writeText(share.link), timeout]); done = true; } } catch (e) { done = false; }
+  if (!done) {
+    sh.link.focus(); sh.link.select();
+    try { done = document.execCommand('copy'); } catch (e) { done = false; }
+  }
+  sh.linkMsg.classList.remove('warn');
+  sh.linkMsg.textContent = done ? 'リンクをコピーしました。メールやチャットに貼り付けて送ってください。' : 'リンクを選択しました。コピーして送ってください。';
+}
+async function sendLink() {
+  if (typeof navigator.share !== 'function' || !share.link) return;
+  try {
+    await navigator.share({ title: '備品台帳のデータ', text: '備品台帳のデータです。リンクを開くと、取り込みの確認画面が表示されます。', url: share.link });
+  } catch (e) {
+    if (!e || e.name !== 'AbortError') { sh.linkMsg.classList.remove('warn'); sh.linkMsg.textContent = 'この画面ではほかのアプリに送れません。「リンクをコピー」を使ってください'; }
+  }
 }
 
 /* read */
@@ -3793,7 +3880,7 @@ function flashHint(text) {
 }
 function renderCamBtn() {
   sh.camBtn.textContent = share.stream ? 'カメラを止める' : 'カメラで読み取る';
-  sh.camBtn.hidden = sh.fileBtn.hidden = sh.cam.hidden = !!share.payload;
+  sh.camBtn.hidden = sh.fileBtn.hidden = sh.cam.hidden = sh.paste.hidden = !!share.payload;
 }
 function renderProgress() {
   const g = share.got;
@@ -3898,7 +3985,16 @@ async function scanFrame() {
 // 読み取った文字を受け取る。このアプリのQRコードなら true
 function takeText(text) {
   if (share.payload || share.finishing) return true;
-  const m = SHARE_RE.exec(String(text || ''));
+  const str = String(text || '');
+  const lm = LINK_FIND.exec(str);
+  if (lm) {
+    const bytes = unb64url(lm[1]);
+    if (!bytes) { sh.error.textContent = BROKEN_LINK; sh.again.hidden = false; return true; }
+    finishRead(bytes);
+    return true;
+  }
+  if (/#L[A-Za-z0-9_-]/.test(str)) { sh.error.textContent = BROKEN_LINK; sh.again.hidden = false; return true; }
+  const m = SHARE_RE.exec(str);
   if (!m) { flashHint('このアプリのQRコードではありません'); return false; }
   if (m[1] === 'D') {
     const bytes = b43dec(m[2]);
@@ -4110,6 +4206,7 @@ function openShareDialog(tab = 'show') {
   sh.zoomView.hidden = true;
   resetRead();
   setCamMsg('');
+  sh.pasteIn.value = '';
   openDialog(sh.dialog);
   setTab(tab);
   (tab === 'show' ? sh.tabShow : sh.tabRead).focus();
@@ -4117,7 +4214,7 @@ function openShareDialog(tab = 'show') {
 // 標準のカメラでQRコードを読み取って開いたとき（URLの末尾に #D… が付いている）：取り込みの確認画面を出す
 function openFromLink() {
   const hash = location.hash || '';
-  if (!SHARE_RE.test(hash)) return;
+  if (!SHARE_RE.test(hash) && !/^#L/.test(hash)) return;
   try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}   // 再読み込みで繰り返さない
   const go = () => {
     if (!isLoaded()) { setTimeout(go, 100); return; }
@@ -4139,6 +4236,19 @@ function openFromLink() {
 }
 window.addEventListener('hashchange', openFromLink);
 sh.btn.addEventListener('click', () => openShareDialog('show'));
+sh.copy.addEventListener('click', copyLink);
+sh.send.addEventListener('click', sendLink);
+sh.link.addEventListener('focus', () => sh.link.select());
+function readPasted() {
+  const v = sh.pasteIn.value.trim();
+  sh.error.textContent = '';
+  if (!v) { sh.error.textContent = '受け取ったリンクを貼り付けてください'; sh.pasteIn.focus(); return; }
+  if (!/#[DPL]/.test(v)) { sh.error.textContent = 'このアプリのリンクではありません。受け取ったリンクをそのまま貼り付けてください'; return; }
+  stopCamera();
+  takeText(v);
+}
+sh.pasteBtn.addEventListener('click', readPasted);
+sh.pasteIn.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); readPasted(); } });
 sh.tabShow.addEventListener('click', () => setTab('show'));
 sh.tabRead.addEventListener('click', () => setTab('read'));
 sh.tabShow.parentElement.addEventListener('keydown', (e) => {
