@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="2ccd81188d9f"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="c5a95ca451a5"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -998,7 +998,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第1.8版　2026年11月23日</p>
+        <p class="m-meta">第1.9版　2026年11月23日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -1371,7 +1371,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <li>QRコードで送る場合は、受け取る側の端末で、表示されたQRコードを読み取ってもらいます。読み取りにくい場合は<span class="ui">大きく表示</span>をクリックし、画面いっぱいに表示してください。</li>
             <li>リンクで送る場合は、<span class="ui">リンクをコピー</span>をクリックし、メールやチャットに貼り付けて送ります。スマートフォンでは、<span class="ui">ほかのアプリで送る</span>から、メール・LINE等を選んで送ることもできます。</li>
           </ol>
-          <p class="m-note"><span class="m-note-label">補足</span>備品の件数が非常に多く1つのQRコードに収まらない場合に限り、複数のQRコードに分けて自動で切り替えて表示します。リンクは件数にかかわらず1つです。</p>
+          <p class="m-note"><span class="m-note-label">補足</span>QRコードとリンクは、データを小さく詰めて作ります（備品台帳でよく使う言葉は短く表します）。それでも備品の件数が多いほどリンクは長くなり、1つのQRコードに収まらない場合に限り、複数のQRコードに分けて自動で切り替えて表示します。リンクは件数にかかわらず1つです。以前の版で作ったQRコードやリンクも読み込めます。</p>
           <h4>10.2　受け取る側の操作</h4>
           <ol class="m-steps">
             <li>QRコードの場合は、スマートフォンの標準のカメラで送る側のQRコードを読み取り、表示されたリンクを開きます。リンクの場合は、受け取ったリンクを開きます。公開版のアプリが開き、データの内容が表示されます。</li>
@@ -3631,7 +3631,8 @@ const sh = {
 const share = { tab: 'show', link: '', parts: [], index: 0, qr: null, timer: 0, gen: 0, stream: null, scanTimer: 0, scanTick: 0, detector: undefined, got: null, finishing: false, payload: null, busy: false, hintTimer: 0 };
 class ShareError extends Error {}
 
-// 送るデータ（版2）：項目と計算式は初期設定なら 0、備品は入力項目の値だけを項目の順に並べる（登録日時は順番だけ残す）
+// 送るデータ（版3）：項目と計算式は初期設定なら 0。備品は入力項目の値だけを使い、登録順に並べて項目ごとの列にする
+// （品名の列、単価の列…と似た値が並ぶほうがよく縮む。列0はファイルの番号。登録日時は順番だけ残す）
 function sharePayload() {
   const ids = realIds();
   const files = fileList();
@@ -3640,27 +3641,38 @@ function sharePayload() {
   const inputs = schema.filter((f) => f.kind !== 'formula');
   const items = state.items.filter((it) => pos.has(fileIdOf(it, ids))).sort((a, b) => a.createdAt - b.createdAt);
   const isDefault = JSON.stringify(normSchema(schema)) === JSON.stringify(normSchema(DEFAULT_SCHEMA));
+  const rows = items.map((it) => [pos.get(fileIdOf(it, ids)), ...inputs.map((f) => it.values[f.id] ?? null)]);
+  // 最後のほうの、どの備品にも値がない項目の列は送らない
+  let width = 1 + inputs.length;
+  while (width > 1 && rows.every((r) => r[width - 1] === null)) width--;
+  const cols = [];
+  for (let k = 0; k < width; k++) cols.push(rows.map((r) => r[k]));
   return {
     data: {
-      app: SHARE_APP, v: 2,
+      app: SHARE_APP, v: 3,
       s: isDefault ? 0 : schema.map((f) => [f.id, f.label, f.kind, f.unit, f.decimals, f.total ? 1 : 0, f.pdf ? 1 : 0, f.expr]),
       f: files.map((f) => [f.id, f.name, f.title === FILE_DEFAULTS.title ? null : f.title, f.org || null, f.stamps ? 1 : 0, f.orient, f.color || null, f.createdAt || 0]),
-      i: items.map((it) => {
-        const row = [pos.get(fileIdOf(it, ids)), ...inputs.map((f) => it.values[f.id] ?? null)];
-        while (row.length > 1 && row[row.length - 1] === null) row.pop();
-        return row;
-      }),
+      c: cols,
     },
     fileCount: files.length, itemCount: items.length,
   };
 }
-// 受け取ったデータは信用せず、保存するときと同じ整え方を通す（版1：以前の形式も読める）
+// 版3の列を、備品ごとの行（ファイルの番号, 値…）に戻す
+function shareRows(cols) {
+  if (!Array.isArray(cols) || !cols.length || !cols.every(Array.isArray)) return null;
+  const use = cols.slice(0, MAX_FIELDS + 1);
+  const n = Math.min(use[0].length, 20000);
+  const rows = [];
+  for (let i = 0; i < n; i++) rows.push(use.map((col) => col[i] ?? null));
+  return rows;
+}
+// 受け取ったデータは信用せず、保存するときと同じ整え方を通す（版1・版2：以前の形式も読める）
 function readShare(o) {
   const notApp = 'このアプリのQRコードではありません';
   if (!o || o.app !== SHARE_APP) throw new ShareError(notApp);
-  if (o.v !== 1 && o.v !== 2) throw new ShareError('新しい版のアプリで作られたQRコードです。ページを再読み込みしてから読み取ってください');
-  const v2 = o.v === 2;
-  const fileRows = v2 ? o.f : o.files, itemRows = v2 ? o.i : o.items;
+  if (o.v !== 1 && o.v !== 2 && o.v !== 3) throw new ShareError('新しい版のアプリで作られたQRコードです。ページを再読み込みしてから読み取ってください');
+  const v2 = o.v >= 2;
+  const fileRows = v2 ? o.f : o.files, itemRows = o.v === 3 ? shareRows(o.c) : v2 ? o.i : o.items;
   if (!Array.isArray(fileRows) || !Array.isArray(itemRows)) throw new ShareError(notApp);
   let rawFields;
   if (v2) rawFields = o.s === 0 ? DEFAULT_SCHEMA : (Array.isArray(o.s) ? o.s : []).map((r) => (Array.isArray(r) ? { id: r[0], label: r[1], kind: r[2], unit: r[3], decimals: r[4], total: !!r[5], pdf: r[6] !== 0, expr: r[7] } : null));
@@ -3690,24 +3702,281 @@ function mergeSchema(recv, local) {
   return normSchema([...recv, ...local.filter((f) => !ids.has(f.id))]);
 }
 
+/* ---------- share codec ---------- */
+// リンクとQRコードに入れるデータの圧縮（形式2）。
+// 備品の名前のような短い日本語は、ふつうの圧縮（deflate）ではあまり縮まない。そこで、直前の文字の並びから
+// 次の1ビットを予想して、当たりやすいものほど短く表す方式（算術符号＋文脈の混合）を使う。
+// よく使う言葉の見本（SHARE_PRIMER）を先に読ませてから圧縮するので、件数が少なくてもよく縮む。
+// 送る側と受け取る側でまったく同じ計算をする必要があるため、計算はすべて整数で行い、どのブラウザでも同じ結果にしている。
+// ※ この見本や計算の手順を少しでも変えると、すでに送ったリンクやQRコードが読めなくなる。
+//    改良するときは先頭の印を新しい番号（3）にして、形式2の読み取りはそのまま残すこと。
+const SHARE_PRIMER = (() => {
+  const P = {
+    app: 'bihin-daicho', v: 3,
+    s: [
+      ['name', '品名', 'text', '', 0, 0, 1, ''], ['price', '単価', 'number', '円', 0, 0, 1, ''], ['qty', '数量', 'number', '', 0, 1, 1, ''],
+      ['amount', '合計金額', 'formula', '円', 0, 1, 1, '{price} * {qty}'],
+      ['f1a2b3c4d5', '管理番号', 'text', '', 0, 0, 1, ''], ['f2b3c4d5e6', 'メーカー', 'text', '', 0, 0, 1, ''], ['f3c4d5e6f7', '型番', 'text', '', 0, 0, 1, ''],
+      ['f4d5e6f7a8', '設置場所', 'text', '', 0, 0, 1, ''], ['f5e6f7a8b9', '購入日', 'text', '', 0, 0, 1, ''], ['f6f7a8b9c0', '担当者', 'text', '', 0, 0, 1, ''],
+      ['f7a8b9c0d1', '税率', 'number', '%', 0, 0, 1, ''], ['f8b9c0d1e2', '税込金額', 'formula', '円', 0, 1, 1, 'ROUNDDOWN({amount} * (1 + {f7a8b9c0d1} / 100), 0)'],
+      ['f9c0d1e2f3', '保証期限', 'text', '', 0, 0, 1, ''], ['fa0d1e2f3a4', '耐用年数', 'number', '年', 0, 0, 1, ''], ['fb1e2f3a4b5', '状態', 'text', '', 0, 0, 0, ''],
+      ['fc2f3a4b5c6', '重量', 'number', 'kg', 1, 1, 1, ''], ['fd3a4b5c6d7', '在庫数', 'number', '個', 0, 1, 1, ''], ['fe4b5c6d7e8', '差引', 'formula', '個', 0, 1, 1, '{qty} - {fd3a4b5c6d7}'],
+      ['note', '備考', 'text', '', 0, 0, 1, ''],
+    ],
+    f: [
+      ['main', 'ファイル1', null, '〇〇株式会社 総務部', 1, 'auto', 'blue', 1767225600000],
+      ['0f3a9c2e7b1d4e5f8a6b3c9d2e1f0a7b', '2026年度 新規購入', '備品購入一覧', '〇〇株式会社 管理部', 1, 'portrait', 'green', 1775001600000],
+      ['5c8e1a4f9b2d7e3c6a0f8b5d2e9c1a4f', 'ファイル2', null, '〇〇株式会社', 0, 'landscape', 'orange', 1775088000000],
+      ['a1b2c3d4e5f60718293a4b5c6d7e8f90', '第1倉庫', '備品台帳', '有限会社〇〇 経理課', 1, 'auto', 'red', 1775174400000],
+      ['9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b', '大阪支店 営業部', null, null, 1, 'auto', 'purple', 1775260800000],
+      ['3d6f9a2c5e8b1d4f7a0c3e6b9d2f5a8c', '情報システム部', 'IT機器一覧', '合同会社〇〇 情報システム課', 1, 'auto', 'teal', 1775347200000],
+      ['7b4e1d8a5c2f9e6b3d0a7c4f1e8b5d2a', '名古屋営業所', null, null, 1, 'auto', 'yellow', 1775433600000],
+      ['c5f2e9b6d3a0c7f4e1b8d5a2f9c6e3b0', '福岡支店', null, null, 1, 'auto', 'brown', 1775520000000],
+      ['e3c0a7d4b1f8e5c2a9d6b3f0e7c4a1d8', '1F 受付・応接室', null, null, 1, 'auto', 'pink', 1775606400000],
+      ['2a5d8f1c4e7b0a3d6f9c2e5b8a1d4f7c', '2025年度 廃棄予定', null, null, 1, 'auto', 'gray', 1775692800000],
+    ],
+    c: [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 8, 9, 9, 9],
+      [
+        '事務机 W1400', '事務用椅子（肘付き）', 'ノートパソコン', 'デスクトップPC', '液晶モニター 24インチ', 'キーボード', 'マウス', 'レーザープリンター', 'カラー複合機（リース）', 'シュレッダー', 'スチール書庫 3段', '電話機',
+        'モニター 27インチ', 'ワイヤレスマウス', 'USBメモリ 32GB', '外付けHDD 2TB', 'LANケーブル 10m', 'HDMIケーブル 2m', '電源タップ 6個口', 'ヘッドセット（USB）', 'Webカメラ', 'タブレット', 'スマートフォン', 'モニターアーム',
+        '会議用テーブル W1800', '会議用チェア', 'プロジェクター', 'スクリーン 80インチ', 'ホワイトボード（両面・脚付き）', 'スピーカーフォン',
+        'スチールラック 5段', 'ロッカー', 'キャビネット 4段', '台車', '脚立', '段ボール箱', '消火器', '工具セット',
+        'パーテーション', '掲示板', 'ファイルボックス A4', '書類トレー',
+        'サーバー', 'ルーター', 'スイッチングハブ 8ポート', '無線LANアクセスポイント', 'UPS（無停電電源装置）', 'NAS 4TB', 'ラベルプリンター', 'セキュリティワイヤー',
+        'ソファー', '応接テーブル', '空気清浄機', '加湿器', '傘立て', 'ウォーターサーバー', '冷蔵庫', '電子レンジ', 'コーヒーメーカー', '掃除機',
+      ],
+      [
+        32800, 19800, 128000, 98000, 21800, 2980, 1980, 45000, 0, 24800, 39800, 8800,
+        34800, 2480, 980, 12800, 1280, 1480, 2280, 5980, 6980, 54800, 39800, 3480,
+        68000, 12800, 89800, 29800, 36800, 24800,
+        15800, 42000, 46800, 9800, 6980, 150, 6500, 12000,
+        18800, 9800, 498, 880,
+        298000, 14800, 4980, 19800, 32000, 59800, 16800, 1980,
+        158000, 48000, 39800, 15800, 7800, 0, 32800, 15800, 9800, 19800,
+      ],
+      [
+        10, 10, 8, 2, 12, 15, 15, 2, 1, 1, 4, 10,
+        20, 30, 50, 5, 30, 10, 20, 12, 8, 6, 15, 12,
+        2, 16, 1, 1, 2, 2,
+        6, 3, 4, 2, 1, 100, 3, 1,
+        8, 2, 40, 30,
+        1, 1, 3, 4, 2, 1, 1, 20,
+        1, 1, 2, 3, 1, 1, 1, 1, 1, 1,
+      ],
+      [
+        '2F 執務室', '2F 執務室', '情報システム部 管理', '経理部', null, null, null, null, 'リース契約（5年）', '2F 執務室', '書庫', null,
+        'テレワーク用に貸出', null, '貸出用', null, '倉庫A 棚2', null, null, null, null, '営業用', '社用携帯', null,
+        null, null, '天井吊り下げ', null, null, null,
+        '倉庫B', '更衣室', null, null, null, '倉庫A 棚1', '各フロアに1本', null,
+        null, '1F 玄関', null, null,
+        'サーバールーム', 'サーバールーム', null, '各フロア', null, null, null, null,
+        '応接室', '応接室', '1F 受付', '給湯室', '1F 玄関', 'レンタル（月額）', '給湯室', '給湯室', '給湯室', '倉庫A',
+      ],
+    ],
+  };
+  const words = [
+    'パソコン', 'PC', 'ノートPC', 'ディスプレイ', 'プリンター', 'コピー機', 'インクカートリッジ', 'トナー', 'コピー用紙 A4', 'コピー用紙 A3', 'ボールペン', '蛍光ペン', '油性ペン', 'ホッチキス', 'ステープラー', 'クリップ', 'セロハンテープ', 'ガムテープ', 'はさみ', 'カッター', 'のり', '付箋', 'ノート', 'クリアファイル', 'フラットファイル', 'バインダー', '電卓', '印鑑', 'スタンプ台', '朱肉', 'ゴム印', '名札', '名刺入れ',
+    '机', 'デスク', '椅子', 'いす', 'チェア', 'テーブル', '棚', 'ラック', 'シェルフ', '本棚', '引き出し', 'ワゴン', 'キャスター付き', '鍵付き', '金庫', '手提げ金庫', '時計', '掛け時計', 'カレンダー', '照明', 'デスクライト', 'LED', '蛍光灯', '扇風機', 'サーキュレーター', 'ヒーター', 'エアコン', '除湿機', '電気ポット', 'ケトル', '給茶機', '食器', 'ごみ箱', 'ゴミ箱', 'ダストボックス', '救急箱', 'AED', '防災用品', 'ヘルメット', '懐中電灯', '非常食', '保存水', '発電機', '延長コード', 'コード', 'ケーブル', '充電器', 'ACアダプター', 'バッテリー', '電池', 'マイク', 'スピーカー', 'カメラ', 'テレビ', 'モニター', 'ルーター', 'ハブ', 'Wi-Fi', 'Bluetooth', 'USB', 'Type-C', 'SSD', 'HDD', 'メモリ', 'ソフトウェア', 'ライセンス', 'Microsoft 365', 'Windows', 'Mac', 'iPad', 'iPhone', 'Android',
+    '黒', '白', 'グレー', '大', '中', '小', 'A4', 'A3', 'B4', 'B5', '1段', '2段', '3段', '4段', '5段', '1m', '2m', '3m', '5m', '10m', '20m', '8GB', '16GB', '64GB', '128GB', '256GB', '512GB', '1TB', '2TB', '24インチ', '27インチ', '32インチ', 'W600', 'W800', 'W1000', 'W1200', 'W1600', 'D600', 'D700', 'H700', 'H1800', 'mm', 'cm',
+    '本社', '支店', '営業所', '工場', '倉庫', '店舗', '事務所', '総務部', '総務課', '経理部', '経理課', '人事部', '営業部', '営業課', '管理部', '製造部', '開発部', '企画部', '情報システム部', '社長室', '役員室', '会議室', '応接室', '執務室', '受付', '休憩室', '更衣室', '書庫', '給湯室', 'サーバールーム', '倉庫A', '倉庫B', '1F', '2F', '3F', '4F', '5F', 'B1',
+    '購入', '購入日', 'リース', 'レンタル', '貸出中', '貸出用', '予備', '共用', '故障中', '修理中', '修理済み', '廃棄', '廃棄予定', '廃棄済み', '移動', '寄贈', '新品', '中古', '保証期間', '保証期限', '1年', '3年', '5年', '年度末に棚卸し', '棚卸し済み', '数量を確認', '要確認', '在庫', '不足', '発注済み', '交換', '点検', '月額', '年額', '契約', '担当', '管理', '総務部へ連絡', '株式会社', '有限会社', '合同会社', '（株）',
+    '2024/04/01', '2025/04/01', '2025/10/01', '2026/01/15', '2026/03/31', '2026/04/01', '2026-04-01', '2026-05-20', '2027/03/31', 'R8.4.1', '令和8年4月', '2026年4月', '個', '台', '本', '枚', '脚', '箱', '式', '点', '組', 'セット', '円', '%', '年', 'kg',
+    'ThinkPad', 'レッツノート', 'Surface', 'MacBook Air', 'MacBook Pro', 'Dynabook', 'LIFEBOOK', 'Chromebook', 'iPad Air', 'Galaxy',
+    '富士通', 'NEC', '東芝', '日立', '三菱電機', 'パナソニック', 'シャープ', 'ソニー', 'キヤノン', 'エプソン', 'リコー', 'ブラザー', '富士フイルム', '京セラ', 'コニカミノルタ', 'ダイキン', 'アップル', 'デル', 'レノボ', 'HP', 'ASUS', 'ロジクール', 'エレコム', 'バッファロー', 'アイ・オー・データ', 'サンワサプライ', 'コクヨ', 'オカムラ', 'イトーキ', 'プラス', 'ライオン事務器', 'アイリスオーヤマ', '山善', 'ニトリ', '無印良品', 'アスクル', 'マキタ', 'ハイコーキ', 'ボッシュ',
+    'レジ', 'POSレジ', 'ショーケース', '陳列棚', '什器', '看板', 'のぼり', '冷凍庫', '製氷機', '食器洗浄機', 'ガスコンロ', '炊飯器', '作業台', 'フォークリフト', 'パレット', 'ハンドリフト', 'コンテナ', 'かご台車', '梱包機', 'バーコードリーダー', 'ハンディターミナル', '電動ドライバー', 'インパクトドライバー', '測定器', 'ノギス', 'メジャー', 'はかり', '温度計', '車いす', 'ベッド', '血圧計', '体温計', 'パイプ椅子', '折りたたみ椅子', '長机', '演台', '暗幕', 'マイクスタンド', 'アンプ', '社用車', '自転車', 'ETCカード', 'ガソリンカード',
+  ];
+  P.c[0].push(...words.map(() => 0));
+  P.c[1].push(...words);
+  return new TextEncoder().encode(JSON.stringify(P));
+})();
+
+// 確率（0〜4095）と、その対数オッズ（-2047〜2047）の変換表
+const CM_SQ = [1, 2, 3, 6, 10, 16, 27, 45, 73, 120, 194, 310, 488, 747, 1101, 1546, 2047, 2549, 2994, 3348, 3607, 3785, 3901, 3975, 4022, 4050, 4068, 4079, 4085, 4089, 4092, 4093, 4094];
+function cmSquash(d) {
+  if (d > 2047) return 4095;
+  if (d < -2047) return 1;
+  const w = d & 127, i = (d >> 7) + 16;
+  return (CM_SQ[i] * (128 - w) + CM_SQ[i + 1] * w + 64) >> 7;
+}
+const CM_ST = new Int16Array(4096);
+{
+  let pi = 0;
+  for (let x = -2047; x <= 2047; x++) { const v = cmSquash(x); for (let j = pi; j <= v; j++) CM_ST[j] = x; pi = v + 1; }
+  for (let j = pi; j < 4096; j++) CM_ST[j] = 2047;
+}
+const CM_RT = Int32Array.from({ length: 128 }, (_, n) => Math.floor(2048 / (2 * n + 3)));   // 学習の速さ 1/(回数+1.5)
+
+// 次の1ビットが1である確率を予想する。直前1・2・3・4・6バイト、いまの単語、過去の同じ並び（一致）の予想を混ぜる
+function cmModel(size) {
+  const ORD = [1, 2, 3, 4, 6], NT = 6, NI = 8, TB = 20, SH = 32 - TB;
+  const prob = new Uint16Array(NT << TB);   // 確率は 0x8000 との排他的論理和で持つ（0 のままが五分五分）
+  const cnt = new Uint8Array(NT << TB);
+  const W = new Float64Array(768 * NI).fill(19661);
+  const row = Uint16Array.from({ length: 33 }, (_, j) => cmSquash((j - 16) * 128) * 16);
+  const apm1 = new Uint16Array(256 * 33), apm2 = new Uint16Array(65536 * 33);
+  for (let c = 0; c < 256; c++) apm1.set(row, c * 33);
+  for (let c = 0; c < 65536; c++) apm2.set(row, c * 33);
+  const hist = new Uint8Array(size);
+  const mtab = new Int32Array(1 << 18).fill(-1);
+  const hsh = new Int32Array(NT), idx = new Int32Array(NT), st = new Int32Array(NI);
+  let hpos = 0, c0 = 1, bitp = 0, c1 = 0, cls = 0, word = 0, mptr = 0, mlen = 0, set = 0, pmix = 2048, a1 = 0, a2 = 0, aw = 0;
+  const contexts = () => {
+    for (let k = 0; k < 5; k++) {
+      let x = Math.imul(k + 1, 0x3c6ef372);
+      for (let j = 1; j <= ORD[k]; j++) x = Math.imul(x ^ (hpos >= j ? hist[hpos - j] : 0), 0x2f0b4ebb) + j;
+      hsh[k] = x;
+    }
+    hsh[5] = Math.imul(word, 0x5bd1e995) + 0x1234567;
+  };
+  contexts();
+  return {
+    p() {
+      for (let k = 0; k < NT; k++) {
+        const i = (k << TB) | (Math.imul(hsh[k] ^ Math.imul(c0, 0x2c1b3c6d), 0x297a2d39) >>> SH);
+        idx[k] = i;
+        st[k] = CM_ST[(prob[i] ^ 0x8000) >> 4];
+      }
+      let m = 0;
+      if (mlen > 0) {
+        const e = (hist[mptr] | 256) >> (7 - bitp);
+        if (e >> 1 === c0) { const s = Math.min(mlen, 16) * 64; m = e & 1 ? s : -s; } else mlen = 0;
+      }
+      st[6] = m; st[7] = 256;
+      set = (cls * 256 + c0) * NI;
+      let dot = 0;
+      for (let i = 0; i < NI; i++) dot += W[set + i] * st[i];
+      pmix = cmSquash(Math.floor(dot / 65536));
+      const s = CM_ST[pmix] + 2048, lo = s >> 7;
+      aw = s & 127;
+      a1 = c0 * 33 + lo;
+      a2 = (c1 * 256 + c0) * 33 + lo;
+      const p1 = (apm1[a1] * (128 - aw) + apm1[a1 + 1] * aw) >> 11;
+      const p2 = (apm2[a2] * (128 - aw) + apm2[a2 + 1] * aw) >> 11;
+      const pr = (pmix + p1 + 2 * p2 + 2) >> 2;
+      return pr < 1 ? 1 : pr > 4095 ? 4095 : pr;
+    },
+    u(y) {
+      for (let k = 0; k < NT; k++) {
+        const i = idx[k], n = cnt[i], p = prob[i] ^ 0x8000;
+        prob[i] = (p + ((((y ? 65535 : 0) - p) * CM_RT[n]) >> 10)) ^ 0x8000;
+        if (n < 127) cnt[i] = n + 1;
+      }
+      const err = ((y << 12) - pmix) * 5;
+      for (let i = 0; i < NI; i++) W[set + i] += Math.floor(st[i] * err / 1024);
+      const t = y ? 65535 : 0, j = aw < 64 ? 0 : 1;
+      apm1[a1 + j] += (t - apm1[a1 + j]) >> 6;
+      apm2[a2 + j] += (t - apm2[a2 + j]) >> 6;
+      c0 = (c0 << 1) | y;
+      if (++bitp === 8) {
+        const b = c0 & 255;
+        hist[hpos++] = b;
+        c1 = b;
+        cls = b < 0x80 ? 0 : b < 0xc0 ? 1 : 2;
+        word = (b >= 0x30 && b <= 0x39) || (b >= 0x41 && b <= 0x5a) || (b >= 0x61 && b <= 0x7a) || b >= 0x80 ? Math.imul(word ^ b, 0x01000193) : 0;
+        if (mlen > 0) { mptr++; mlen++; }
+        if (hpos >= 6) {
+          let x = 0;
+          for (let q = 1; q <= 6; q++) x = Math.imul(x ^ hist[hpos - q], 0x2f0b4ebb);
+          x >>>= 14;
+          if (mlen === 0 && mtab[x] >= 0) { mptr = mtab[x]; mlen = 1; }
+          mtab[x] = hpos;
+        }
+        c0 = 1; bitp = 0;
+        contexts();
+      }
+    },
+  };
+}
+function cmPrimed(n) {
+  const m = cmModel(SHARE_PRIMER.length + n);
+  for (const b of SHARE_PRIMER) for (let i = 7; i >= 0; i--) { m.p(); m.u((b >> i) & 1); }
+  return m;
+}
+function cmEncode(data) {
+  const m = cmPrimed(data.length), out = [];
+  let x1 = 0, x2 = 0xffffffff;
+  for (const b of data) {
+    for (let i = 7; i >= 0; i--) {
+      const y = (b >> i) & 1, xm = x1 + Math.floor((x2 - x1) / 4096) * m.p();
+      if (y) x2 = xm; else x1 = xm + 1;
+      m.u(y);
+      while (((x1 ^ x2) & 0xff000000) === 0) {
+        out.push(x2 >>> 24);
+        x1 = (x1 * 256) % 4294967296;
+        x2 = (x2 * 256) % 4294967296 + 255;
+      }
+    }
+  }
+  out.push(x1 >>> 24);
+  return Uint8Array.from(out);
+}
+function cmDecode(code, n) {
+  const m = cmPrimed(n), out = new Uint8Array(n);
+  let x1 = 0, x2 = 0xffffffff, x = 0, pos = 0;
+  const next = () => (pos < code.length ? code[pos++] : 255);
+  for (let i = 0; i < 4; i++) x = x * 256 + next();
+  for (let k = 0; k < n; k++) {
+    let c = 0;
+    for (let i = 0; i < 8; i++) {
+      const xm = x1 + Math.floor((x2 - x1) / 4096) * m.p();
+      const y = x <= xm ? 1 : 0;
+      if (y) x2 = xm; else x1 = xm + 1;
+      m.u(y);
+      c = (c << 1) | y;
+      while (((x1 ^ x2) & 0xff000000) === 0) {
+        x1 = (x1 * 256) % 4294967296;
+        x2 = (x2 * 256) % 4294967296 + 255;
+        x = (x * 256) % 4294967296 + next();
+      }
+    }
+    out[k] = c;
+  }
+  return out;
+}
+function sum16(bytes) {
+  let h = 0x811c9dc5;
+  for (const b of bytes) h = Math.imul(h ^ b, 0x01000193);
+  return ((h >>> 16) ^ h) & 0xffff;
+}
+/* ---------- end share codec ---------- */
+
 async function streamBytes(bytes, transform) {
   return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(transform)).arrayBuffer());
 }
-// 先頭1バイト：1 = 圧縮あり、0 = 圧縮なし
+// 先頭1バイト：2 = 上の方式で圧縮（続けて元の長さ・確認用の値）、1 = deflate（以前の版）、0 = 圧縮なし
+const SHARE_MAX_RAW = 2 * 1024 * 1024;
 async function packShare(obj) {
   const raw = new TextEncoder().encode(JSON.stringify(obj));
-  let body = raw, flag = 0;
-  if (typeof CompressionStream === 'function') {
-    try { body = await streamBytes(raw, new CompressionStream('deflate')); flag = 1; } catch (e) { body = raw; flag = 0; }
+  const head = [2];
+  for (let n = raw.length; ; n = Math.floor(n / 128)) { if (n < 128) { head.push(n); break; } head.push((n % 128) | 128); }
+  const sum = sum16(raw);
+  head.push(sum >> 8, sum & 255);
+  const body = cmEncode(raw);
+  if (head.length + body.length >= raw.length + 1) {   // 縮まないデータはそのまま
+    const out = new Uint8Array(raw.length + 1);
+    out.set(raw, 1);
+    return out;
   }
-  const out = new Uint8Array(body.length + 1);
-  out[0] = flag; out.set(body, 1);
+  const out = new Uint8Array(head.length + body.length);
+  out.set(head); out.set(body, head.length);
   return out;
 }
 async function unpackShare(bytes) {
   const broken = '読み取ったデータが壊れています。もう一度読み取ってください';
   let raw;
-  if (bytes[0] === 1) {
+  if (bytes[0] === 2) {
+    let n = 0, k = 1, mul = 1;
+    for (;;) {
+      if (k >= bytes.length || k > 4) throw new ShareError(broken);
+      const b = bytes[k++];
+      n += (b & 127) * mul; mul *= 128;
+      if (b < 128) break;
+    }
+    if (n > SHARE_MAX_RAW || k + 2 > bytes.length) throw new ShareError(broken);
+    raw = cmDecode(bytes.subarray(k + 2), n);
+    if (sum16(raw) !== bytes[k] * 256 + bytes[k + 1]) throw new ShareError(broken);
+  } else if (bytes[0] === 1) {
     if (typeof DecompressionStream !== 'function') throw new ShareError('このブラウザでは読み取れません。最新のブラウザでお試しください');
     try { raw = await streamBytes(bytes.subarray(1), new DecompressionStream('deflate')); } catch (e) { throw new ShareError(broken); }
   } else if (bytes[0] === 0) raw = bytes.subarray(1);
@@ -3946,6 +4215,7 @@ async function startCamera() {
   share.stream = stream;
   sh.video.srcObject = stream;
   try { await sh.video.play(); } catch (e) {}
+  if (share.stream !== stream) return;   // 再生を待つ間に止められた
   sh.cam.dataset.on = 'true';
   setCamMsg('QRコードを枠の中に写してください');
   renderCamBtn();
@@ -4179,12 +4449,13 @@ async function readImages(files) {
     let text = null;
     try { text = await detectText(src); } catch (e) {}
     if (!text && !window.jsQR) { try { await loadScript(QR_READ_URL); } catch (e) {} }
-    const w0 = src.width, h0 = src.height;
-    for (const max of [1000, 1800, 2600, 4000]) {
+    const w0 = src.width, h0 = src.height, big = Math.max(w0, h0);
+    // 縮める具合によって読めたり読めなかったりするため、読めなければ大きさを変えて何度か試す
+    const scales = [...new Set([1000, 1800, 2600, 4000].map((max) => Math.min(1, max / big)))];
+    scales.push(...[0.75, 0.5, 1.5].map((k) => k * scales[0]).filter((s) => big * s >= 200 && big * s <= 4000));
+    for (const s of scales) {
       if (text || !window.jsQR) break;
-      const s = Math.min(1, max / Math.max(w0, h0));
       try { text = decodeFrom(src, Math.max(1, Math.round(w0 * s)), Math.max(1, Math.round(h0 * s)), true); } catch (e) {}
-      if (s === 1) break;
     }
     if (text) { if (takeText(text)) found++; else other++; }
     if (src.close) src.close();
