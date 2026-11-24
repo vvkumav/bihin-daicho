@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="c5a95ca451a5"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="0d75a4d49950"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -475,6 +475,8 @@ dialog.modal::backdrop{background:rgba(10,14,18,.5)}
 .sh-result-title{margin:0;font-family:var(--round);font-size:14px;font-weight:700;color:var(--fc-ink)}
 .sh-result-text{margin:0;font-size:16px;font-weight:700;overflow-wrap:anywhere}
 .sh-modes{display:grid;gap:10px}
+.sh-whats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.sh-whats{grid-template-columns:minmax(0,1fr)}}
 .sh-effect{margin:0;padding:10px 12px;border-radius:8px;background:#ffffff;font-size:14px;white-space:pre-line;overflow-wrap:anywhere}
 .sh-effect.warn{color:var(--danger-text);font-weight:700}
 /* Quantity in the list: − / ＋ and direct input, so counts can be adjusted without opening the edit dialog */
@@ -911,6 +913,13 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="modal-body">
       <section class="sh-panel" id="sh-show" role="tabpanel" aria-labelledby="sh-tab-show">
+        <fieldset class="ex-group" id="sh-what">
+          <legend>送る内容</legend>
+          <div class="sh-whats">
+            <label class="ex-card"><input type="radio" name="sh-what" value="data" checked><span class="ex-name">この端末のデータ</span><span class="ex-desc">ファイル・備品・項目の設定をすべて送ります。</span></label>
+            <label class="ex-card"><input type="radio" name="sh-what" value="app"><span class="ex-name">アプリだけ</span><span class="ex-desc">データを含まない、まっさらな状態のアプリを送ります。</span></label>
+          </div>
+        </fieldset>
         <p class="sh-summary" id="sh-summary"></p>
         <h3 class="sh-sub">QRコードで送る</h3>
         <div class="sh-qr-box" id="sh-qr-box">
@@ -927,10 +936,10 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
           大きく表示
         </button>
-        <p class="ex-note">受け取るスマートフォンの<b>標準のカメラ</b>でこのQRコードを読み取り、表示されたリンクを開いてください。公開版のアプリが開き、取り込みの確認画面が表示されます。読み取りにくい場合は「大きく表示」を押してください。</p>
+        <p class="ex-note" id="sh-qr-note">受け取るスマートフォンの<b>標準のカメラ</b>でこのQRコードを読み取り、表示されたリンクを開いてください。公開版のアプリが開き、取り込みの確認画面が表示されます。読み取りにくい場合は「大きく表示」を押してください。</p>
         <div class="sh-link" id="sh-link-box" hidden>
           <h3 class="sh-sub">リンクで送る</h3>
-          <p class="sh-link-desc">リンクをメールやチャットで送ります。受け取った人がリンクを開くと、公開版のアプリで取り込みの確認画面が表示されます。リンクを知っている人は誰でも内容を見られるため、送り先に注意してください。</p>
+          <p class="sh-link-desc" id="sh-link-desc">リンクをメールやチャットで送ります。受け取った人がリンクを開くと、公開版のアプリで取り込みの確認画面が表示されます。リンクを知っている人は誰でも内容を見られるため、送り先に注意してください。</p>
           <div class="sh-link-row">
             <input type="text" id="sh-link" readonly aria-label="共有用のリンク" spellcheck="false">
             <button type="button" class="btn btn-primary" id="sh-copy">リンクをコピー</button>
@@ -998,7 +1007,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第1.9版　2026年11月23日</p>
+        <p class="m-meta">第2.0版　2026年11月24日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -1123,7 +1132,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td class="c-n">1</td><td>背ラベル</td><td>アプリケーション名です。</td></tr>
               <tr><td class="c-n">2</td><td><span class="ui">説明書</span></td><td>本書を表示します。</td></tr>
               <tr><td class="c-n">3</td><td><span class="ui">項目と計算式</span></td><td>項目および計算式を設定します（<a href="#m-schema" data-jump="m-schema">8章</a>）。</td></tr>
-              <tr><td class="c-n">4</td><td><span class="ui">データ共有</span></td><td>データをQRコードまたはリンクにして、別の端末と共有します（<a href="#m-share" data-jump="m-share">10章</a>）。</td></tr>
+              <tr><td class="c-n">4</td><td><span class="ui">データ共有</span></td><td>データをQRコードまたはリンクにして、別の端末と共有します。データを含まないアプリだけのQRコード・リンクも作れます（<a href="#m-share" data-jump="m-share">10章</a>）。</td></tr>
               <tr><td class="c-n">5</td><td>ファイル一覧</td><td>登録済みのファイルを表示します。右側の数値は備品の件数です。表示中のファイルは右へ引き出された状態で示されます。</td></tr>
               <tr><td class="c-n">6</td><td><span class="ui">新しいファイル</span></td><td>ファイルを作成します（<a href="#m-file" data-jump="m-file">3.1</a>）。</td></tr>
               <tr><td class="c-n">7</td><td>ファイル名</td><td>表示中のファイル名です。表紙の色は、そのファイルに設定した色です。</td></tr>
@@ -1364,13 +1373,15 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
 
         <section class="m-sec" aria-labelledby="m-share">
           <h3 id="m-share" tabindex="-1"><span class="m-num">10</span>データの共有（QRコード・リンク）</h3>
-          <p>この端末のデータ（すべてのファイル・備品、および項目と計算式）を1つのQRコード、または1つのリンクに変換し、別の端末へ渡すことができます。ローカル版および公開版ではデータが端末ごとに保存されるため、複数の端末で同じ台帳を利用する場合や、別の端末に控えを残す場合に使用します。</p>
+          <p>この端末のデータ（すべてのファイル・備品、および項目と計算式）を1つのQRコード、または1つのリンクに変換し、別の端末へ渡すことができます。ローカル版および公開版ではデータが端末ごとに保存されるため、複数の端末で同じ台帳を利用する場合や、別の端末に控えを残す場合に使用します。データを含まない、アプリだけのQRコード・リンクを作ることもできます。</p>
           <h4>10.1　送る側の操作</h4>
           <ol class="m-steps">
             <li>画面右上の<span class="ui">データ共有</span>をクリックします。<span class="ui">送る</span>に、この端末のデータのQRコードと、共有用のリンクが表示されます。</li>
+            <li>データを送らず、アプリだけを紹介する場合は、<span class="ui">送る内容</span>で<span class="ui">アプリだけ</span>を選択します。データを含まない公開版のQRコードとリンクに切り替わります。</li>
             <li>QRコードで送る場合は、受け取る側の端末で、表示されたQRコードを読み取ってもらいます。読み取りにくい場合は<span class="ui">大きく表示</span>をクリックし、画面いっぱいに表示してください。</li>
             <li>リンクで送る場合は、<span class="ui">リンクをコピー</span>をクリックし、メールやチャットに貼り付けて送ります。スマートフォンでは、<span class="ui">ほかのアプリで送る</span>から、メール・LINE等を選んで送ることもできます。</li>
           </ol>
+          <p class="m-note"><span class="m-note-label">補足</span><span class="ui">アプリだけ</span>のQRコード・リンクを初めて開いた端末では、データのない状態からアプリを使い始められます。すでにアプリを使っている端末で開いた場合は、その端末のデータがそのまま表示されます（削除されることはありません）。</p>
           <p class="m-note"><span class="m-note-label">補足</span>QRコードとリンクは、データを小さく詰めて作ります（備品台帳でよく使う言葉は短く表します）。それでも備品の件数が多いほどリンクは長くなり、1つのQRコードに収まらない場合に限り、複数のQRコードに分けて自動で切り替えて表示します。リンクは件数にかかわらず1つです。以前の版で作ったQRコードやリンクも読み込めます。</p>
           <h4>10.2　受け取る側の操作</h4>
           <ol class="m-steps">
@@ -3627,9 +3638,26 @@ const sh = {
   error: $('#share-error'), importBtn: $('#sh-import'), again: $('#sh-again'),
   linkBox: $('#sh-link-box'), link: $('#sh-link'), copy: $('#sh-copy'), send: $('#sh-send'), linkMsg: $('#sh-link-msg'),
   paste: $('#sh-paste'), pasteIn: $('#sh-paste-in'), pasteBtn: $('#sh-paste-btn'),
+  what: $('#sh-what'), qrNote: $('#sh-qr-note'), linkDesc: $('#sh-link-desc'),
 };
-const share = { tab: 'show', link: '', parts: [], index: 0, qr: null, timer: 0, gen: 0, stream: null, scanTimer: 0, scanTick: 0, detector: undefined, got: null, finishing: false, payload: null, busy: false, hintTimer: 0 };
+const share = { tab: 'show', what: 'data', link: '', parts: [], index: 0, qr: null, timer: 0, gen: 0, stream: null, scanTimer: 0, scanTick: 0, detector: undefined, got: null, finishing: false, payload: null, busy: false, hintTimer: 0 };
 class ShareError extends Error {}
+// 送る内容ごとの説明。「アプリだけ」は公開版のURLそのもの（データなし）を送る
+const SHOW_TEXT = {
+  data: {
+    note: '受け取るスマートフォンの<b>標準のカメラ</b>でこのQRコードを読み取り、表示されたリンクを開いてください。公開版のアプリが開き、取り込みの確認画面が表示されます。読み取りにくい場合は「大きく表示」を押してください。',
+    link: 'リンクをメールやチャットで送ります。受け取った人がリンクを開くと、公開版のアプリで取り込みの確認画面が表示されます。リンクを知っている人は誰でも内容を見られるため、送り先に注意してください。',
+    qr: '共有用のQRコード',
+  },
+  app: {
+    note: '受け取るスマートフォンの<b>標準のカメラ</b>でこのQRコードを読み取り、表示されたリンクを開いてください。公開版のアプリが開きます。読み取りにくい場合は「大きく表示」を押してください。',
+    link: 'リンクをメールやチャットで送ります。受け取った人がリンクを開くと、公開版のアプリが開きます。データは含まれません。',
+    qr: 'アプリを開くQRコード',
+  },
+};
+const APP_ONLY = 'データを含まない、アプリだけのQRコード・リンクです。取り込むデータはありません。データを受け取るには、送る側で「この端末のデータ」を選んで共有してもらってください';
+// 公開版のURLだけ（データの印 #D・#P・#L がない）なら「アプリだけ」の共有
+const isAppOnly = (str) => String(str || '').includes(PUBLIC_URL.replace(/\/$/, '')) && !/#[DPL]/.test(String(str || ''));
 
 // 送るデータ（版3）：項目と計算式は初期設定なら 0。備品は入力項目の値だけを使い、登録順に並べて項目ごとの列にする
 // （品名の列、単価の列…と似た値が並ぶほうがよく縮む。列0はファイルの番号。登録日時は順番だけ残す）
@@ -4040,9 +4068,9 @@ function qrTexts(packed) {
 }
 function makeQr(part) {
   const build = (type) => {
-    const qr = window.qrcode(type, 'L');   // 画面に表示するだけなので誤り訂正は最小にして、できるだけ粗いQRコードにする
+    const qr = window.qrcode(type, part.ecc || 'L');   // 画面に表示するだけなので誤り訂正は最小にして、できるだけ粗いQRコードにする
     qr.addData(part.prefix, 'Byte');
-    qr.addData(part.body, 'Alphanumeric');
+    if (part.body) qr.addData(part.body, 'Alphanumeric');
     qr.make();
     return qr;
   };
@@ -4082,7 +4110,8 @@ function showPart(i) {
   paintQr(sh.canvas, share.qr, 720);
   paintBig();
   sh.pos.textContent = `${share.index + 1} / ${n}`;
-  sh.canvas.setAttribute('aria-label', n > 1 ? `共有用のQRコード（${n}枚中${share.index + 1}枚目）` : '共有用のQRコード');
+  const label = SHOW_TEXT[share.what].qr;
+  sh.canvas.setAttribute('aria-label', n > 1 ? `${label}（${n}枚中${share.index + 1}枚目）` : label);
 }
 function setZoom(on) {
   sh.zoomView.hidden = !on;
@@ -4099,6 +4128,24 @@ async function prepareShow() {
   sh.linkBox.hidden = true;
   sh.linkMsg.textContent = '';
   setBoxMsg('QRコードを作成しています…');
+  sh.qrNote.innerHTML = SHOW_TEXT[share.what].note;
+  sh.linkDesc.textContent = SHOW_TEXT[share.what].link;
+  if (share.what === 'app') {
+    sh.summary.textContent = 'データを含まない、アプリだけを送ります。初めて開く端末では、まっさらな状態から使い始められます。';
+    share.link = PUBLIC_URL;
+    showLink();
+    try { await loadScript(QR_GEN_URL); } catch (e) {
+      if (gen === share.gen) setBoxMsg('QRコードの機能を読み込めませんでした。インターネット接続を確認してください');
+      return;
+    }
+    if (gen !== share.gen) return;
+    share.parts = [{ prefix: PUBLIC_URL, body: '', ecc: 'M' }];   // 中身が短いので、誤り訂正を強めても小さなQRコードで済む
+    setBoxMsg('');
+    sh.canvas.hidden = false;
+    sh.zoom.hidden = false;
+    showPart(0);
+    return;
+  }
   const { data, fileCount, itemCount } = sharePayload();
   const what = `この端末のデータ（ファイル ${fileCount}件・備品 ${itemCount}件）`;
   sh.summary.textContent = `${what}を送ります`;
@@ -4151,7 +4198,9 @@ async function copyLink() {
 async function sendLink() {
   if (typeof navigator.share !== 'function' || !share.link) return;
   try {
-    await navigator.share({ title: '備品台帳のデータ', text: '備品台帳のデータです。リンクを開くと、取り込みの確認画面が表示されます。', url: share.link });
+    await navigator.share(share.what === 'app'
+      ? { title: '備品台帳', text: '備品台帳のアプリです。リンクを開くと使い始められます。', url: share.link }
+      : { title: '備品台帳のデータ', text: '備品台帳のデータです。リンクを開くと、取り込みの確認画面が表示されます。', url: share.link });
   } catch (e) {
     if (!e || e.name !== 'AbortError') { sh.linkMsg.classList.remove('warn'); sh.linkMsg.textContent = 'この画面ではほかのアプリに送れません。「リンクをコピー」を使ってください'; }
   }
@@ -4281,6 +4330,7 @@ function takeText(text) {
     return true;
   }
   if (/#L[A-Za-z0-9_-]/.test(str)) { sh.error.textContent = BROKEN_LINK; sh.again.hidden = false; return true; }
+  if (isAppOnly(str)) { sh.error.textContent = APP_ONLY; return true; }
   const m = SHARE_RE.exec(str);
   if (!m) { flashHint('このアプリのQRコードではありません'); return false; }
   if (m[1] === 'D') {
@@ -4311,6 +4361,7 @@ function takeText(text) {
 }
 async function finishRead(bytes) {
   share.finishing = true;
+  sh.error.textContent = '';
   stopCamera();
   try {
     share.payload = readShare(await unpackShare(bytes));
@@ -4491,6 +4542,8 @@ function openShareDialog(tab = 'show') {
   flushAllQty();
   sh.dialog.className = 'modal fc-' + colorOf(currentFile());
   share.parts = []; share.qr = null;
+  share.what = 'data';
+  sh.what.querySelectorAll('input[name="sh-what"]').forEach((r) => { r.checked = r.value === 'data'; });
   sh.zoomView.hidden = true;
   resetRead();
   setCamMsg('');
@@ -4524,6 +4577,11 @@ function openFromLink() {
 }
 window.addEventListener('hashchange', openFromLink);
 sh.btn.addEventListener('click', () => openShareDialog('show'));
+sh.what.addEventListener('change', (e) => {
+  if (e.target.name !== 'sh-what' || e.target.value === share.what) return;
+  share.what = e.target.value === 'app' ? 'app' : 'data';
+  prepareShow();
+});
 sh.copy.addEventListener('click', copyLink);
 sh.send.addEventListener('click', sendLink);
 sh.link.addEventListener('focus', () => sh.link.select());
@@ -4531,6 +4589,7 @@ function readPasted() {
   const v = sh.pasteIn.value.trim();
   sh.error.textContent = '';
   if (!v) { sh.error.textContent = '受け取ったリンクを貼り付けてください'; sh.pasteIn.focus(); return; }
+  if (isAppOnly(v)) { sh.error.textContent = APP_ONLY; return; }
   if (!/#[DPL]/.test(v)) { sh.error.textContent = 'このアプリのリンクではありません。受け取ったリンクをそのまま貼り付けてください'; return; }
   stopCamera();
   takeText(v);
