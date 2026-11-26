@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="0d75a4d49950"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="43be24c3e00c"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -479,6 +479,48 @@ dialog.modal::backdrop{background:rgba(10,14,18,.5)}
 @media (max-width:560px){.sh-whats{grid-template-columns:minmax(0,1fr)}}
 .sh-effect{margin:0;padding:10px 12px;border-radius:8px;background:#ffffff;font-size:14px;white-space:pre-line;overflow-wrap:anywhere}
 .sh-effect.warn{color:var(--danger-text);font-weight:700}
+/* Backup (save to a file / restore) and change history with undo */
+.bk-bar{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:2px clamp(16px,2vw,24px) 8px;padding:8px 8px 8px 16px;border-radius:12px;background:#ffffff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.25);font-size:14px}
+.bk-bar[hidden]{display:none}
+.bk-bar p{margin:0;flex:1 1 300px;font-weight:700}
+.bk-bar-btns{display:flex;gap:6px;margin-left:auto}
+.bk-body{display:flex;flex-direction:column;gap:20px}
+.bk-sec{display:flex;flex-direction:column;gap:10px}
+.bk-sec + .bk-sec{padding-top:18px;border-top:1px dashed var(--line-strong)}
+.bk-desc{margin:0;font-size:14px;color:var(--ink-2)}
+.bk-last{margin:0;font-weight:700}
+.bk-msg{margin:0;font-size:14px;font-weight:700;color:var(--fc-ink)}
+.bk-msg.is-err{color:var(--danger-text)}
+.bk-msg:empty{display:none}
+.bk-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+.hist-wrap{display:flex;flex-direction:column;gap:12px}
+.hist-desc{margin:0;font-size:14px;color:var(--ink-2)}
+.hist-who{display:flex;flex-direction:column;gap:6px}
+.hist-who label{font-size:14px;font-weight:700}
+.hist-who input{max-width:18em}
+.hist-hint{margin:0;font-size:13px;color:var(--ink-2)}
+.hist-status{margin:0;padding:8px 12px;border-radius:8px;background:var(--fc-soft);font-size:14px;font-weight:700;color:var(--fc-ink)}
+.hist-status.is-err{background:#fdecec;color:var(--danger-text)}
+.hist-status:empty{display:none}
+.hist-list{list-style:none;margin:0;padding:0}
+.hist-day{padding:14px 0 6px;font-family:var(--round);font-size:14px;font-weight:700;color:var(--fc-ink);border-bottom:2px solid var(--line)}
+.hist-item{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.hist-main{flex:1 1 240px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.hist-line{display:flex;gap:10px;align-items:baseline}
+.hist-time{flex:none;font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink-2)}
+.hist-label{min-width:0;overflow-wrap:anywhere}
+.hist-meta{padding-left:calc(5ch + 10px);font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
+.hist-item.is-undone .hist-label{color:var(--ink-2);text-decoration:line-through}
+.hist-item .btn{margin-left:auto;min-height:40px;padding:0 14px;font-size:14px}
+.hist-tag{margin-left:auto;padding:3px 10px;border-radius:999px;background:var(--zebra);font-size:12px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+.hist-empty{margin:0;color:var(--ink-2)}
+.hist-empty[hidden],.hist-more[hidden]{display:none}
+.hist-more{align-self:center}
+.toast.has-act{display:flex;align-items:center;gap:14px;padding:6px 6px 6px 20px}
+.toast.show.has-act{pointer-events:auto}
+.toast-act{appearance:none;flex:none;min-height:36px;padding:0 16px;border:0;border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.toast-act:focus-visible{outline:3px solid var(--fc);outline-offset:2px}
+
 /* Quantity in the list: − / ＋ and direct input, so counts can be adjusted without opening the edit dialog */
 .ledger td.c-qty{padding-block:5px}
 .qty{display:inline-flex;align-items:stretch;border:1px solid var(--line-strong);border-radius:999px;background:#ffffff;overflow:hidden}
@@ -663,8 +705,23 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
         データ共有
       </button>
+      <button type="button" class="btn" id="bk-btn" disabled>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v10.5"/><path d="m7.5 9.5 4.5 4.5 4.5-4.5"/><path d="M4 15v3a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-3"/></svg>
+        バックアップ
+      </button>
+      <button type="button" class="btn" id="hist-btn" disabled>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 12a8.4 8.4 0 1 0 2.5-6"/><path d="M3 3.8v4.7h4.7"/><path d="M12 7.5V12l3 2"/></svg>
+        変更履歴
+      </button>
     </div>
   </header>
+  <div class="bk-bar" id="bk-bar" role="status" hidden>
+    <p id="bk-bar-text"></p>
+    <div class="bk-bar-btns">
+      <button type="button" class="btn btn-primary" id="bk-bar-save">保存する</button>
+      <button type="button" class="btn btn-text" id="bk-bar-later">あとで</button>
+    </div>
+  </div>
 
   <div class="body">
     <nav class="side" aria-labelledby="side-title">
@@ -1007,7 +1064,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第2.0版　2026年11月24日</p>
+        <p class="m-meta">第2.1版　2026年11月26日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -1067,10 +1124,12 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <rect class="dg-white" x="16" y="14" width="124" height="32" rx="6"/>
             <rect x="26" y="22" width="5" height="16" rx="1.5" fill="#3b7bd4"/><rect x="32.5" y="20" width="5" height="18" rx="1.5" fill="#34a271"/><rect x="39" y="23" width="5" height="15" rx="1.5" fill="#ec8a32"/>
             <text class="dg-t" x="52" y="36">備品台帳</text>
-            <text class="dg-tw s" x="396" y="35" text-anchor="end">自動保存（共有）</text>
-            <rect class="dg-white" x="404" y="16" width="78" height="28" rx="6"/><text class="dg-t s" x="443" y="35" text-anchor="middle">説明書</text>
-            <rect class="dg-white" x="488" y="16" width="106" height="28" rx="6"/><text class="dg-t s" x="541" y="35" text-anchor="middle">項目と計算式</text>
-            <rect class="dg-white" x="600" y="16" width="106" height="28" rx="6"/><text class="dg-t s" x="653" y="35" text-anchor="middle">データ共有</text>
+            <text class="dg-tw s" x="304" y="35" text-anchor="end">自動保存（共有）</text>
+            <rect class="dg-white" x="312" y="16" width="54" height="28" rx="6"/><text class="dg-t s" x="339" y="35" text-anchor="middle">説明書</text>
+            <rect class="dg-white" x="372" y="16" width="88" height="28" rx="6"/><text class="dg-t s" x="416" y="35" text-anchor="middle">項目と計算式</text>
+            <rect class="dg-white" x="466" y="16" width="76" height="28" rx="6"/><text class="dg-t s" x="504" y="35" text-anchor="middle">データ共有</text>
+            <rect class="dg-white" x="548" y="16" width="88" height="28" rx="6"/><text class="dg-t s" x="592" y="35" text-anchor="middle">バックアップ</text>
+            <rect class="dg-white" x="642" y="16" width="64" height="28" rx="6"/><text class="dg-t s" x="674" y="35" text-anchor="middle">変更履歴</text>
             <rect class="dg-pocket" x="16" y="64" width="150" height="214" rx="10"/>
             <text class="dg-tw s" x="28" y="86">ファイル</text>
             <g class="fc-blue"><rect class="dg-white" x="27" y="96" width="128" height="30" rx="5"/><rect class="dg-fc" x="35" y="105" width="14" height="11" rx="2"/><text class="dg-t s" x="56" y="116">本社 総務部</text></g>
@@ -1111,19 +1170,21 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <text class="dg-ink s" x="236" y="394">‹ 本社 総務部</text><text class="dg-sub s" x="462" y="394" text-anchor="middle">2 / 3</text><text class="dg-ink s" x="690" y="394" text-anchor="end">2026年度 購入分 ›</text>
             <g class="dg-marks">
               <g><circle cx="146" cy="16" r="11"/><text x="146" y="21">1</text></g>
-              <g><circle cx="404" cy="14" r="11"/><text x="404" y="19">2</text></g>
-              <g><circle cx="488" cy="14" r="11"/><text x="488" y="19">3</text></g>
-              <g><circle cx="706" cy="14" r="11"/><text x="706" y="19">4</text></g>
-              <g><circle cx="166" cy="100" r="11"/><text x="166" y="105">5</text></g>
-              <g><circle cx="160" cy="220" r="11"/><text x="160" y="225">6</text></g>
-              <g><circle cx="228" cy="74" r="11"/><text x="228" y="79">7</text></g>
-              <g><circle cx="546" cy="70" r="11"/><text x="546" y="75">8</text></g>
-              <g><circle cx="692" cy="70" r="11"/><text x="692" y="75">9</text></g>
-              <g><circle cx="694" cy="110" r="11"/><text x="694" y="115">10</text></g>
-              <g><circle cx="228" cy="150" r="11"/><text x="228" y="155">11</text></g>
-              <g><circle cx="512" cy="146" r="11"/><text x="512" y="151">12</text></g>
-              <g><circle cx="694" cy="214" r="11"/><text x="694" y="219">13</text></g>
-              <g><circle cx="228" cy="388" r="11"/><text x="228" y="393">14</text></g>
+              <g><circle cx="312" cy="14" r="11"/><text x="312" y="19">2</text></g>
+              <g><circle cx="372" cy="14" r="11"/><text x="372" y="19">3</text></g>
+              <g><circle cx="466" cy="14" r="11"/><text x="466" y="19">4</text></g>
+              <g><circle cx="548" cy="14" r="11"/><text x="548" y="19">5</text></g>
+              <g><circle cx="642" cy="14" r="11"/><text x="642" y="19">6</text></g>
+              <g><circle cx="166" cy="100" r="11"/><text x="166" y="105">7</text></g>
+              <g><circle cx="160" cy="220" r="11"/><text x="160" y="225">8</text></g>
+              <g><circle cx="228" cy="74" r="11"/><text x="228" y="79">9</text></g>
+              <g><circle cx="546" cy="70" r="11"/><text x="546" y="75">10</text></g>
+              <g><circle cx="692" cy="70" r="11"/><text x="692" y="75">11</text></g>
+              <g><circle cx="694" cy="110" r="11"/><text x="694" y="115">12</text></g>
+              <g><circle cx="228" cy="150" r="11"/><text x="228" y="155">13</text></g>
+              <g><circle cx="512" cy="146" r="11"/><text x="512" y="151">14</text></g>
+              <g><circle cx="694" cy="214" r="11"/><text x="694" y="219">15</text></g>
+              <g><circle cx="228" cy="388" r="11"/><text x="228" y="393">16</text></g>
             </g>
           </svg>
           <table class="m-table legend">
@@ -1133,16 +1194,18 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td class="c-n">2</td><td><span class="ui">説明書</span></td><td>本書を表示します。</td></tr>
               <tr><td class="c-n">3</td><td><span class="ui">項目と計算式</span></td><td>項目および計算式を設定します（<a href="#m-schema" data-jump="m-schema">8章</a>）。</td></tr>
               <tr><td class="c-n">4</td><td><span class="ui">データ共有</span></td><td>データをQRコードまたはリンクにして、別の端末と共有します。データを含まないアプリだけのQRコード・リンクも作れます（<a href="#m-share" data-jump="m-share">10章</a>）。</td></tr>
-              <tr><td class="c-n">5</td><td>ファイル一覧</td><td>登録済みのファイルを表示します。右側の数値は備品の件数です。表示中のファイルは右へ引き出された状態で示されます。</td></tr>
-              <tr><td class="c-n">6</td><td><span class="ui">新しいファイル</span></td><td>ファイルを作成します（<a href="#m-file" data-jump="m-file">3.1</a>）。</td></tr>
-              <tr><td class="c-n">7</td><td>ファイル名</td><td>表示中のファイル名です。表紙の色は、そのファイルに設定した色です。</td></tr>
-              <tr><td class="c-n">8</td><td><span class="ui">ファイル設定</span></td><td>ファイル名、色、帳票の設定を変更します（<a href="#m-filesettings" data-jump="m-filesettings">3.3</a>）。</td></tr>
-              <tr><td class="c-n">9</td><td><span class="ui">出力</span></td><td>表示中のファイルを出力します。形式（PDF・Excel・CSV・画像）や用紙サイズを選択できます（<a href="#m-pdf" data-jump="m-pdf">7章</a>）。</td></tr>
-              <tr><td class="c-n">10</td><td>集計欄</td><td>件数と、「合計」を有効にした項目の合計を表示します。</td></tr>
-              <tr><td class="c-n">11</td><td><span class="ui">備品を追加</span></td><td>備品を登録します（<a href="#m-item" data-jump="m-item">4章</a>）。</td></tr>
-              <tr><td class="c-n">12</td><td>検索欄・並び順</td><td>一覧の絞り込みと並べ替えを行います（<a href="#m-find" data-jump="m-find">6章</a>）。</td></tr>
-              <tr><td class="c-n">13</td><td>一覧表</td><td>登録済みの備品です。数量は「−」「＋」または数値の直接入力で調整できます。行末の鉛筆アイコンで修正、ごみ箱アイコンで削除します（<a href="#m-edit" data-jump="m-edit">5章</a>）。</td></tr>
-              <tr><td class="c-n">14</td><td>ページ送り</td><td>前後のファイルへ移動します。</td></tr>
+              <tr><td class="c-n">5</td><td><span class="ui">バックアップ</span></td><td>データをファイルに保存し、保存したファイルから復元します（<a href="#m-backup" data-jump="m-backup">9.3</a>）。</td></tr>
+              <tr><td class="c-n">6</td><td><span class="ui">変更履歴</span></td><td>この端末で行った変更の記録を表示し、取り消します（<a href="#m-undo" data-jump="m-undo">5.1</a>）。</td></tr>
+              <tr><td class="c-n">7</td><td>ファイル一覧</td><td>登録済みのファイルを表示します。右側の数値は備品の件数です。表示中のファイルは右へ引き出された状態で示されます。</td></tr>
+              <tr><td class="c-n">8</td><td><span class="ui">新しいファイル</span></td><td>ファイルを作成します（<a href="#m-file" data-jump="m-file">3.1</a>）。</td></tr>
+              <tr><td class="c-n">9</td><td>ファイル名</td><td>表示中のファイル名です。表紙の色は、そのファイルに設定した色です。</td></tr>
+              <tr><td class="c-n">10</td><td><span class="ui">ファイル設定</span></td><td>ファイル名、色、帳票の設定を変更します（<a href="#m-filesettings" data-jump="m-filesettings">3.3</a>）。</td></tr>
+              <tr><td class="c-n">11</td><td><span class="ui">出力</span></td><td>表示中のファイルを出力します。形式（PDF・Excel・CSV・画像）や用紙サイズを選択できます（<a href="#m-pdf" data-jump="m-pdf">7章</a>）。</td></tr>
+              <tr><td class="c-n">12</td><td>集計欄</td><td>件数と、「合計」を有効にした項目の合計を表示します。</td></tr>
+              <tr><td class="c-n">13</td><td><span class="ui">備品を追加</span></td><td>備品を登録します（<a href="#m-item" data-jump="m-item">4章</a>）。</td></tr>
+              <tr><td class="c-n">14</td><td>検索欄・並び順</td><td>一覧の絞り込みと並べ替えを行います（<a href="#m-find" data-jump="m-find">6章</a>）。</td></tr>
+              <tr><td class="c-n">15</td><td>一覧表</td><td>登録済みの備品です。数量は「−」「＋」または数値の直接入力で調整できます。行末の鉛筆アイコンで修正、ごみ箱アイコンで削除します（<a href="#m-edit" data-jump="m-edit">5章</a>）。</td></tr>
+              <tr><td class="c-n">16</td><td>ページ送り</td><td>前後のファイルへ移動します。</td></tr>
             </tbody>
           </table>
           <p class="m-note"><span class="m-note-label">補足</span>画面右上の「自動保存（共有）」等の表示は、現在のデータの保存先を示します（<a href="#m-save" data-jump="m-save">9章</a>）。</p>
@@ -1179,7 +1242,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <li>画面左下の<span class="ui">このファイルを削除</span>をクリックします。</li>
             <li>確認メッセージの内容を確認し、<span class="ui">削除する</span>をクリックします。</li>
           </ol>
-          <p class="m-note warn"><span class="m-note-label">注意</span>ファイルを削除すると、そのファイルに登録された備品もすべて削除されます。削除したデータは復元できません。</p>
+          <p class="m-note warn"><span class="m-note-label">注意</span>ファイルを削除すると、そのファイルに登録された備品もすべて削除されます。削除したあとでも、<span class="ui">変更履歴</span>から元に戻せます（<a href="#m-undo" data-jump="m-undo">5.1</a>）。</p>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
 
@@ -1213,7 +1276,17 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td>削除</td><td>行末のごみ箱アイコンをクリックし、確認表示で<span class="ui">削除</span>をクリックします。<span class="ui">やめる</span>をクリックすると取り消せます。修正画面の<span class="ui">この備品を削除</span>からも削除できます（スマートフォンではこちらを使用します）。</td></tr>
             </tbody>
           </table>
-          <p class="m-note warn"><span class="m-note-label">注意</span>削除した備品は復元できません。</p>
+          <h4 id="m-undo" tabindex="-1">5.1　取り消しと変更履歴</h4>
+          <p>修正・削除・取り込み等の操作の直後は、画面下部の通知に<span class="ui">元に戻す</span>が約8秒間表示されます。クリックすると、その操作を取り消します。</p>
+          <p>画面右上の<span class="ui">変更履歴</span>では、この端末で行った変更（日時・内容・ファイル・記録した名前）を新しい順に確認できます。</p>
+          <ul>
+            <li>各行の<span class="ui">取り消す</span>をクリックすると、その変更を元に戻します。取り消しも1件の変更として記録され、<span class="ui">やり直す</span>で取り消す前の状態に戻せます。</li>
+            <li><span class="ui">このあと変更あり</span>と表示された変更は、同じ備品・ファイル等をその後にも変更しているため、そのままでは取り消せません。新しい変更から順に取り消してください。</li>
+            <li>数量の<span class="ui">＋</span>・<span class="ui">−</span>・直接入力による変更は、同じ備品を1分以内に続けて変更した場合、1件にまとめて記録します。</li>
+            <li><span class="ui">記録する名前</span>に名前を入力すると、以後の変更にその名前が記録されます。共用の端末では、使用者が替わるたびに書き換えてください。</li>
+            <li>パソコンでは、入力欄の外で Ctrl＋Z（Macでは ⌘＋Z）を押すと、まだ取り消していない最新の変更を取り消します。</li>
+          </ul>
+          <p class="m-note"><span class="m-note-label">補足</span>変更履歴は端末（ブラウザ）ごとに保存され、データの共有では送られません。記録は新しいものから300件まで残ります。古い記録や大量の変更の記録は、取り消しに必要な内容が残らず<span class="ui">記録のみ</span>となる場合があります。</p>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
 
@@ -1368,6 +1441,18 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <li>本アプリが更新されると、公開版にも自動で反映されます。公開版を開いている間に新しい版が公開された場合は、画面下部にお知らせが表示されます。<span class="ui">再読み込み</span>をクリックすると反映されます。登録内容はそのまま残ります。</li>
             <li>公開版のデータは端末ごとに保存されます。複数の端末で同じデータを利用する場合は、QRコードまたはリンクで共有してください（<a href="#m-share" data-jump="m-share">10章</a>）。</li>
           </ul>
+          <h4 id="m-backup" tabindex="-1">9.3　バックアップと復元</h4>
+          <p>端末の故障や、ブラウザの閲覧データの削除に備えて、データをファイルに保存（バックアップ）できます。週に1回程度の保存を推奨します。</p>
+          <ol class="m-steps">
+            <li>画面右上の<span class="ui">バックアップ</span>をクリックします。</li>
+            <li><span class="ui">バックアップを保存</span>をクリックします。「備品台帳_バックアップ_日付_時刻.json」という名前のファイルが保存されます。ファイルには、すべてのファイル・備品、項目と計算式、変更履歴が含まれます。</li>
+          </ol>
+          <p>復元する場合は、<span class="ui">バックアップ</span>の<span class="ui">ファイルを選ぶ</span>で保存したファイルを選択し、表示された内容を確認して<span class="ui">復元する</span>をクリックします。この端末のデータは、すべてバックアップの内容に置き換わります。復元したあとでも、<span class="ui">変更履歴</span>から元に戻せます（<a href="#m-undo" data-jump="m-undo">5.1</a>）。</p>
+          <ul>
+            <li>ローカル版・公開版では、一度もバックアップを保存していない場合、または最後の保存から7日以上たち、その後に変更がある場合に、画面上部に保存を促す表示が出ます。<span class="ui">保存する</span>をクリックすると、すぐに保存されます。<span class="ui">あとで</span>をクリックすると、1日表示しません。</li>
+            <li>iPhone等のSafariでは、しばらく開かなかったサイトのデータが自動で削除される場合があります。使用する間隔が空く場合も、定期的にバックアップを保存してください。</li>
+          </ul>
+          <p class="m-note warn"><span class="m-note-label">注意</span>バックアップのファイルには、登録内容がそのまま含まれます。関係者以外が閲覧できる場所には保存しないでください。</p>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
 
@@ -1420,7 +1505,9 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td>出力したファイルが保存されない</td><td>保存の確認画面で保存が選択されていない、または出力機能の読み込み中</td><td>確認画面で保存を選択してください。「準備中です」と表示された場合は、数秒後に再度実行してください。</td></tr>
               <tr><td>「この画面ではこの形式を保存できません」と表示される</td><td>閲覧環境でExcel・CSVの保存が許可されていない</td><td>PDFまたは画像で出力するか、ローカル版を利用してください。</td></tr>
               <tr><td>「編集する権限がありません」と表示される</td><td>閲覧のみの権限で開いている</td><td>管理者に編集権限の付与を依頼してください。</td></tr>
-              <tr><td>ローカル版のデータが消えた</td><td>ブラウザの閲覧データが削除された</td><td>復元はできません。定期的に帳票を出力するか、QRコードで別の端末に控えを残してください（<a href="#m-share" data-jump="m-share">10章</a>）。</td></tr>
+              <tr><td>ローカル版・公開版のデータが消えた</td><td>ブラウザの閲覧データが削除された、または長期間開かなかったため自動で削除された</td><td>バックアップを保存している場合は、<span class="ui">バックアップ</span>の<span class="ui">ファイルを選ぶ</span>から復元できます（<a href="#m-backup" data-jump="m-backup">9.3</a>）。保存していない場合は復元できません。定期的にバックアップを保存してください。</td></tr>
+              <tr><td>間違えて削除・修正した</td><td>―</td><td>操作の直後であれば、画面下部の通知の<span class="ui">元に戻す</span>をクリックします。通知が消えた後は、<span class="ui">変更履歴</span>の<span class="ui">取り消す</span>で元に戻せます（<a href="#m-undo" data-jump="m-undo">5.1</a>）。</td></tr>
+              <tr><td>変更履歴に「このあと変更あり」と表示され、取り消せない</td><td>同じ備品・ファイル等を、その後にも変更している</td><td>新しい変更から順に取り消してください。</td></tr>
               <tr><td>新しいファイルの色が自動で設定される</td><td>判別しやすい色を自動で選択する仕様</td><td><span class="ui">ファイル設定</span>で任意の色に変更できます。</td></tr>
               <tr><td>カメラが起動しない</td><td>ブラウザでカメラの使用が許可されていない、またはカメラを使用できない環境</td><td>ブラウザの設定でカメラを許可してください。許可できない場合は、QRコードを撮影した画像を<span class="ui">画像から読み取る</span>で読み取ってください。</td></tr>
               <tr><td>QRコードが読み取れない・スマートフォンが反応しない</td><td>画面の明るさ・距離・反射、またはQRコードが細かい</td><td>送る側で<span class="ui">大きく表示</span>をクリックし、画面を明るくして、QRコード全体が画面に収まる距離で写してください。スマートフォンの標準のカメラで読み取ると、リンクが表示されます。</td></tr>
@@ -1434,6 +1521,70 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
       </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="modal" id="bk-dialog" aria-labelledby="bk-title">
+  <div class="modal-form">
+    <div class="modal-head">
+      <h2 id="bk-title">バックアップ</h2>
+      <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body bk-body">
+      <section class="bk-sec" aria-labelledby="bk-save-title">
+        <h3 class="sh-sub" id="bk-save-title">バックアップを保存</h3>
+        <p class="bk-desc">この端末のデータ（すべてのファイル・備品、項目と計算式、変更履歴）を1つのファイルに保存します。端末の故障やブラウザのデータ削除に備えて、週に1回程度保存してください。</p>
+        <p class="bk-last" id="bk-last"></p>
+        <div><button type="button" class="btn btn-primary" id="bk-save">バックアップを保存</button></div>
+        <p class="bk-msg" id="bk-msg" role="status"></p>
+        <p class="bk-desc">保存したファイルには登録内容がそのまま含まれます。関係者以外が見られる場所には保存しないでください。</p>
+      </section>
+      <section class="bk-sec" aria-labelledby="bk-restore-title">
+        <h3 class="sh-sub" id="bk-restore-title">バックアップから復元</h3>
+        <p class="bk-desc">保存したバックアップのファイルを選ぶと、内容を確認してから復元できます。</p>
+        <div><button type="button" class="btn" id="bk-pick">ファイルを選ぶ</button></div>
+        <input type="file" id="bk-file" accept=".json,application/json" hidden>
+        <div class="sh-result" id="bk-preview" hidden>
+          <p class="sh-result-title">選んだバックアップ</p>
+          <p class="sh-result-text" id="bk-what"></p>
+          <p class="sh-effect warn" id="bk-effect"></p>
+          <div class="bk-actions">
+            <button type="button" class="btn" id="bk-cancel">やめる</button>
+            <button type="button" class="btn btn-danger" id="bk-restore">復元する</button>
+          </div>
+        </div>
+        <p class="form-error" id="bk-error" role="alert"></p>
+      </section>
+    </div>
+    <div class="modal-foot">
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>閉じる</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="modal" id="hist-dialog" aria-labelledby="hist-title">
+  <div class="modal-form">
+    <div class="modal-head">
+      <h2 id="hist-title">変更履歴</h2>
+      <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body hist-wrap">
+      <p class="hist-desc">この端末で行った変更の記録です（新しい順）。間違えた変更は<b>取り消す</b>で元に戻せます。</p>
+      <div class="hist-who">
+        <label for="hist-who-in">記録する名前（任意）</label>
+        <input type="text" id="hist-who-in" maxlength="20" autocomplete="off" placeholder="例：山田">
+        <p class="hist-hint">入力した名前が、これからの変更に記録されます。共用の端末では、使う人が替わったら書き換えてください。</p>
+      </div>
+      <p class="hist-status" id="hist-status" role="status"></p>
+      <ol class="hist-list" id="hist-list"></ol>
+      <p class="hist-empty" id="hist-empty">まだ変更の記録はありません。</p>
+      <button type="button" class="btn hist-more" id="hist-more" hidden>さらに表示</button>
+    </div>
+    <div class="modal-foot">
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>閉じる</button>
     </div>
   </div>
 </dialog>
@@ -1570,6 +1721,7 @@ let downloadsP = null;
 let pendingFocus = null;
 let reveal = null;   // { id, until }：登録直後に一覧で見せる行
 let warnedLocal = false;
+const hist = { list: [], cur: null, mute: 0, busy: false };   // 変更履歴（下の「change history」を参照）
 
 /* ---------- small helpers ---------- */
 function h(tag, props, ...kids) {
@@ -1623,12 +1775,22 @@ const withUnit = (v, f) => { const s = fmtNum(v, f); return s ? s + (f.unit || '
 const unitLabel = (f) => (f.unit ? `${f.label}（${f.unit}）` : f.label);
 
 let toastTimer = 0;
-function toast(msg, kind) {
-  el.toast.textContent = msg;
+// action：{ label, run } を渡すと、通知の中にボタン（「元に戻す」など）を出し、少し長めに表示する
+function toast(msg, kind, action) {
+  el.toast.replaceChildren(document.createTextNode(msg));
+  if (action) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'toast-act';
+    b.textContent = action.label;
+    b.addEventListener('click', () => { el.toast.classList.remove('show'); action.run(); });
+    el.toast.append(b);
+  }
+  el.toast.classList.toggle('has-act', !!action);
   el.toast.dataset.kind = kind || '';
   el.toast.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.toast.classList.remove('show'), kind === 'error' ? 5000 : 2600);
+  toastTimer = setTimeout(() => el.toast.classList.remove('show'), action ? 8000 : kind === 'error' ? 5000 : 2600);
 }
 
 function openDialog(d) { if (typeof d.showModal === 'function') { if (!d.open) d.showModal(); } else d.setAttribute('open', ''); }
@@ -2027,11 +2189,11 @@ function readLocal() {
   try { const raw = localStorage.getItem(LS_DATA); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
 }
 function persistLocal() {
-  try {
-    localStorage.setItem(LS_DATA, JSON.stringify({ v: 3, files: state.files, items: state.items, schema: state.schema }));
-  } catch (e) {
-    if (!warnedLocal) { warnedLocal = true; toast('このブラウザでは保存できません。閉じると内容が消えます', 'error'); }
-  }
+  const data = JSON.stringify({ v: 3, files: state.files, items: state.items, schema: state.schema });
+  try { localStorage.setItem(LS_DATA, data); return; } catch (e) {}
+  // 容量が足りないときは、変更履歴に残した取り消し用の内容を消してから、もう一度保存する（登録内容を優先）
+  if (freeHistSpace()) { try { localStorage.setItem(LS_DATA, data); return; } catch (e) {} }
+  if (!warnedLocal) { warnedLocal = true; toast('このブラウザでは保存できません。閉じると内容が消えます', 'error'); }
 }
 async function dbCall(fn) {
   try { return await fn(); }
@@ -2051,26 +2213,31 @@ function explainError(e) {
   return '保存できませんでした。通信状態を確認してください';
 }
 
+// 書き換えはすべてここを通る。rec() で変更前後の内容を変更履歴に残す（記録中の操作があるときだけ）
 const api = {
   async addItem(data) {
-    if (db) { const ref = db.collection('items').doc(); await dbCall(() => ref.set(data)); return ref.id; }
-    const id = newId(); state.items.push(normItem(id, data)); persistLocal(); return id;
+    if (db) { const ref = db.collection('items').doc(); rec('item', ref.id, data); await dbCall(() => ref.set(data)); return ref.id; }
+    const id = newId(); rec('item', id, data); state.items.push(normItem(id, data)); persistLocal(); return id;
   },
   async updateItem(id, data) {
+    rec('item', id, data);
     if (db) return dbCall(() => db.doc('items/' + id).set(data));
+    const it = normItem(id, data);
     const i = state.items.findIndex((x) => x.id === id);
-    if (i >= 0) state.items[i] = normItem(id, data);
+    if (i >= 0) state.items[i] = it; else state.items.push(it);   // ない場合は加える（取り消しで戻すとき）
     persistLocal();
   },
   async removeItem(id) {
+    rec('item', id, null);
     if (db) return dbCall(() => db.doc('items/' + id).delete());
     state.items = state.items.filter((x) => x.id !== id); persistLocal();
   },
   async createFile(data) {
-    if (db) { const ref = db.collection('files').doc(); await dbCall(() => ref.set(data)); return ref.id; }
-    const id = newId(); state.files.push(normFile(id, data)); persistLocal(); return id;
+    if (db) { const ref = db.collection('files').doc(); rec('file', ref.id, data); await dbCall(() => ref.set(data)); return ref.id; }
+    const id = newId(); rec('file', id, data); state.files.push(normFile(id, data)); persistLocal(); return id;
   },
   async putFile(id, data) {
+    rec('file', id, data);
     if (db) return dbCall(() => db.doc('files/' + id).set(data));
     const f = normFile(id, data);
     const i = state.files.findIndex((x) => x.id === id);
@@ -2078,10 +2245,12 @@ const api = {
     persistLocal();
   },
   async removeFile(id) {
+    rec('file', id, null);
     if (db) return dbCall(() => db.doc('files/' + id).delete());
     state.files = state.files.filter((f) => f.id !== id); persistLocal();
   },
   async putSchema(fields) {
+    rec('schema', 'schema', fields);
     if (db) return dbCall(() => db.doc('config/schema').set({ fields, updatedAt: Date.now() }));
     state.schema = normSchema(fields); persistLocal();
   },
@@ -2137,6 +2306,7 @@ function startLocal() {
   render();
 }
 async function boot() {
+  loadHist();
   try {
     state.sort = localStorage.getItem(LS_SORT) || state.sort;
     state.currentId = localStorage.getItem(LS_FILE) || null;
@@ -2374,6 +2544,7 @@ function render() {
   renderTotals(rows, C);
   renderTable(cur, rows, C);
   renderPager(list, cur);
+  renderHistBits();
 }
 
 function renderPager(list, cur) {
@@ -2637,12 +2808,13 @@ el.itemForm.addEventListener('submit', async (e) => {
   try {
     if (orig) {
       const moved = fileIdOf(orig, realIds()) !== target.id;
-      await api.updateItem(orig.id, data);
-      toast(moved ? `${target.name}に移動しました` : '保存しました');
+      const g = await recorded(editLabel(orig, data, C), () => api.updateItem(orig.id, data), { file: target.name });
+      toast(moved ? `${target.name}に移動しました` : '保存しました', '', undoAct(g));
     } else {
-      const newItemId = await api.addItem(data);
+      const g = await recorded(`追加：${itemNameOf(values, C)}`, () => api.addItem(data), { file: target.name });
+      const newItemId = g.ret;
       if (target.id === cur.id && newItemId) reveal = { id: newItemId, until: Date.now() + 5000 };
-      toast(target.id === cur.id ? '登録しました' : `${target.name}に登録しました`);
+      toast(target.id === cur.id ? '登録しました' : `${target.name}に登録しました`, '', undoAct(g));
     }
     render();
     if (keepOpen) {
@@ -2667,8 +2839,8 @@ el.empty.addEventListener('click', (e) => { if (e.target.closest('[data-act="add
 async function doDelete(it) {
   state.confirmId = null;
   try {
-    await api.removeItem(it.id);
-    toast('削除しました');
+    const g = await recorded(`削除：${itemNameOf(it.values)}`, () => api.removeItem(it.id), { file: fileNameOf(it) });
+    toast('削除しました', '', undoAct(g));
   } catch (err) {
     toast(explainError(err), 'error');
   }
@@ -2712,7 +2884,7 @@ ifx.del.addEventListener('click', () => {
   if (!it) return;
   const tf = titleFieldOf(calc());
   const name = tf ? String(it.values[tf.id] ?? '') : '';
-  ifx.text.textContent = `${name ? `「${name}」` : 'この備品'}を削除します。元に戻せません。`;
+  ifx.text.textContent = `${name ? `「${name}」` : 'この備品'}を削除します。削除したあとでも「変更履歴」から元に戻せます。`;
   showItemFoot(true);
   ifx.no.focus();
 });
@@ -2780,16 +2952,17 @@ el.fileForm.addEventListener('submit', async (e) => {
   el.fdSave.disabled = true;
   try {
     if (fileCtx.mode === 'new') {
-      const id = await api.createFile({ name, ...settings, createdAt: now, updatedAt: now });
+      const g = await recorded(`ファイル作成：${name}`, () => api.createFile({ name, ...settings, createdAt: now, updatedAt: now }), { file: name });
       closeDialog(el.fileDialog);
-      flipTo(id);
-      toast('ファイルを作成しました');
+      flipTo(g.ret);
+      toast('ファイルを作成しました', '', undoAct(g));
     } else {
       const f = fileList().find((x) => x.id === fileCtx.id);
-      await api.putFile(fileCtx.id, { name, ...settings, createdAt: f ? f.createdAt : 0, updatedAt: now });
+      const label = f && f.name !== name ? `ファイル設定：${f.name} → ${name}` : `ファイル設定：${name}`;
+      const g = await recorded(label, () => api.putFile(fileCtx.id, { name, ...settings, createdAt: f ? f.createdAt : 0, updatedAt: now }), { file: name });
       closeDialog(el.fileDialog);
       render();
-      toast('保存しました');
+      toast('保存しました', '', undoAct(g));
     }
   } catch (err) {
     el.fileError.textContent = explainError(err);
@@ -2802,7 +2975,7 @@ el.fdDelete.addEventListener('click', () => {
   const f = fileList().find((x) => x.id === fileCtx?.id);
   if (!f) return;
   const n = itemsOf(f.id).length;
-  el.fdConfirmText.textContent = n ? `このファイルと備品${n}件を削除します。元に戻せません。` : 'このファイルを削除します。';
+  el.fdConfirmText.textContent = (n ? `このファイルと備品${n}件を削除します。` : 'このファイルを削除します。') + '削除したあとでも「変更履歴」から元に戻せます。';
   showFileFoot(true);
   el.fdDeleteNo.focus();
 });
@@ -2814,12 +2987,14 @@ el.fdDeleteYes.addEventListener('click', async () => {
   el.fdDeleteYes.disabled = el.fdDeleteNo.disabled = true;
   el.fdDeleteYes.textContent = '削除中…';
   try {
-    for (const it of itemsOf(f.id)) await api.removeItem(it.id);
-    if (!f.virtual) await api.removeFile(f.id);
+    const doomed = itemsOf(f.id);
+    const list = doomed.map((it) => ({ k: 'item', id: it.id, to: null }));
+    if (!f.virtual) list.push({ k: 'file', id: f.id, to: null });
+    const g = await recorded(`ファイル削除：${f.name}（備品 ${doomed.length}件）`, () => applyChanges(list), { file: f.name });
     closeDialog(el.fileDialog);
     const rest = fileList().filter((x) => x.id !== f.id);
     selectFile(rest.length ? rest[0].id : MAIN);
-    toast('ファイルを削除しました');
+    toast('ファイルを削除しました', '', undoAct(g));
   } catch (err) {
     el.fileError.textContent = explainError(err);
     showFileFoot(false);
@@ -3078,11 +3253,11 @@ el.schemaForm.addEventListener('submit', async (e) => {
   }
   el.schemaSave.disabled = true;
   try {
-    await api.putSchema(r.fields);
+    const g = await recorded(schemaLabel(normSchema(state.schema), normSchema(r.fields)), () => api.putSchema(r.fields));
     closeDialog(el.schemaDialog);
     draft = null;
     render();
-    toast('保存しました');
+    toast('保存しました', '', undoAct(g));
   } catch (err) {
     el.schemaStatus.textContent = explainError(err);
   } finally {
@@ -4414,6 +4589,7 @@ function renderEffect() {
   }
   const next = mode === 'replace' ? p.schema : mergeSchema(p.schema, state.schema);
   if (JSON.stringify(next) !== JSON.stringify(normSchema(state.schema))) lines.push('「項目と計算式」も受け取った内容に合わせます。');
+  lines.push('取り込んだあとでも、「変更履歴」から元に戻せます。');
   sh.effect.textContent = lines.join('\n');
   sh.effect.hidden = !lines.length;
   sh.effect.classList.toggle('warn', warn);
@@ -4437,23 +4613,14 @@ async function applyShare(p, mode, onStep) {
   const incoming = p.items.map((it, k) => ({ id: newId(), data: { fileId: it.fileId, values: it.values, createdAt: it.createdAt || now - p.items.length + k, updatedAt: now } }));
   const doomedItems = state.items.filter((it) => mode === 'replace' || recv.has(fileIdOf(it, ids)));
   const doomedFiles = mode === 'replace' ? state.files.filter((f) => !recv.has(f.id)) : [];
-  if (!db) {
-    const gone = new Set(doomedItems.map((it) => it.id));
-    state.files = [...state.files.filter((f) => !recv.has(f.id) && !doomedFiles.includes(f)), ...p.files.map((f) => normFile(f.id, fileData(f)))];
-    state.items = [...state.items.filter((it) => !gone.has(it.id)), ...incoming.map((it) => normItem(it.id, it.data))];
-    state.schema = normSchema(schema);
-    persistLocal();
-    return;
-  }
-  // 共有版：先に新しい内容を書き、そのあとで古い備品を消す（途中で止まっても内容が失われないように）
-  const total = 1 + p.files.length + incoming.length + doomedItems.length + doomedFiles.length;
-  let done = 0;
-  const step = async (fn) => { await withRetry(fn); onStep(++done, total); };
-  await step(() => api.putSchema(normSchema(schema)));
-  for (const f of p.files) await step(() => api.putFile(f.id, fileData(f)));
-  for (const it of incoming) await step(() => api.updateItem(it.id, it.data));
-  for (const it of doomedItems) await step(() => api.removeItem(it.id));
-  for (const f of doomedFiles) await step(() => api.removeFile(f.id));
+  // 先に新しい内容を書き、そのあとで古い備品を消す（共有版で途中で止まっても内容が失われないように）
+  await applyChanges([
+    { k: 'schema', id: 'schema', to: normSchema(schema) },
+    ...p.files.map((f) => ({ k: 'file', id: f.id, to: fileData(f) })),
+    ...incoming.map((it) => ({ k: 'item', id: it.id, to: it.data })),
+    ...doomedItems.map((it) => ({ k: 'item', id: it.id, to: null })),
+    ...doomedFiles.map((f) => ({ k: 'file', id: f.id, to: null })),
+  ], onStep);
 }
 function setShareBusy(on) {
   share.busy = on;
@@ -4469,12 +4636,14 @@ async function runImport() {
   sh.error.textContent = '';
   setShareBusy(true);
   try {
-    await applyShare(p, mode, (d, t) => { sh.importBtn.textContent = `取り込み中… ${d} / ${t}`; });
+    const how = mode === 'replace' ? 'すべて置き換える' : '受け取った内容で更新';
+    const g = await recorded(`データの取り込み（${how}）：ファイル ${p.files.length}件・備品 ${p.items.length}件`,
+      () => applyShare(p, mode, (d, t) => { sh.importBtn.textContent = `取り込み中… ${d} / ${t}`; }));
     setShareBusy(false);
     share.payload = null;
     closeDialog(sh.dialog);
     selectFile(p.files[0].id);
-    toast(`取り込みました（ファイル ${p.files.length}件・備品 ${p.items.length}件）`);
+    toast(`取り込みました（ファイル ${p.files.length}件・備品 ${p.items.length}件）`, '', undoAct(g));
   } catch (e) {
     setShareBusy(false);
     sh.error.textContent = explainError(e) + (db ? '\n途中まで取り込まれている場合があります。もう一度「取り込む」を押すと、受け取った内容にそろえ直します。' : '');
@@ -4644,12 +4813,14 @@ function setQty(id, next) {
   const f = qtyFieldOf(calc());
   const it = state.items.find((x) => x.id === id);
   if (!f || !it || !state.canWrite) return;
+  const before = itemRec(it);
   const values = { ...it.values };
   if (next == null) delete values[f.id]; else values[f.id] = next;
   it.values = values;            // 画面には先に反映する
   it.updatedAt = Date.now();
   const data = { fileId: it.fileId, values, createdAt: it.createdAt, updatedAt: it.updatedAt };
-  if (!db) { api.updateItem(id, data); render(); return; }
+  noteQty(it, before, recOf('item', id, data), f);
+  if (!db) { hist.mute++; try { api.updateItem(id, data); } finally { hist.mute--; } render(); return; }
   render();
   const p = qtyPending.get(id);
   if (p) clearTimeout(p.timer);
@@ -4659,8 +4830,14 @@ async function flushQty(id) {
   const p = qtyPending.get(id);
   if (!p) return;
   clearTimeout(p.timer);
-  try { if (state.items.some((x) => x.id === id)) await api.updateItem(id, p.data); }
-  catch (e) { toast(explainError(e), 'error'); }
+  try {
+    if (state.items.some((x) => x.id === id)) {
+      hist.mute++;
+      let pr;
+      try { pr = api.updateItem(id, p.data); } finally { hist.mute--; }
+      await pr;
+    }
+  } catch (e) { toast(explainError(e), 'error'); }
   finally { if (qtyPending.get(id) === p) qtyPending.delete(id); }
 }
 function flushAllQty() { for (const id of [...qtyPending.keys()]) flushQty(id); }
@@ -4696,6 +4873,538 @@ el.rows.addEventListener('keydown', (e) => {
 el.rows.addEventListener('focusin', (e) => { if (e.target.classList && e.target.classList.contains('qty-in')) e.target.select(); });
 window.addEventListener('pagehide', flushAllQty);
 document.addEventListener('visibilitychange', () => { if (document.hidden) flushAllQty(); });
+
+/* ---------- change history and undo ---------- */
+// 変更のたびに「いつ・誰が・何を」と、取り消すための変更前後の内容を、この端末（ブラウザ）に記録する。
+// 書き換えはすべて api（またはまとめて書き換える applyChanges）を通るので、そこで変更前後の内容を残す。
+// 1回の操作（削除、取り込みなど）は recorded() で1件の記録にまとめる。
+const LS_HIST = 'bihin-daicho:history';
+const LS_WHO = 'bihin-daicho:who';
+const HIST_MAX = 300;              // 残す記録の件数
+const HIST_UNDO_CHARS = 1000000;   // 取り消し用の内容を残す量。超えた分は古い記録から「記録のみ」にする
+const QTY_JOIN_MS = 60000;         // 同じ備品の数量を続けて変えたときは、1分以内なら1件にまとめる
+const hd = { btn: $('#hist-btn'), dialog: $('#hist-dialog'), list: $('#hist-list'), empty: $('#hist-empty'), more: $('#hist-more'), who: $('#hist-who-in'), status: $('#hist-status') };
+let histShown = 60;
+
+const cloneData = (o) => (o == null ? null : JSON.parse(JSON.stringify(o)));
+// キーの順番によらない比較用の文字列
+function stableJson(v) {
+  return JSON.stringify(v, (k, x) => (x && typeof x === 'object' && !Array.isArray(x)
+    ? Object.keys(x).sort().reduce((o, key) => { o[key] = x[key]; return o; }, {})
+    : x));
+}
+function itemRec(it) { return it ? cloneData({ fileId: it.fileId, values: it.values, createdAt: it.createdAt, updatedAt: it.updatedAt }) : null; }
+function fileRec(f) { return f ? cloneData({ name: f.name, title: f.title, org: f.org, stamps: f.stamps, orient: f.orient, color: f.color, createdAt: f.createdAt, updatedAt: f.updatedAt }) : null; }
+// 書き込む内容を、記録する形にそろえる（null は「ない」）
+function recOf(k, id, data) {
+  if (data == null) return null;
+  return k === 'item' ? itemRec(normItem(id, data)) : k === 'file' ? fileRec(normFile(id, data)) : cloneData(normSchema(data));
+}
+function recNow(k, id, cache) {
+  if (k === 'item') return itemRec(cache ? cache.items.get(id) : state.items.find((x) => x.id === id));
+  if (k === 'file') return fileRec(cache ? cache.files.get(id) : state.files.find((x) => x.id === id));
+  return cloneData(normSchema(state.schema));
+}
+// 記録中の操作に1件加える（失敗して書き直したときの同じ内容は1件のまま）
+function recPush(k, id, b, a) {
+  const g = hist.cur;
+  if (!g || hist.mute) return;
+  const last = g.ch[g.ch.length - 1];
+  if (last && last.k === k && last.id === id && stableJson(last.a) === stableJson(a)) return;
+  g.ch.push({ k, id, b, a });
+}
+function rec(k, id, after) {
+  if (hist.cur && !hist.mute) recPush(k, id, recNow(k, id), recOf(k, id, after));
+}
+function whoName() { try { return (localStorage.getItem(LS_WHO) || '').trim().slice(0, 20); } catch (e) { return ''; } }
+
+// fn の中の書き換えを1件の記録にまとめる。記録を返す（fn の戻り値は .ret）
+async function recorded(label, fn, extra) {
+  const g = { id: newId(), at: Date.now(), who: whoName(), label: String(label).slice(0, 200), file: '', ch: [], ...extra };
+  const outer = hist.cur;
+  hist.cur = g;
+  try {
+    Object.defineProperty(g, 'ret', { value: await fn(g), writable: true });   // 記録としては保存しない
+  } finally {
+    hist.cur = outer;
+    if (g.ch.length) pushHist(g);
+  }
+  return g;
+}
+function pushHist(g) {
+  g.at = Date.now();
+  hist.list.unshift(g);
+  saveHist();
+  renderHistory();
+}
+
+// まとめて書き換える（取り込み・復元・取り消しなど）。list：[{ k: 'item' | 'file' | 'schema', id, to }]（to が null なら削除）
+// ローカル版は一度に書き換えて1回だけ保存する。共有版は1件ずつ書き込む（混み合っていれば待って再試行）
+async function applyChanges(list, onStep) {
+  if (!db) {
+    const items = new Map(state.items.map((x) => [x.id, x]));
+    const files = new Map(state.files.map((x) => [x.id, x]));
+    let schema = state.schema;
+    for (const c of list) {
+      if (c.k === 'schema') {
+        if (!c.to) continue;
+        const next = normSchema(c.to);
+        recPush('schema', 'schema', cloneData(normSchema(schema)), cloneData(next));
+        schema = next;
+      } else if (c.k === 'file') {
+        recPush('file', c.id, fileRec(files.get(c.id)), recOf('file', c.id, c.to));
+        if (c.to) files.set(c.id, normFile(c.id, c.to)); else files.delete(c.id);
+      } else if (c.k === 'item') {
+        recPush('item', c.id, itemRec(items.get(c.id)), recOf('item', c.id, c.to));
+        if (c.to) items.set(c.id, normItem(c.id, c.to)); else items.delete(c.id);
+      }
+    }
+    state.items = [...items.values()];
+    state.files = [...files.values()];
+    state.schema = schema;
+    persistLocal();
+    return;
+  }
+  let done = 0;
+  for (const c of list) {
+    if (c.k === 'schema' && !c.to) continue;
+    await withRetry(() => (c.k === 'schema' ? api.putSchema(c.to)
+      : c.k === 'file' ? (c.to ? api.putFile(c.id, c.to) : api.removeFile(c.id))
+        : (c.to ? api.updateItem(c.id, c.to) : api.removeItem(c.id))));
+    if (onStep) onStep(++done, list.length);
+  }
+}
+
+/* labels */
+function itemNameOf(values, C = calc()) {
+  const tf = titleFieldOf(C);
+  const v = tf && values ? String(values[tf.id] ?? '').trim() : '';
+  return v ? (v.length > 30 ? v.slice(0, 30) + '…' : v) : '（品名なし）';
+}
+function fileNameById(id) { const f = fileList().find((x) => x.id === id); return f ? f.name : ''; }
+function fileNameOf(it) { return fileNameById(fileIdOf(it, realIds())); }
+function shortValue(v, f) {
+  if (v == null || v === '') return '空欄';
+  const s = typeof v === 'number' ? fmtNum(v, f) : String(v);
+  return s.length > 15 ? s.slice(0, 15) + '…' : s;
+}
+function editLabel(orig, data, C) {
+  const parts = [];
+  const from = fileIdOf(orig, realIds());
+  if (from !== data.fileId) parts.push(`${fileNameById(from)} から ${fileNameById(data.fileId)} へ移動`);
+  for (const f of C.schema) {
+    if (f.kind === 'formula') continue;
+    const x = orig.values[f.id] ?? '', y = data.values[f.id] ?? '';
+    if (x !== y) parts.push(`${f.label} ${shortValue(x, f)} → ${shortValue(y, f)}`);
+  }
+  const shown = parts.slice(0, 3).join('、') + (parts.length > 3 ? ` ほか${parts.length - 3}件` : '');
+  return `修正：${itemNameOf(data.values, C)}${shown ? `（${shown}）` : ''}`;
+}
+function schemaLabel(before, after) {
+  const b = new Map(before.map((f) => [f.id, f])), a = new Map(after.map((f) => [f.id, f]));
+  const names = (word, xs) => (xs.length ? `${word}：${xs.slice(0, 3).join('・')}${xs.length > 3 ? ` ほか${xs.length - 3}件` : ''}` : '');
+  const d = [
+    names('追加', after.filter((f) => !b.has(f.id)).map((f) => f.label)),
+    names('削除', before.filter((f) => !a.has(f.id)).map((f) => f.label)),
+    names('変更', after.filter((f) => b.has(f.id) && stableJson(b.get(f.id)) !== stableJson(f)).map((f) => f.label)),
+  ].filter(Boolean).join('、');
+  return `項目と計算式の変更（${d || '並び順'}）`;
+}
+function qtyLabel(name, b, a, f) {
+  const show = (r) => { const v = r && r.values ? r.values[f.id] : null; return v == null ? '空欄' : fmtNum(v, f); };
+  return `${f.label}の変更：${name}（${show(b)} → ${show(a)}）`;
+}
+// 数量の −／＋／直接入力。同じ備品を続けて変えたときは、直前の記録にまとめる
+function noteQty(it, before, after, f) {
+  const now = Date.now();
+  const top = hist.list[0];
+  const name = itemNameOf(it.values);
+  if (top && top.qty === it.id && now - top.at < QTY_JOIN_MS && top.ch && top.ch.length === 1 && !top.undoneBy) {
+    top.ch[0].a = after;
+    top.at = now;
+    top.who = whoName();
+    const b0 = top.ch[0].b;
+    if (b0 && after && b0.fileId === after.fileId && stableJson(b0.values) === stableJson(after.values)) hist.list.shift();   // 元の数に戻った
+    else top.label = qtyLabel(name, top.ch[0].b, after, f);
+    saveHist();
+    renderHistory();
+    return;
+  }
+  pushHist({ id: newId(), at: now, who: whoName(), label: qtyLabel(name, before, after, f), file: fileNameOf(it), qty: it.id, ch: [{ k: 'item', id: it.id, b: before, a: after }] });
+}
+
+/* storage */
+function saveHist() {
+  if (hist.list.length > HIST_MAX) hist.list.length = HIST_MAX;
+  let used = 0;
+  for (const e of hist.list) {
+    if (!e.ch) continue;
+    const n = JSON.stringify(e.ch).length;
+    if (used + n > HIST_UNDO_CHARS) e.ch = null; else used += n;
+  }
+  for (let i = 0; i < 6; i++) {
+    try { localStorage.setItem(LS_HIST, JSON.stringify({ v: 1, list: hist.list })); return; } catch (e) {}
+    // 入りきらないときは、古いものから取り消し用の内容を減らす（記録そのものは残す）
+    const withCh = hist.list.filter((x) => x.ch);
+    if (withCh.length) withCh.slice(Math.floor(withCh.length / 2)).forEach((x) => { x.ch = null; });
+    else hist.list.length = Math.floor(hist.list.length / 2);
+  }
+}
+// 登録内容の保存を優先するため、取り消し用の内容をすべて消す
+function freeHistSpace() {
+  const had = hist.list.some((x) => x.ch);
+  hist.list.forEach((x) => { x.ch = null; });
+  try { localStorage.setItem(LS_HIST, JSON.stringify({ v: 1, list: hist.list })); }
+  catch (e) { try { localStorage.removeItem(LS_HIST); } catch (er) {} }
+  return had;
+}
+function cleanHist(list, keepCh) {
+  const str = (v, n) => (typeof v === 'string' ? v.slice(0, n) : '');
+  const okCh = (c) => c && ['item', 'file', 'schema'].includes(c.k) && typeof c.id === 'string';
+  return (Array.isArray(list) ? list : [])
+    .filter((e) => e && typeof e === 'object' && typeof e.label === 'string' && Number.isFinite(e.at))
+    .slice(0, HIST_MAX)
+    .map((e) => {
+      const o = { id: str(e.id, 64) || newId(), at: e.at, who: str(e.who, 20), label: str(e.label, 200), file: str(e.file, 40), ch: keepCh && Array.isArray(e.ch) && e.ch.every(okCh) ? e.ch : null };
+      for (const k of ['undoOf', 'undoneBy', 'qty', 'op', 'base']) if (typeof e[k] === 'string') o[k] = str(e[k], 200);
+      return o;
+    });
+}
+function loadHist() {
+  let list = [];
+  try { const o = JSON.parse(localStorage.getItem(LS_HIST) || 'null'); if (o && Array.isArray(o.list)) list = o.list; } catch (e) {}
+  hist.list = cleanHist(list, true);
+}
+
+/* undo */
+// 'ok' 取り消せる／'done' 取り消し済み／'later' そのあとに同じものが変わっている／'none' 取り消し用の内容がない
+function undoState(e, cache) {
+  if (!e.ch || !e.ch.length) return 'none';
+  if (e.undoneBy) return 'done';
+  const c0 = cache || { items: new Map(state.items.map((x) => [x.id, x])), files: new Map(state.files.map((x) => [x.id, x])) };
+  for (const c of e.ch) {
+    const now = stableJson(recNow(c.k, c.id, c0));
+    if (now !== stableJson(c.a) && now !== stableJson(c.b)) return 'later';
+  }
+  return 'ok';
+}
+// 記録 e を取り消す（e 自体が取り消しなら「やり直し」）。取り消しも1件の記録として残す
+async function undoEntry(e) {
+  if (!state.canWrite) return { error: '編集する権限がありません' };
+  if (hist.busy) return { error: '処理中です。少し待ってからもう一度お試しください' };
+  const st = undoState(e);
+  if (st === 'done') return { error: 'この変更は、すでに取り消しています' };
+  if (st === 'none') return { error: 'この記録は古いため、取り消しに必要な内容が残っていません' };
+  if (st === 'later') return { error: 'このあとに同じ備品などを変更しているため、取り消せません。新しい変更から順に取り消してください' };
+  flushAllQty();
+  hist.busy = true;
+  renderHistory();
+  const base = e.base || e.label;
+  const op = e.op === 'undo' ? 'redo' : 'undo';
+  try {
+    const g = await recorded(`${op === 'redo' ? 'やり直し' : '取り消し'}：${base}`,
+      () => applyChanges([...e.ch].reverse().map((c) => ({ k: c.k, id: c.id, to: c.b }))),
+      { file: e.file, undoOf: e.id, op, base });
+    e.undoneBy = g.id;
+    // 取り消しを取り消した（やり直した）ときは、元の記録がまた有効になる
+    const prev = e.undoOf && hist.list.find((x) => x.id === e.undoOf);
+    if (prev) {
+      if (prev.undoneBy === e.id) delete prev.undoneBy;
+      const pp = prev.undoOf && hist.list.find((x) => x.id === prev.undoOf);
+      if (pp) pp.undoneBy = prev.id;
+    }
+    saveHist();
+    render();
+    return { g };
+  } catch (err) {
+    return { error: explainError(err) };
+  } finally {
+    hist.busy = false;
+    renderHistory();
+  }
+}
+// 通知の「元に戻す」「やり直す」
+function undoAct(g, label = '元に戻す') {
+  return g && g.ch && g.ch.length && hist.list.includes(g) && state.canWrite ? { label, run: () => undoFromToast(g) } : null;
+}
+async function undoFromToast(e) {
+  const r = await undoEntry(e);
+  if (r.error) { toast(r.error, 'error'); return; }
+  const redo = r.g.op === 'redo';
+  toast(redo ? 'やり直しました' : '取り消しました', '', undoAct(r.g, redo ? '取り消す' : 'やり直す'));
+}
+// Ctrl+Z（Mac は ⌘+Z）：まだ取り消していない、いちばん新しい変更を取り消す（入力欄の中では文字の取り消し）
+document.addEventListener('keydown', (e) => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || String(e.key).toLowerCase() !== 'z') return;
+  if (e.target && e.target.closest && e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+  if (document.querySelector('dialog[open]') || !isLoaded() || !state.canWrite) return;
+  const target = hist.list.find((x) => x.ch && !x.undoneBy && x.op !== 'undo');
+  if (!target) return;
+  e.preventDefault();
+  undoFromToast(target);
+});
+
+/* the history dialog */
+function renderHistBits() {
+  hd.btn.disabled = !isLoaded();
+  bk.btn.disabled = !isLoaded();
+  renderBackupBar();
+}
+function openHistory() {
+  if (!isLoaded()) return;
+  flushAllQty();
+  histShown = 60;
+  hd.who.value = whoName();
+  setHistStatus('');
+  openDialog(hd.dialog);
+  renderHistory();
+}
+function setHistStatus(text, err) {
+  hd.status.textContent = text;
+  hd.status.classList.toggle('is-err', !!err);
+}
+function renderHistory() {
+  if (!hd.dialog.open) return;
+  const cache = { items: new Map(state.items.map((x) => [x.id, x])), files: new Map(state.files.map((x) => [x.id, x])) };
+  const nodes = [];
+  let day = '';
+  for (const e of hist.list.slice(0, histShown)) {
+    const d = new Date(e.at);
+    const key = d.toDateString();
+    if (key !== day) {
+      day = key;
+      nodes.push(h('li', { class: 'hist-day', text: `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日（${'日月火水木金土'[d.getDay()]}）` }));
+    }
+    const st = undoState(e, cache);
+    const meta = [e.file && `ファイル：${e.file}`, e.who && `記録：${e.who}`].filter(Boolean).join('　');
+    const redo = e.op === 'undo';
+    nodes.push(h('li', { class: 'hist-item' + (st === 'done' ? ' is-undone' : ''), 'data-id': e.id },
+      h('div', { class: 'hist-main' },
+        h('div', { class: 'hist-line' },
+          h('span', { class: 'hist-time', text: `${pad(d.getHours())}:${pad(d.getMinutes())}` }),
+          h('span', { class: 'hist-label', text: e.label })),
+        meta ? h('div', { class: 'hist-meta', text: meta }) : null),
+      st === 'ok'
+        ? h('button', { type: 'button', class: 'btn', 'data-undo': e.id, disabled: hist.busy || !state.canWrite, text: redo ? 'やり直す' : '取り消す', 'aria-label': `${redo ? 'やり直す' : '取り消す'}：${e.label}` })
+        : h('span', { class: 'hist-tag', text: st === 'done' ? (redo ? 'やり直し済み' : '取り消し済み') : st === 'later' ? 'このあと変更あり' : '記録のみ' })));
+  }
+  hd.list.replaceChildren(...nodes);
+  hd.empty.hidden = hist.list.length > 0;
+  hd.more.hidden = hist.list.length <= histShown;
+}
+hd.btn.addEventListener('click', openHistory);
+hd.more.addEventListener('click', () => { histShown += 100; renderHistory(); });
+hd.who.addEventListener('input', () => { try { localStorage.setItem(LS_WHO, hd.who.value.trim().slice(0, 20)); } catch (e) {} });
+hd.list.addEventListener('click', async (ev) => {
+  const b = ev.target.closest('button[data-undo]');
+  if (!b) return;
+  const e = hist.list.find((x) => x.id === b.dataset.undo);
+  if (!e) return;
+  const redo = e.op === 'undo';
+  const r = await undoEntry(e);
+  if (r.error) setHistStatus(r.error, true);
+  else setHistStatus(`${redo ? 'やり直しました' : '取り消しました'}：${e.base || e.label}`);
+  const again = hd.list.querySelector(`button[data-undo="${CSS.escape(r.g ? r.g.id : e.id)}"]`) || hd.list.querySelector('button[data-undo]');
+  if (again) again.focus();
+});
+
+/* ---------- backup (save to a file / restore) ---------- */
+// この端末のデータを1つのファイル（JSON）に保存し、そのファイルから復元する。
+// ローカル版・公開版では、しばらく保存していなければ画面上部で保存を促す。
+const LS_BACKUP = 'bihin-daicho:backup';          // 最後にバックアップを保存した日時
+const LS_BACKUP_LATER = 'bihin-daicho:backup-later';   // 「あとで」を押したとき、この日時まで表示しない
+const BACKUP_DAYS = 7;
+const DAY_MS = 86400000;
+const bk = {
+  btn: $('#bk-btn'), dialog: $('#bk-dialog'), last: $('#bk-last'), save: $('#bk-save'), msg: $('#bk-msg'),
+  pick: $('#bk-pick'), file: $('#bk-file'), preview: $('#bk-preview'), what: $('#bk-what'), effect: $('#bk-effect'),
+  cancel: $('#bk-cancel'), restore: $('#bk-restore'), error: $('#bk-error'),
+  bar: $('#bk-bar'), barText: $('#bk-bar-text'), barSave: $('#bk-bar-save'), barLater: $('#bk-bar-later'),
+  busy: false, pending: null,
+};
+function lsNum(key) { try { return Number(localStorage.getItem(key)) || 0; } catch (e) { return 0; } }
+function lsSet(key, v) { try { localStorage.setItem(key, String(v)); } catch (e) {} }
+function fmtWhen(t) { const d = new Date(t); return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function daysAgo(t) { const n = Math.floor((Date.now() - t) / DAY_MS); return n <= 0 ? '今日' : `${n}日前`; }
+function backupFileName(t) {
+  const d = new Date(t);
+  return `備品台帳_バックアップ_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}.json`;
+}
+function backupData(now) {
+  return {
+    app: SHARE_APP, kind: 'backup', v: 1, savedAt: now,
+    files: state.files.map((f) => ({ id: f.id, ...fileRec(f) })),
+    items: state.items.map((it) => ({ id: it.id, ...itemRec(it) })),
+    schema: cloneData(normSchema(state.schema)),
+    history: hist.list.map(({ ch, ...e }) => e),   // 変更履歴は記録だけ（取り消し用の内容は入れない）
+  };
+}
+async function saveBackup() {
+  if (!isLoaded() || bk.busy) return;
+  flushAllQty();
+  const say = (text, kind) => {
+    if (bk.dialog.open) { bk.msg.textContent = text; bk.msg.classList.toggle('is-err', kind === 'error'); }
+    else toast(text, kind);
+  };
+  const now = Date.now();
+  bk.busy = true;
+  renderBackup();
+  try {
+    const name = backupFileName(now);
+    const result = await saveExport(new Blob([JSON.stringify(backupData(now))], { type: 'application/json' }), name);
+    if (result === 'saved') { lsSet(LS_BACKUP, now); say(`バックアップを保存しました（${name}）`); }
+    else if (result === 'declined') say('保存をキャンセルしました');
+    else if (result === 'busy') say('保存の確認画面が開いています', 'error');
+    else say('この画面ではバックアップを保存できません', 'error');
+  } catch (e) {
+    say('バックアップを保存できませんでした', 'error');
+  } finally {
+    bk.busy = false;
+    renderBackup();
+    renderBackupBar();
+  }
+}
+
+// 選んだファイルは信用せず、保存するときと同じ整え方を通す
+function readBackup(o) {
+  const notBackup = 'このアプリのバックアップのファイルではありません';
+  if (!o || typeof o !== 'object' || o.app !== SHARE_APP || o.kind !== 'backup') throw new ShareError(notBackup);
+  if (o.v !== 1) throw new ShareError('新しい版のアプリで作られたバックアップです。ページを再読み込みしてからお試しください');
+  if (!Array.isArray(o.files) || !Array.isArray(o.items)) throw new ShareError(notBackup);
+  const files = [], fileIds = new Set();
+  for (const f of o.files.slice(0, 500)) {
+    if (!f || typeof f.id !== 'string' || !FILE_ID_RE.test(f.id) || fileIds.has(f.id)) continue;
+    fileIds.add(f.id);
+    files.push(normFile(f.id, f));
+  }
+  const items = [], itemIds = new Set();
+  for (const it of o.items.slice(0, 20000)) {
+    if (!it || typeof it !== 'object') continue;
+    const id = typeof it.id === 'string' && FILE_ID_RE.test(it.id) && !itemIds.has(it.id) ? it.id : newId();
+    itemIds.add(id);
+    items.push(normItem(id, it));
+  }
+  return {
+    savedAt: Number(o.savedAt) || 0, files, items,
+    schema: normSchema(Array.isArray(o.schema) ? o.schema : DEFAULT_SCHEMA),
+    history: cleanHist(o.history, false),
+  };
+}
+async function pickBackup(file) {
+  bk.pending = null;
+  bk.error.textContent = '';
+  bk.msg.textContent = '';
+  try {
+    if (file.size > 50 * 1024 * 1024) throw new ShareError('ファイルが大きすぎます。バックアップのファイルを選んでください');
+    let o;
+    try { o = JSON.parse(await file.text()); } catch (e) { throw new ShareError('このアプリのバックアップのファイルではありません'); }
+    bk.pending = readBackup(o);
+  } catch (e) {
+    bk.error.textContent = e instanceof ShareError ? e.message : 'ファイルを読み込めませんでした';
+  }
+  renderBackup();
+  if (bk.pending) bk.restore.focus();
+}
+function backupWhen(p) { return p.savedAt ? `${fmtWhen(p.savedAt)} に保存` : '保存日時不明'; }
+function renderBackup() {
+  const last = lsNum(LS_BACKUP);
+  bk.last.textContent = last ? `前回の保存：${fmtWhen(last)}（${daysAgo(last)}）` : 'まだ保存していません。';
+  bk.save.disabled = bk.busy || !isLoaded();
+  bk.save.textContent = bk.busy && !bk.pending ? '保存中…' : 'バックアップを保存';
+  bk.pick.disabled = bk.busy;
+  const p = bk.pending;
+  bk.preview.hidden = !p;
+  if (!p) return;
+  bk.what.textContent = `${backupWhen(p)}：ファイル ${p.files.length}件・備品 ${p.items.length}件`;
+  const lines = [];
+  const list = fileList().filter((f) => !f.virtual || itemsOf(f.id).length);
+  if (list.length || state.items.length) lines.push(`この端末のファイル ${list.length}件・備品 ${state.items.length}件は、すべてバックアップの内容に置き換わります。`);
+  const lastChange = hist.list.length ? hist.list[0].at : 0;
+  if (p.savedAt && lastChange > p.savedAt) lines.push(`この端末では、このバックアップの保存より後（${fmtWhen(lastChange)}）にも変更しています。`);
+  lines.push('復元したあとでも、「変更履歴」から元に戻せます。');
+  bk.effect.textContent = lines.join('\n');
+  bk.restore.disabled = bk.busy || !state.canWrite;
+  bk.cancel.disabled = bk.busy;
+  if (!bk.busy) bk.restore.textContent = '復元する';
+}
+async function runRestore() {
+  const p = bk.pending;
+  if (!p || bk.busy || !state.canWrite) return;
+  flushAllQty();
+  bk.busy = true;
+  bk.error.textContent = '';
+  bk.restore.textContent = '復元中…';
+  renderBackup();
+  const wasEmpty = !hist.list.length;
+  try {
+    // 変わらないものは書き直さない。新しい内容を先に書き、そのあとで不要なものを消す
+    const cache = { items: new Map(state.items.map((x) => [x.id, x])), files: new Map(state.files.map((x) => [x.id, x])) };
+    const same = (k, id, to) => stableJson(recNow(k, id, cache)) === stableJson(recOf(k, id, to));
+    const keepItems = new Set(p.items.map((x) => x.id)), keepFiles = new Set(p.files.map((x) => x.id));
+    const list = [
+      ...(same('schema', 'schema', p.schema) ? [] : [{ k: 'schema', id: 'schema', to: p.schema }]),
+      ...p.files.map((f) => ({ k: 'file', id: f.id, to: fileRec(f) })).filter((c) => !same('file', c.id, c.to)),
+      ...p.items.map((it) => ({ k: 'item', id: it.id, to: itemRec(it) })).filter((c) => !same('item', c.id, c.to)),
+      ...state.items.filter((it) => !keepItems.has(it.id)).map((it) => ({ k: 'item', id: it.id, to: null })),
+      ...state.files.filter((f) => !keepFiles.has(f.id)).map((f) => ({ k: 'file', id: f.id, to: null })),
+    ];
+    const g = await recorded(`バックアップから復元（${backupWhen(p)}したもの）`,
+      () => applyChanges(list, (d, t) => { bk.restore.textContent = `復元中… ${d} / ${t}`; }));
+    // 変更履歴のない端末（新しい端末など）に復元したときは、バックアップの変更履歴も戻す
+    if (wasEmpty && p.history.length) { hist.list.push(...p.history.filter((e) => e.id !== g.id)); saveHist(); }
+    lsSet(LS_BACKUP, Date.now());   // いまの内容はバックアップと同じ
+    bk.pending = null;
+    bk.busy = false;
+    closeDialog(bk.dialog);
+    const files = fileList();   // 開いていたファイルが残っていれば、そのまま表示する
+    const show = files.find((f) => f.id === state.currentId) || files[0];
+    if (show) selectFile(show.id); else render();
+    toast(`復元しました（ファイル ${p.files.length}件・備品 ${p.items.length}件）`, '', undoAct(g));
+  } catch (e) {
+    bk.error.textContent = explainError(e) + (db ? '\n途中まで復元されている場合があります。もう一度「復元する」を押すと、バックアップの内容にそろえ直します。' : '');
+  } finally {
+    bk.busy = false;
+    renderBackup();
+    renderBackupBar();
+  }
+}
+function openBackup() {
+  if (!isLoaded()) return;
+  flushAllQty();
+  bk.pending = null;
+  bk.error.textContent = '';
+  bk.msg.textContent = '';
+  renderBackup();
+  openDialog(bk.dialog);
+  bk.save.focus();
+}
+
+// 保存を促す表示：一度も保存していない、または最後の保存から7日以上たって、そのあとに変更がある
+function backupDue() {
+  if (!isLoaded() || state.mode !== 'local' || !state.canWrite || !state.items.length) return '';
+  const now = Date.now();
+  if (lsNum(LS_BACKUP_LATER) > now) return '';
+  const last = lsNum(LS_BACKUP);
+  if (!last) return 'バックアップがまだありません。端末の故障やブラウザのデータ削除に備えて、保存しておきましょう。';
+  const days = Math.floor((now - last) / DAY_MS);
+  const changed = hist.list.length && hist.list[0].at > last;
+  return days >= BACKUP_DAYS && changed ? `前回のバックアップから${days}日たっています。そのあとの変更も保存しておきましょう。` : '';
+}
+function renderBackupBar() {
+  const text = backupDue();
+  bk.bar.hidden = !text;
+  bk.barText.textContent = text;
+  bk.barSave.disabled = bk.busy;
+}
+bk.btn.addEventListener('click', openBackup);
+bk.save.addEventListener('click', saveBackup);
+bk.pick.addEventListener('click', () => bk.file.click());
+bk.file.addEventListener('change', () => { const f = bk.file.files[0]; bk.file.value = ''; if (f) pickBackup(f); });
+bk.cancel.addEventListener('click', () => { bk.pending = null; renderBackup(); bk.pick.focus(); });
+bk.restore.addEventListener('click', runRestore);
+bk.dialog.addEventListener('cancel', (e) => { if (bk.busy) e.preventDefault(); });
+bk.barSave.addEventListener('click', saveBackup);
+bk.barLater.addEventListener('click', () => { lsSet(LS_BACKUP_LATER, Date.now() + DAY_MS); renderBackupBar(); });
 
 /* ---------- update notice (public version only) ---------- */
 // 公開版では、開いている間に新しい版が公開されたら画面下部で知らせる（登録内容は再読み込みしても残る）
