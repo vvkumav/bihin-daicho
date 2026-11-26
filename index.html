@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#177e7a"><meta name="app-build" content="43be24c3e00c"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='4' width='52' height='56' rx='8' fill='%23177e7a'/%3E%3Crect x='18' y='12' width='34' height='40' rx='3' fill='%23fff'/%3E%3Cpath d='M24 22h22M24 30h22M24 38h16' stroke='%23177e7a' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='20' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='32' r='3' fill='%23fff'/%3E%3Ccircle cx='12' cy='44' r='3' fill='%23fff'/%3E%3C/svg%3E"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#2d6cbd"><meta name="app-build" content="ec789acdb340"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1' y='27' width='28' height='1.9' rx='.95' fill='%23b8c2cc'/%3E%3Crect x='2.5' y='6' width='7.5' height='21' rx='2' fill='%233b7bd4'/%3E%3Crect x='11.25' y='3' width='7.5' height='24' rx='2' fill='%2334a271'/%3E%3Crect x='20' y='8' width='7.5' height='19' rx='2' fill='%23ec8a32'/%3E%3C/svg%3E"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="備品台帳"><meta name="apple-mobile-web-app-status-bar-style" content="default"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -490,6 +490,33 @@ dialog.modal::backdrop{background:rgba(10,14,18,.5)}
 .bk-desc{margin:0;font-size:14px;color:var(--ink-2)}
 .bk-last{margin:0;font-weight:700}
 .bk-msg{margin:0;font-size:14px;font-weight:700;color:var(--fc-ink)}
+.inst-body{display:flex;flex-direction:column;gap:14px}
+.inst-lead{margin:0;font-family:var(--round);font-size:17px;font-weight:700;color:var(--ink)}
+.inst-merits{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--ink-2)}
+.inst-merits [hidden]{display:none}
+.inst-now{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.inst-now[hidden],.inst-steps[hidden],.inst-data[hidden],.inst-move[hidden]{display:none}
+.inst-go{font-size:17px;padding:12px 22px}
+.inst-msg{margin:0;font-size:14px;font-weight:700;color:var(--fc-ink)}
+.inst-msg:empty{display:none}
+.inst-text{margin:0;font-size:15px}
+.inst-note{margin:0;font-size:13px;color:var(--ink-2)}
+.inst-steps:empty{display:none}
+.inst-dev{display:flex;flex-direction:column;gap:8px}
+.inst-ol{margin:0;padding-left:1.6em;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.inst-ol li::marker{font-weight:700;color:var(--fc-ink)}
+.inst-ol small{display:block;margin-top:2px;font-size:13px;color:var(--ink-2)}
+.inst-key{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;padding:0 4px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface);color:var(--ink);vertical-align:-6px}
+.inst-key svg{display:block}
+.inst-data{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:var(--r);background:var(--fc-soft)}
+.inst-move{display:flex;flex-direction:column;gap:8px}
+.inst-move .bk-msg:empty{display:none}
+.inst-other{border-top:1px dashed var(--line-strong);padding-top:12px}
+.inst-other summary{cursor:pointer;font-size:14px;font-weight:700;color:var(--fc-ink)}
+.inst-other[open] summary{margin-bottom:12px}
+.inst-other-list{display:flex;flex-direction:column;gap:18px}
+.sh-pwa-note{margin:0;font-size:13px;color:var(--ink-2)}
+.sh-pwa-note[hidden]{display:none}
 .bk-msg.is-err{color:var(--danger-text)}
 .bk-msg:empty{display:none}
 .bk-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
@@ -713,6 +740,10 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 12a8.4 8.4 0 1 0 2.5-6"/><path d="M3 3.8v4.7h4.7"/><path d="M12 7.5V12l3 2"/></svg>
         変更履歴
       </button>
+      <button type="button" class="btn" id="inst-btn" hidden>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.5" width="12" height="19" rx="2.5"/><path d="M10 18.5h2"/><path d="M19.5 6v6M16.5 9h6"/></svg>
+        <span id="inst-label">ホーム画面に追加</span>
+      </button>
     </div>
   </header>
   <div class="bk-bar" id="bk-bar" role="status" hidden>
@@ -720,6 +751,13 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     <div class="bk-bar-btns">
       <button type="button" class="btn btn-primary" id="bk-bar-save">保存する</button>
       <button type="button" class="btn btn-text" id="bk-bar-later">あとで</button>
+    </div>
+  </div>
+  <div class="bk-bar" id="mv-bar" role="status" hidden>
+    <p>Safariで登録したデータは、ここには引き継がれません。Safariでコピーした「データを移すリンク」を取り込むと、同じデータを使えます。</p>
+    <div class="bk-bar-btns">
+      <button type="button" class="btn btn-primary" id="mv-go">データを取り込む</button>
+      <button type="button" class="btn btn-text" id="mv-close">閉じる</button>
     </div>
   </div>
 
@@ -1043,6 +1081,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             </div>
           </fieldset>
           <p class="sh-effect" id="sh-effect"></p>
+          <p class="sh-pwa-note" id="sh-pwa-note" hidden>ホーム画面に追加したアプリで使っている場合は、ここでは取り込まず、そのアプリの「データ共有」→「受け取る」で読み取ってください（Safariとホーム画面のアプリとでは、データが別々に保存されます）。</p>
         </div>
         <p class="form-error" id="share-error" role="alert"></p>
       </section>
@@ -1064,7 +1103,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第2.1版　2026年11月26日</p>
+        <p class="m-meta">第2.2版　2026年11月26日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -1080,6 +1119,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <li><a href="#m-schema" data-jump="m-schema">項目と計算式の設定</a></li>
             <li><a href="#m-save" data-jump="m-save">データの保存と権限</a></li>
             <li><a href="#m-share" data-jump="m-share">データの共有（QRコード・リンク）</a></li>
+            <li><a href="#m-home" data-jump="m-home">ホーム画面への追加</a></li>
             <li><a href="#m-faq" data-jump="m-faq">トラブルシューティング</a></li>
           </ol>
         </nav>
@@ -1209,6 +1249,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             </tbody>
           </table>
           <p class="m-note"><span class="m-note-label">補足</span>画面右上の「自動保存（共有）」等の表示は、現在のデータの保存先を示します（<a href="#m-save" data-jump="m-save">9章</a>）。</p>
+          <p class="m-note"><span class="m-note-label">補足</span>公開版をブラウザで開いている場合は、画面右上に<span class="ui">ホーム画面に追加</span>（パソコンでは<span class="ui">アプリとして追加</span>）も表示されます（<a href="#m-home" data-jump="m-home">11章</a>）。</p>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
 
@@ -1358,7 +1399,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <ul>
             <li>PDF・画像の文字は画像として出力されるため、文字の選択・検索・コピーはできません。文字データが必要な場合は、ExcelまたはCSVを利用してください。</li>
             <li>CSVでは、「=」「+」「-」「@」で始まる文字の先頭に「'」を付けて出力します。表計算ソフトで数式として扱われることを防ぐためです。</li>
-            <li>閲覧環境によっては、Excel・CSVの保存が許可されていない場合があります（<a href="#m-faq" data-jump="m-faq">11章</a>）。</li>
+            <li>閲覧環境によっては、Excel・CSVの保存が許可されていない場合があります（<a href="#m-faq" data-jump="m-faq">12章</a>）。</li>
           </ul>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
@@ -1496,8 +1537,48 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
 
+        <section class="m-sec" aria-labelledby="m-home">
+          <h3 id="m-home" tabindex="-1"><span class="m-num">11</span>ホーム画面への追加</h3>
+          <p>公開版は、スマートフォンのホーム画面やパソコンのデスクトップに追加し、アプリのように使用できます。追加すると、次のようになります。</p>
+          <ul>
+            <li>アイコンから直接開けます。アドレス欄のない、広い画面で使用できます。</li>
+            <li>一度開いた後は、電波が弱い場所やインターネットに接続できない場合でも、前回開いた版で起動します。インターネットに接続できるときは、常に最新の版で起動します。</li>
+            <li>iPhone・iPadでは、Safariで開く場合よりデータが消えにくくなります。</li>
+          </ul>
+          <h4>11.1　追加の手順</h4>
+          <p>画面右上の<span class="ui">ホーム画面に追加</span>（パソコンでは<span class="ui">アプリとして追加</span>、MacのSafariでは<span class="ui">Dockに追加</span>）をクリックすると、使用中の端末に合わせた手順が表示されます。AndroidおよびパソコンのChrome・Edgeでは、表示された画面のボタン（<span class="ui">ホーム画面に追加する</span>など）から直接追加できます。</p>
+          <table class="m-table">
+            <thead><tr><th scope="col">端末</th><th scope="col">手順</th></tr></thead>
+            <tbody>
+              <tr><td>iPhone・iPad（Safari）</td><td>画面下の「…」→「共有」（共有ボタンが見えている場合はそれを押す）→「ホーム画面に追加」→「Webアプリとして開く」がオンであることを確認→「追加」</td></tr>
+              <tr><td>Android（Chrome）</td><td>画面右上のメニュー（︙）→「ホーム画面に追加」または「アプリをインストール」→「インストール」</td></tr>
+              <tr><td>パソコン（Chrome・Edge）</td><td>アドレス欄の右端のインストールのボタン（または、メニュー内の「インストール」）→「インストール」</td></tr>
+              <tr><td>Mac（Safari）</td><td>メニューバーの「ファイル」→「Dockに追加」→「追加」</td></tr>
+            </tbody>
+          </table>
+          <p class="m-note"><span class="m-note-label">補足</span>追加できるのは公開版のみです。claude.ai上の版およびローカル版（ファイルを直接開く版）、ならびにホーム画面から開いている間は、<span class="ui">ホーム画面に追加</span>は表示されません。</p>
+          <h4 id="m-home-move" tabindex="-1">11.2　iPhone・iPad・Macでのデータの移し方</h4>
+          <p>iPhone・iPad・Mac（Safari）では、ホーム画面（Dock）に追加したアプリと、Safariで開く公開版とで、データが別々に保存されます。追加したアプリは、データが空の状態で起動します。Safariで登録したデータを使う場合は、次の手順で移してください。</p>
+          <ol class="m-steps">
+            <li>Safariで公開版を開き、<span class="ui">ホーム画面に追加</span>をクリックします。<span class="ui">データについて</span>の<span class="ui">リンクをコピー</span>をクリックします。</li>
+            <li>表示された手順に従って、ホーム画面に追加します。</li>
+            <li>ホーム画面のアイコンからアプリを開き、画面上部の<span class="ui">データを取り込む</span>をクリックします。<span class="ui">ペースト</span>と表示された場合は、それをクリックします。</li>
+            <li>取り込みの確認画面で内容を確認し、<span class="ui">取り込む</span>をクリックします。</li>
+          </ol>
+          <p class="m-note"><span class="m-note-label">補足</span>バックアップのファイルを、追加したアプリで復元して移すこともできます（<a href="#m-backup" data-jump="m-backup">9.3</a>）。</p>
+          <p class="m-note warn"><span class="m-note-label">注意</span>ホーム画面のアプリで別の端末からデータを受け取る場合は、アプリの<span class="ui">データ共有</span>→<span class="ui">受け取る</span>で読み取ってください。標準のカメラでQRコードを読み取ったり、受け取ったリンクを開いたりすると、Safari側に取り込まれます。</p>
+          <h4>11.3　ファイルの保存（iPhone・iPadのホーム画面のアプリ）</h4>
+          <p>ホーム画面のアプリで出力やバックアップの保存を行うと、共有の画面が表示されます。<span class="ui">"ファイル"に保存</span>を選択し、保存先を指定してください。メールやAirDropで直接送ることもできます。作成に時間がかかった場合は、<span class="ui">ファイルの保存</span>の画面が表示されるので、<span class="ui">保存する</span>をクリックしてください。</p>
+          <h4>11.4　更新と削除</h4>
+          <ul>
+            <li>新しい版は、インターネットに接続できるときに起動すると自動で反映されます。使用中に新しい版が公開された場合は、画面下部の<span class="ui">再読み込み</span>をクリックしてください。</li>
+            <li>ホーム画面のアイコンを削除すると、端末によってはそのアプリのデータも削除されます。削除する前にバックアップを保存してください。</li>
+          </ul>
+          <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
+        </section>
+
         <section class="m-sec" aria-labelledby="m-faq">
-          <h3 id="m-faq" tabindex="-1"><span class="m-num">11</span>トラブルシューティング</h3>
+          <h3 id="m-faq" tabindex="-1"><span class="m-num">12</span>トラブルシューティング</h3>
           <table class="m-table faq">
             <thead><tr><th scope="col">症状</th><th scope="col">考えられる原因</th><th scope="col">対処</th></tr></thead>
             <tbody>
@@ -1515,6 +1596,9 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td>画面下部に「アプリの新しい版が公開されました」と表示される</td><td>公開版が更新された</td><td><span class="ui">再読み込み</span>をクリックしてください。登録内容はそのまま残ります。</td></tr>
               <tr><td>数量の欄に入力した値が元に戻る</td><td>数値・計算式として読めない文字、0での割り算、または負の数を入力した</td><td>0以上の数値、または「＋」「−」「×」「÷」「（ ）」を使った計算式を入力してください。全角でも入力できます。</td></tr>
               <tr><td>リンクを開いても取り込みの画面が出ない</td><td>リンクが途中で切れている、またはLINE等のアプリ内のブラウザで開いている</td><td>リンクをもう一度送ってもらうか、QRコードを使用してください。アプリ内のブラウザで開いた場合は、「ブラウザで開く」を選択するか、<span class="ui">受け取る</span>にリンクを貼り付けてください（<a href="#m-share" data-jump="m-share">10章</a>）。</td></tr>
+              <tr><td>ホーム画面のアイコンから開くと、データが空になっている</td><td>iPhone・iPad・Macでは、ホーム画面（Dock）のアプリとSafariとで、データが別々に保存される</td><td>Safari側のデータをリンクまたはバックアップで移してください（<a href="#m-home-move" data-jump="m-home-move">11.2</a>）。</td></tr>
+              <tr><td><span class="ui">ホーム画面に追加</span>が表示されない</td><td>claude.ai上の版・ローカル版で開いている、またはホーム画面から開いている</td><td>公開版（https://vvkumav.github.io/bihin-daicho/）をブラウザで開いてください。ホーム画面から開いている場合は、すでに追加済みです。</td></tr>
+              <tr><td>iPhoneのホーム画面のアプリで、出力したファイルが見つからない</td><td>共有の画面で保存先を選んでいない</td><td>共有の画面で<span class="ui">"ファイル"に保存</span>を選択し、保存先を指定してください（11.3）。保存したファイルは「ファイル」アプリで確認できます。</td></tr>
               <tr><td>本書を直接開きたい</td><td>―</td><td>本アプリのURLの末尾に <code>#manual</code> を付けて開くと、本書を表示した状態で起動します。</td></tr>
             </tbody>
           </table>
@@ -1585,6 +1669,106 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     <div class="modal-foot">
       <span class="spacer"></span>
       <button type="button" class="btn" data-close>閉じる</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="modal" id="inst-dialog" aria-labelledby="inst-title">
+  <div class="modal-form">
+    <div class="modal-head">
+      <h2 id="inst-title">ホーム画面に追加</h2>
+      <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body inst-body">
+      <p class="inst-lead" id="inst-lead"></p>
+      <ul class="inst-merits">
+        <li>アイコンからすぐに開けます。アドレス欄のない、広い画面で使えます。</li>
+        <li>電波が弱い場所やインターネットにつながらないときでも、前回開いた版で開けます。</li>
+        <li class="inst-ios-only">Safariで開くより、データが消えにくくなります（Safariでは、長い間開かないとデータが消されることがあります）。</li>
+      </ul>
+      <div class="inst-now" id="inst-now" hidden>
+        <button type="button" class="btn btn-primary inst-go" id="inst-go">ホーム画面に追加する</button>
+        <p class="inst-note">確認の画面が出たら<b>インストール</b>を押してください。</p>
+      </div>
+      <p class="inst-msg" id="inst-go-msg" role="status"></p>
+      <div class="inst-steps" id="inst-steps"></div>
+      <section class="inst-data" id="inst-data" aria-labelledby="inst-data-title" hidden>
+        <h3 class="sh-sub" id="inst-data-title">データについて（iPhone・iPad・Mac）</h3>
+        <p class="inst-text">ホーム画面（Dock）に追加したアプリと、Safariで開くこのページとでは、データが別々に保存されます。追加したアプリは、データが空の状態で始まります。</p>
+        <div class="inst-move" id="inst-move" hidden>
+          <p class="inst-text" id="inst-move-what"></p>
+          <div class="sh-link-row">
+            <input type="text" id="inst-link" readonly aria-label="データを移すリンク" spellcheck="false">
+            <button type="button" class="btn btn-primary" id="inst-copy" disabled>準備中…</button>
+          </div>
+          <p class="bk-msg" id="inst-copy-msg" role="status"></p>
+          <p class="inst-note">バックアップのファイル（<b>バックアップ</b>→<b>バックアップを保存</b>）を、追加したアプリで復元して移すこともできます。</p>
+        </div>
+      </section>
+      <details class="inst-other" id="inst-other">
+        <summary>ほかの端末での追加方法</summary>
+        <div class="inst-other-list" id="inst-other-list">
+          <section class="inst-dev" data-dev="ios" aria-label="iPhone・iPad">
+            <h3 class="sh-sub">iPhone・iPad（Safari）</h3>
+            <ol class="inst-ol">
+              <li>画面下の <span class="inst-key" aria-label="その他"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span> を押し、<b>共有</b>を押します。<small>共有ボタン <span class="inst-key" aria-label="共有"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m8 7 4-4 4 4"/><path d="M8 10H6.5A1.5 1.5 0 0 0 5 11.5v8A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5H16"/></svg></span> が見えている場合は、それを押します（iPadでは画面の右上にあります）。</small></li>
+              <li>表示された一覧を下へずらし、<b>ホーム画面に追加</b>を押します。</li>
+              <li><b>Webアプリとして開く</b>がオンになっていることを確かめて、<b>追加</b>を押します。</li>
+              <li>ホーム画面に<b>備品台帳</b>のアイコンができます。次からは、そのアイコンから開いてください。</li>
+            </ol>
+            <p class="inst-note">ChromeなどSafari以外で開いている場合も、共有ボタンから同じように追加できます。見つからないときは、Safariで開き直してください。</p>
+          </section>
+          <section class="inst-dev" data-dev="android" aria-label="Android">
+            <h3 class="sh-sub">Android（Chrome）</h3>
+            <ol class="inst-ol">
+              <li>画面右上の <span class="inst-key" aria-label="メニュー"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></span>（メニュー）を押します。</li>
+              <li><b>ホーム画面に追加</b>または<b>アプリをインストール</b>を押します。</li>
+              <li>確認の画面で<b>インストール</b>（または<b>追加</b>）を押します。ホーム画面に<b>備品台帳</b>のアイコンができます。</li>
+            </ol>
+            <p class="inst-note">Chrome以外のブラウザでも、メニューに「ホーム画面に追加」があります。</p>
+          </section>
+          <section class="inst-dev" data-dev="pc" aria-label="パソコン">
+            <h3 class="sh-sub">パソコン（Chrome・Edge）</h3>
+            <ol class="inst-ol">
+              <li>アドレス欄の右端にある <span class="inst-key" aria-label="インストール"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M12 7.5v5.5M9.5 10.5 12 13l2.5-2.5"/></svg></span>（インストール）を押します。<small>見当たらないときは、右上のメニュー（︙ または …）を開き、「キャスト、保存、共有」や「アプリ」の中の<b>インストール</b>を選びます。</small></li>
+              <li>確認の画面で<b>インストール</b>を押します。</li>
+              <li>デスクトップやスタートメニューに<b>備品台帳</b>ができ、専用の画面で開けます。</li>
+            </ol>
+          </section>
+          <section class="inst-dev" data-dev="mac" aria-label="Mac">
+            <h3 class="sh-sub">Mac（Safari）</h3>
+            <ol class="inst-ol">
+              <li>画面上部のメニューバーで<b>ファイル</b>→<b>Dockに追加</b>を選びます。</li>
+              <li><b>追加</b>を押します。Dockに<b>備品台帳</b>のアイコンができます。</li>
+            </ol>
+          </section>
+          <section class="inst-dev" data-dev="firefox" aria-label="Firefox">
+            <h3 class="sh-sub">Firefox（パソコン）</h3>
+            <p class="inst-text">Firefoxでは追加できません。ChromeかEdgeでこのページを開いて追加してください。</p>
+          </section>
+        </div>
+      </details>
+    </div>
+    <div class="modal-foot">
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>閉じる</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="modal" id="save-dialog" aria-labelledby="save-title">
+  <div class="modal-form">
+    <div class="modal-head">
+      <h2 id="save-title">ファイルの保存</h2>
+    </div>
+    <div class="modal-body inst-body">
+      <p class="inst-text">「<b id="save-name"></b>」ができました。<b>保存する</b>を押し、表示された画面で<b>"ファイル"に保存</b>を選んでください。</p>
+      <p class="form-error" id="save-msg" role="alert"></p>
+    </div>
+    <div class="modal-foot">
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>やめる</button>
+      <button type="button" class="btn btn-primary" id="save-go">保存する</button>
     </div>
   </div>
 </dialog>
@@ -1685,6 +1869,7 @@ function setCoverColor(key) {
   const b = document.body;
   PALETTE_KEYS.forEach((k) => { if (k !== key) b.classList.remove('fc-' + k); });
   b.classList.add('fc-' + key);
+  syncThemeColor();
 }
 function colorOf(f) {
   if (!f) return 'blue';
@@ -3738,6 +3923,7 @@ async function saveExport(blob, filename) {
     }
   }
   if (window.top !== window && window.claude) return 'fail';
+  if (pwa.on && pwa.dev === 'ios' && isStandalone()) return shareSave(blob, filename);   // iPhone・iPad のホーム画面のアプリ
   browserDownload(blob, filename);
   return 'saved';
 }
@@ -3813,14 +3999,14 @@ const sh = {
   error: $('#share-error'), importBtn: $('#sh-import'), again: $('#sh-again'),
   linkBox: $('#sh-link-box'), link: $('#sh-link'), copy: $('#sh-copy'), send: $('#sh-send'), linkMsg: $('#sh-link-msg'),
   paste: $('#sh-paste'), pasteIn: $('#sh-paste-in'), pasteBtn: $('#sh-paste-btn'),
-  what: $('#sh-what'), qrNote: $('#sh-qr-note'), linkDesc: $('#sh-link-desc'),
+  what: $('#sh-what'), qrNote: $('#sh-qr-note'), linkDesc: $('#sh-link-desc'), pwaNote: $('#sh-pwa-note'),
 };
 const share = { tab: 'show', what: 'data', link: '', parts: [], index: 0, qr: null, timer: 0, gen: 0, stream: null, scanTimer: 0, scanTick: 0, detector: undefined, got: null, finishing: false, payload: null, busy: false, hintTimer: 0 };
 class ShareError extends Error {}
 // 送る内容ごとの説明。「アプリだけ」は公開版のURLそのもの（データなし）を送る
 const SHOW_TEXT = {
   data: {
-    note: '受け取るスマートフォンの<b>標準のカメラ</b>でこのQRコードを読み取り、表示されたリンクを開いてください。公開版のアプリが開き、取り込みの確認画面が表示されます。読み取りにくい場合は「大きく表示」を押してください。',
+    note: '受け取るスマートフォンの<b>標準のカメラ</b>でこのQRコードを読み取り、表示されたリンクを開いてください。公開版のアプリが開き、取り込みの確認画面が表示されます。読み取りにくい場合は「大きく表示」を押してください。iPhoneのホーム画面に追加したアプリで受け取る場合は、そのアプリの「データ共有」→「受け取る」で読み取ってもらってください。',
     link: 'リンクをメールやチャットで送ります。受け取った人がリンクを開くと、公開版のアプリで取り込みの確認画面が表示されます。リンクを知っている人は誰でも内容を見られるため、送り先に注意してください。',
     qr: '共有用のQRコード',
   },
@@ -4357,16 +4543,21 @@ function showLink() {
   sh.linkMsg.classList.toggle('warn', share.link.length > 8000);
   sh.linkMsg.textContent = share.link.length > 8000 ? 'リンクがとても長いため、送り先のアプリによっては途中で切れることがあります。その場合はQRコードを使ってください' : '';
 }
-async function copyLink() {
-  if (!share.link) return;
+// 文字をクリップボードへ。書き込めないときは、入力欄の文字を選択してコピーを試す
+async function copyText(text, input) {
   let done = false;
   // クリップボードへの書き込みが許されない画面では返事が来ないことがあるため、少し待って選択に切り替える
   const timeout = new Promise((resolve, reject) => setTimeout(() => reject(new Error('timeout')), 1500));
-  try { if (navigator.clipboard && window.isSecureContext) { await Promise.race([navigator.clipboard.writeText(share.link), timeout]); done = true; } } catch (e) { done = false; }
-  if (!done) {
-    sh.link.focus(); sh.link.select();
+  try { if (navigator.clipboard && window.isSecureContext) { await Promise.race([navigator.clipboard.writeText(text), timeout]); done = true; } } catch (e) { done = false; }
+  if (!done && input) {
+    input.focus(); input.select();
     try { done = document.execCommand('copy'); } catch (e) { done = false; }
   }
+  return done;
+}
+async function copyLink() {
+  if (!share.link) return;
+  const done = await copyText(share.link, sh.link);
   sh.linkMsg.classList.remove('warn');
   sh.linkMsg.textContent = done ? 'リンクをコピーしました。メールやチャットに貼り付けて送ってください。' : 'リンクを選択しました。コピーして送ってください。';
 }
@@ -4593,6 +4784,7 @@ function renderEffect() {
   sh.effect.textContent = lines.join('\n');
   sh.effect.hidden = !lines.length;
   sh.effect.classList.toggle('warn', warn);
+  sh.pwaNote.hidden = !(pwa.on && appleApp() && !isStandalone());   // iPhone などの Safari：ホーム画面のアプリとはデータが別
 }
 async function withRetry(fn) {
   for (let i = 0; ; i++) {
@@ -4687,7 +4879,7 @@ async function readImages(files) {
   }
 }
 
-function setTab(tab) {
+function setTab(tab, cam = true) {
   share.tab = tab;
   const show = tab === 'show';
   sh.tabShow.setAttribute('aria-selected', String(show));
@@ -4703,10 +4895,10 @@ function setTab(tab) {
   } else {
     stopCycle();
     sh.zoomView.hidden = true;
-    if (!share.payload) startCamera();
+    if (!share.payload && cam) startCamera();
   }
 }
-function openShareDialog(tab = 'show') {
+function openShareDialog(tab = 'show', cam = true) {
   if (!isLoaded()) return;
   flushAllQty();
   sh.dialog.className = 'modal fc-' + colorOf(currentFile());
@@ -4718,7 +4910,7 @@ function openShareDialog(tab = 'show') {
   setCamMsg('');
   sh.pasteIn.value = '';
   openDialog(sh.dialog);
-  setTab(tab);
+  setTab(tab, cam);
   (tab === 'show' ? sh.tabShow : sh.tabRead).focus();
 }
 // 標準のカメラでQRコードを読み取って開いたとき（URLの末尾に #D… が付いている）：取り込みの確認画面を出す
@@ -5149,6 +5341,7 @@ function renderHistBits() {
   hd.btn.disabled = !isLoaded();
   bk.btn.disabled = !isLoaded();
   renderBackupBar();
+  renderMoveBar();
 }
 function openHistory() {
   if (!isLoaded()) return;
@@ -5405,6 +5598,222 @@ bk.restore.addEventListener('click', runRestore);
 bk.dialog.addEventListener('cancel', (e) => { if (bk.busy) e.preventDefault(); });
 bk.barSave.addEventListener('click', saveBackup);
 bk.barLater.addEventListener('click', () => { lsSet(LS_BACKUP_LATER, Date.now() + DAY_MS); renderBackupBar(); });
+
+/* ---------- home screen (install as an app) ---------- */
+// 公開版（deploy.sh が manifest を付けた index.html）だけで使う。claude.ai 版・端末用のファイルでは何も出さない。
+// ・画面右上の「ホーム画面に追加」で、端末に合わせた追加方法を案内する（Chrome・Edge では確認画面を直接出す）
+// ・service worker（sw.js）を登録し、電波が弱い場所でも前回の版で開けるようにする
+// ・iPhone・iPad・Mac では、ホーム画面（Dock）のアプリと Safari とでデータが別々になるため、データを移す手段を用意する
+// ・iPhone・iPad のホーム画面のアプリではダウンロードがうまく働かないため、共有の画面（"ファイル"に保存）で保存する
+const LS_MOVE_HINT = 'bihin-daicho:move-hint';   // ホーム画面のアプリで「データを取り込む」の案内を閉じた
+function devKind() {
+  const ua = navigator.userAgent || '';
+  if (/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return 'ios';
+  if (/Android/.test(ua)) return 'android';
+  if (/Firefox\//.test(ua)) return 'firefox';
+  if (/Macintosh/.test(ua) && /Version\/[\d.]+.*Safari\//.test(ua) && !/Chrome|Chromium|Edg\//.test(ua)) return 'mac';
+  return 'pc';
+}
+const pwa = {
+  on: !!document.querySelector('link[rel="manifest"]') && /^https?:$/.test(location.protocol) && window.top === window,
+  dev: devKind(),
+  prompt: null, installed: false, link: '', linkGen: 0,
+  btn: $('#inst-btn'), label: $('#inst-label'), dialog: $('#inst-dialog'), title: $('#inst-title'), lead: $('#inst-lead'),
+  now: $('#inst-now'), go: $('#inst-go'), goMsg: $('#inst-go-msg'), steps: $('#inst-steps'), otherList: $('#inst-other-list'),
+  data: $('#inst-data'), move: $('#inst-move'), moveWhat: $('#inst-move-what'), linkIn: $('#inst-link'), copy: $('#inst-copy'), copyMsg: $('#inst-copy-msg'),
+  bar: $('#mv-bar'), barGo: $('#mv-go'), barClose: $('#mv-close'),
+  saveDialog: $('#save-dialog'), saveName: $('#save-name'), saveMsg: $('#save-msg'), saveGo: $('#save-go'),
+};
+const appleApp = () => pwa.dev === 'ios' || pwa.dev === 'mac';   // ホーム画面（Dock）のアプリとブラウザとで、データが別々
+function isStandalone() {
+  if (navigator.standalone === true) return true;
+  return !!(window.matchMedia && ['standalone', 'fullscreen', 'minimal-ui', 'window-controls-overlay'].some((m) => window.matchMedia(`(display-mode: ${m})`).matches));
+}
+const INSTALL_TEXT = {
+  ios: { label: 'ホーム画面に追加', go: 'ホーム画面に追加する', lead: 'ホーム画面にアイコンを作り、アプリのように開けるようにします。', done: 'ホーム画面に追加しました。次からはアイコンから開けます' },
+  android: { label: 'ホーム画面に追加', go: 'ホーム画面に追加する', lead: 'ホーム画面にアイコンを作り、アプリのように開けるようにします。', done: 'ホーム画面に追加しました。次からはアイコンから開けます' },
+  mac: { label: 'Dockに追加', go: 'Dockに追加する', lead: 'Dockにアイコンを作り、アプリのように専用の画面で開けるようにします。', done: 'Dockに追加しました' },
+  pc: { label: 'アプリとして追加', go: 'アプリとして追加する', lead: 'デスクトップやスタートメニューにアイコンを作り、アプリのように専用の画面で開けるようにします。', done: 'アプリとして追加しました。デスクトップやスタートメニューから開けます' },
+};
+INSTALL_TEXT.firefox = INSTALL_TEXT.pc;
+const installText = () => INSTALL_TEXT[pwa.dev] || INSTALL_TEXT.pc;
+
+function renderInstall() {
+  pwa.btn.hidden = !(pwa.on && !isStandalone() && !pwa.installed);
+}
+function renderInstallDialog() {
+  const can = !!pwa.prompt;
+  pwa.now.hidden = !can;
+  pwa.steps.hidden = can;   // 確認画面を直接出せるときは、手順の代わりにボタンを出す（手順は「ほかの端末」に残る）
+  pwa.data.hidden = !appleApp();
+  const move = appleApp() && isLoaded() && state.mode === 'local' && state.items.length > 0;
+  pwa.move.hidden = !move;
+  if (move) {
+    const n = fileList().filter((f) => !f.virtual || itemsOf(f.id).length).length;
+    pwa.moveWhat.textContent = `この端末のデータ（ファイル ${n}件・備品 ${state.items.length}件）を移すには、下のリンクをコピーしてから、追加したアプリを開き、画面上部の「データを取り込む」を押します。`;
+  }
+}
+// データを移すリンク：「データ共有」のリンクと同じもの（この端末のすべてのデータ）
+async function prepareMoveLink() {
+  const gen = ++pwa.linkGen;
+  pwa.link = '';
+  pwa.linkIn.value = '';
+  pwa.copyMsg.textContent = '';
+  pwa.copy.disabled = true;
+  pwa.copy.textContent = '準備中…';
+  try {
+    const packed = await packShare(sharePayload().data);
+    if (gen !== pwa.linkGen) return;
+    pwa.link = PUBLIC_URL + '#L' + b64url(packed) + 'E';
+  } catch (e) {
+    if (gen !== pwa.linkGen) return;
+    pwa.copyMsg.textContent = 'リンクを作れませんでした。バックアップのファイルで移してください';
+  }
+  pwa.linkIn.value = pwa.link;
+  pwa.copy.disabled = !pwa.link;
+  pwa.copy.textContent = 'リンクをコピー';
+}
+function openInstall() {
+  if (!pwa.on) return;
+  flushAllQty();
+  pwa.dialog.className = 'modal fc-' + colorOf(currentFile());
+  pwa.goMsg.textContent = '';
+  renderInstallDialog();
+  openDialog(pwa.dialog);
+  if (!pwa.move.hidden) prepareMoveLink();
+  (pwa.prompt ? pwa.go : pwa.dialog.querySelector('.icon-btn')).focus();
+}
+function markInstalled() {
+  if (pwa.installed) return;
+  pwa.installed = true;
+  pwa.prompt = null;
+  if (pwa.dialog.open) closeDialog(pwa.dialog);
+  renderInstall();
+  toast(installText().done);
+}
+async function runPrompt() {
+  const e = pwa.prompt;
+  if (!e) return;
+  pwa.prompt = null;   // 確認画面は1回しか出せない
+  pwa.goMsg.textContent = '';
+  try {
+    await e.prompt();
+    const r = await e.userChoice;
+    if (r && r.outcome === 'accepted') { markInstalled(); return; }
+    pwa.goMsg.textContent = '追加をやめました。あとで追加するときは、下の手順で追加できます。';
+  } catch (err) {
+    pwa.goMsg.textContent = 'この画面からは追加できませんでした。下の手順で追加してください。';
+  }
+  renderInstallDialog();
+}
+async function copyMoveLink() {
+  if (!pwa.link) return;
+  const done = await copyText(pwa.link, pwa.linkIn);
+  pwa.copyMsg.textContent = done
+    ? 'コピーしました。ホーム画面に追加したアプリを開き、画面上部の「データを取り込む」を押してください。'
+    : 'リンクを選択しました。コピーしてから、ホーム画面に追加したアプリで「データを取り込む」を押してください。';
+}
+
+// ホーム画面のアプリ（iPhone・iPad・Mac）を初めて開いたとき：Safari のデータを取り込む案内
+function renderMoveBar() {
+  const show = pwa.on && appleApp() && isStandalone() && isLoaded() && state.mode === 'local' && state.canWrite && !state.items.length && !lsNum(LS_MOVE_HINT);
+  pwa.bar.hidden = !show;
+}
+// コピーしたリンクを読み取って取り込みの確認画面を出す。読み取れないときは、貼り付ける欄を開く
+async function pasteImport() {
+  let text = '';
+  try {
+    if (navigator.clipboard && navigator.clipboard.readText && window.isSecureContext) {
+      text = await Promise.race([navigator.clipboard.readText(), new Promise((resolve) => setTimeout(resolve, 20000, ''))]);
+    }
+  } catch (e) { text = ''; }
+  const m = /https?:\/\/\S*#[DPL]\S*/.exec(String(text || ''));
+  openShareDialog('read', false);
+  if (m) { sh.pasteIn.value = m[0]; readPasted(); return; }
+  sh.pasteIn.focus();
+  sh.hint.textContent = 'Safariでコピーした「データを移すリンク」を下の欄に貼り付けて、「読み込む」を押してください。';
+}
+
+// iPhone・iPad のホーム画面のアプリでの保存：共有の画面から「"ファイル"に保存」
+async function shareSave(blob, filename) {
+  const file = new File([blob], filename, { type: blob.type || 'application/octet-stream' });
+  let can = false;
+  try { can = typeof navigator.share === 'function' && !!(navigator.canShare && navigator.canShare({ files: [file] })); } catch (e) { can = false; }
+  if (!can) { browserDownload(blob, filename); return 'saved'; }
+  try { await navigator.share({ files: [file] }); return 'saved'; }
+  catch (e) {
+    if (e && e.name === 'AbortError') return 'declined';
+    if (e && e.name === 'NotAllowedError') return askShare(file);   // 作成に時間がかかり、ボタンを押した操作の続きと見なされなかった
+    return 'fail';
+  }
+}
+function askShare(file) {
+  return new Promise((resolve) => {
+    let result = 'declined';
+    const d = pwa.saveDialog;
+    pwa.saveName.textContent = file.name;
+    pwa.saveMsg.textContent = '';
+    pwa.saveGo.disabled = false;
+    pwa.saveGo.onclick = async () => {
+      pwa.saveGo.disabled = true;
+      pwa.saveMsg.textContent = '';
+      try { await navigator.share({ files: [file] }); result = 'saved'; closeDialog(d); }
+      catch (e) {
+        if (e && e.name === 'AbortError') { result = 'declined'; closeDialog(d); }
+        else pwa.saveMsg.textContent = '保存できませんでした。もう一度「保存する」を押してください';
+      } finally { pwa.saveGo.disabled = false; }
+    };
+    d.addEventListener('close', () => { pwa.saveGo.onclick = null; resolve(result); }, { once: true });
+    openDialog(d);
+    pwa.saveGo.focus();
+  });
+}
+
+// 画面上部（スマートフォンの表示欄・アプリの枠）の色を、開いているファイルの色に合わせる
+function syncThemeColor() {
+  const m = document.querySelector('meta[name="theme-color"]');
+  if (!m) return;
+  const c = getComputedStyle(document.body).getPropertyValue('--fc-btn').trim();
+  if (c && m.content !== c) m.content = c;
+}
+
+(() => {
+  const t = installText();
+  pwa.label.textContent = t.label;
+  pwa.title.textContent = t.label;
+  pwa.go.textContent = t.go;
+  pwa.lead.textContent = t.lead;
+  pwa.dialog.querySelectorAll('.inst-ios-only').forEach((x) => { x.hidden = pwa.dev !== 'ios'; });
+  // この端末の手順を先頭に出し、ほかは「ほかの端末での追加方法」にまとめる
+  const mine = pwa.otherList.querySelector(`.inst-dev[data-dev="${pwa.dev}"]`);
+  if (mine) pwa.steps.append(mine);
+  renderInstall();
+  if (!pwa.on) return;
+  if ('serviceWorker' in navigator) {
+    const reg = () => navigator.serviceWorker.register('sw.js').catch(() => {});
+    if (document.readyState === 'complete') reg(); else window.addEventListener('load', reg, { once: true });
+  }
+  // ホーム画面から開いているときは、ブラウザにデータを消されにくくするよう頼む
+  if (isStandalone() && navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();   // ブラウザが勝手に出す案内の代わりに、「ホーム画面に追加」から出す
+    pwa.prompt = e;
+    renderInstall();
+    if (pwa.dialog.open) renderInstallDialog();
+  });
+  window.addEventListener('appinstalled', markInstalled);
+  if (window.matchMedia) {
+    const mq = window.matchMedia('(display-mode: standalone)');
+    if (mq.addEventListener) mq.addEventListener('change', () => { renderInstall(); renderMoveBar(); });
+  }
+  pwa.btn.addEventListener('click', openInstall);
+  pwa.go.addEventListener('click', runPrompt);
+  pwa.copy.addEventListener('click', copyMoveLink);
+  pwa.linkIn.addEventListener('focus', () => pwa.linkIn.select());
+  pwa.dialog.addEventListener('close', () => { pwa.linkGen++; });
+  pwa.barGo.addEventListener('click', pasteImport);
+  pwa.barClose.addEventListener('click', () => { lsSet(LS_MOVE_HINT, 1); renderMoveBar(); });
+})();
 
 /* ---------- update notice (public version only) ---------- */
 // 公開版では、開いている間に新しい版が公開されたら画面下部で知らせる（登録内容は再読み込みしても残る）

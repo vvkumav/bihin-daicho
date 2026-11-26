@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "備品台帳",
+  "short_name": "備品台帳",
+  "description": "備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳",
+  "lang": "ja",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#2d6cbd",
+  "theme_color": "#2d6cbd",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
