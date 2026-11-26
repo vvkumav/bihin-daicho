@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#2d6cbd"><meta name="app-build" content="ec789acdb340"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1' y='27' width='28' height='1.9' rx='.95' fill='%23b8c2cc'/%3E%3Crect x='2.5' y='6' width='7.5' height='21' rx='2' fill='%233b7bd4'/%3E%3Crect x='11.25' y='3' width='7.5' height='24' rx='2' fill='%2334a271'/%3E%3Crect x='20' y='8' width='7.5' height='19' rx='2' fill='%23ec8a32'/%3E%3C/svg%3E"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="備品台帳"><meta name="apple-mobile-web-app-status-bar-style" content="default"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#2d6cbd"><meta name="app-build" content="cfe779e527e3"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1' y='27' width='28' height='1.9' rx='.95' fill='%23b8c2cc'/%3E%3Crect x='2.5' y='6' width='7.5' height='21' rx='2' fill='%233b7bd4'/%3E%3Crect x='11.25' y='3' width='7.5' height='24' rx='2' fill='%2334a271'/%3E%3Crect x='20' y='8' width='7.5' height='19' rx='2' fill='%23ec8a32'/%3E%3C/svg%3E"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="備品台帳"><meta name="apple-mobile-web-app-status-bar-style" content="default"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -522,10 +522,6 @@ dialog.modal::backdrop{background:rgba(10,14,18,.5)}
 .bk-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
 .hist-wrap{display:flex;flex-direction:column;gap:12px}
 .hist-desc{margin:0;font-size:14px;color:var(--ink-2)}
-.hist-who{display:flex;flex-direction:column;gap:6px}
-.hist-who label{font-size:14px;font-weight:700}
-.hist-who input{max-width:18em}
-.hist-hint{margin:0;font-size:13px;color:var(--ink-2)}
 .hist-status{margin:0;padding:8px 12px;border-radius:8px;background:var(--fc-soft);font-size:14px;font-weight:700;color:var(--fc-ink)}
 .hist-status.is-err{background:#fdecec;color:var(--danger-text)}
 .hist-status:empty{display:none}
@@ -588,6 +584,69 @@ tbody tr:hover .title-btn svg,.title-btn:focus-visible svg{opacity:.8}
   .ledger th.c-act{z-index:3;box-shadow:inset 1px 0 0 var(--line),inset 0 -2px 0 var(--fc)}
   .ledger tfoot td{position:sticky;bottom:0;z-index:2;border-top:0;box-shadow:inset 0 1px 0 var(--fc),inset 0 2px 0 var(--fc-soft),inset 0 3px 0 var(--fc)}
   .ledger tfoot td.c-act,.ledger tfoot td:last-child{z-index:3}
+}
+/* 表（パソコン・タブレット）：1行を低く詰め、一度に多くの備品が見えるようにする。
+   品名は2行まで。項目が多いとき（8つ以上）は、ほかの文字の項目を1行に収め、はみ出す分は「…」にする
+   （全文はポインターを合わせると出る）。項目が少ないときは、長い文字は2行まで使う */
+@media (min-width:681px){
+  .ledger td{padding-top:7px;padding-bottom:7px;vertical-align:middle}
+  .ledger td.c-qty,.ledger td.c-act{padding-block:4px}
+  .ledger .c-title{min-width:13em}
+  .ledger .c-text{min-width:4em}
+  .table-wrap.dense .c-text .clamp{display:block;max-width:15em;white-space:nowrap;text-overflow:ellipsis;-webkit-line-clamp:none;line-clamp:none}
+  .ledger .qty-btn{width:32px;min-height:32px}
+  .ledger .qty input.qty-in{min-height:32px}
+  .ledger .act .btn-text{min-width:32px;min-height:32px}
+  .ledger tfoot td{padding-top:8px;padding-bottom:8px}
+  .ft-warn{margin-left:2px;font-size:13px;color:var(--danger-text);cursor:help}
+  /* 横に収まらない表：No.と品名を左に固定し、右に続きがあれば操作の列に影を付ける */
+  :where(.ledger tbody td){background-color:var(--surface)}
+  .ledger .c-no{width:52px;min-width:52px;box-sizing:border-box}
+  .table-wrap.is-wide .c-no{position:sticky;left:0;z-index:1}
+  .table-wrap.is-wide.title-first .c-title,.table-wrap.is-wide.title-first .th-title{position:sticky;left:52px;z-index:1;box-shadow:inset -1px 0 0 var(--line)}
+  .table-wrap.is-wide thead .c-no,.table-wrap.is-wide.title-first thead .th-title{z-index:4}
+  .table-wrap.is-wide.title-first tfoot .ft-label{position:sticky;left:0;z-index:4;box-shadow:inset -1px 0 0 var(--line)}
+  .table-wrap.more-right .c-act{box-shadow:inset 1px 0 0 var(--line),-12px 0 12px -8px rgba(20,30,40,.22)}
+  .wide-hint{display:block;text-align:center;font-size:13px;font-weight:700;color:var(--fc-ink)}
+}
+.wide-hint[hidden]{display:none}
+@media (min-width:861px){.main{max-width:1680px}}
+/* PC：項目が多い（7つ以上）ときは、備品の追加・編集の画面を横に広げ、項目を3〜4列に並べて一度に見えるようにする */
+@media (min-width:861px){
+  dialog.modal.item-wide{width:min(1120px,calc(100vw - 48px))}
+  .item-wide .modal-body{gap:12px;padding-top:14px;padding-bottom:14px}
+  .item-wide .field-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px 16px}
+  .item-wide .field.wide{grid-column:auto}
+  .item-wide .field.is-title{grid-column:span 2}
+  .item-wide .modal-body > .field{max-width:440px}
+  .item-wide .calc-hint{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+/* PC（画面の高さに合わせる表示）：一覧の上下の部品を薄くして、一覧に高さを回す。
+   上部の合計の帯は、一覧の下端に常に見えている合計行（件数つき）と同じ内容なので出さない */
+@media (min-width:861px) and (min-height:600px){
+  .topbar{padding-top:10px;padding-bottom:6px}
+  .bk-bar{margin-bottom:6px;padding:4px 6px 4px 16px}
+  .bk-bar .btn{min-height:34px}
+  .body{padding-bottom:6px}
+  .main{padding-top:6px;padding-bottom:2px}
+  .sheet{gap:10px;padding-top:14px;padding-bottom:6px}
+  .ledger{gap:8px}
+  .file-name{font-size:22px}
+  .big-folder{width:28px;height:28px}
+  .head-actions .btn{min-height:36px}
+  .toolbar .btn{min-height:38px}
+  .toolbar input[type="search"],.toolbar select{min-height:38px;padding-top:5px;padding-bottom:5px}
+  .sheet.has-foot .totals{display:none}
+  /* 固定した品名の列：見出しの下線・合計行の二重線も、固定した枠に描く */
+  .table-wrap.is-wide.title-first thead .th-title{box-shadow:inset -1px 0 0 var(--line),inset 0 -2px 0 var(--fc)}
+  .table-wrap.is-wide.title-first tfoot .ft-label{box-shadow:inset -1px 0 0 var(--line),inset 0 1px 0 var(--fc),inset 0 2px 0 var(--fc-soft),inset 0 3px 0 var(--fc)}
+  .pager{padding-top:6px}
+  .pager-btn{min-height:30px}
+  /* ページ送りはファイル名の行へ（矢印と位置だけ。ファイル名はポインターを合わせると出る）。下は一覧に使う */
+  .pager.in-head{margin-left:auto;padding:0;border:0;gap:2px}
+  .pager.in-head .pager-name{display:none}
+  .pager.in-head .pager-btn{min-height:36px;max-width:none;padding:0 8px}
+  .pager.in-head .pager-pos{padding:0 2px}
 }
 @media (max-width:680px){
   .ledger tbody tr{display:flex;flex-wrap:wrap;align-items:center;column-gap:14px;row-gap:2px;padding:8px 8px 8px 12px;margin-bottom:8px}
@@ -801,7 +860,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             備品を追加
           </button>
-          <span class="grow"></span>
+          <span class="grow"><span class="wide-hint" id="wide-hint" role="status" hidden>右にもほかの項目があります。横にスクロールしてください →</span></span>
           <div class="search">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
             <label class="sr" for="search">検索</label>
@@ -1103,7 +1162,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第2.2版　2026年11月26日</p>
+        <p class="m-meta">第2.5版　2026年11月26日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -1241,11 +1300,11 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td class="c-n">9</td><td>ファイル名</td><td>表示中のファイル名です。表紙の色は、そのファイルに設定した色です。</td></tr>
               <tr><td class="c-n">10</td><td><span class="ui">ファイル設定</span></td><td>ファイル名、色、帳票の設定を変更します（<a href="#m-filesettings" data-jump="m-filesettings">3.3</a>）。</td></tr>
               <tr><td class="c-n">11</td><td><span class="ui">出力</span></td><td>表示中のファイルを出力します。形式（PDF・Excel・CSV・画像）や用紙サイズを選択できます（<a href="#m-pdf" data-jump="m-pdf">7章</a>）。</td></tr>
-              <tr><td class="c-n">12</td><td>集計欄</td><td>件数と、「合計」を有効にした項目の合計を表示します。</td></tr>
+              <tr><td class="c-n">12</td><td>集計欄</td><td>件数と、「合計」を有効にした項目の合計を表示します。パソコンでは一覧に多くの行を表示するため、集計欄は表示せず、一覧の下端の合計行に件数と合計を表示します。</td></tr>
               <tr><td class="c-n">13</td><td><span class="ui">備品を追加</span></td><td>備品を登録します（<a href="#m-item" data-jump="m-item">4章</a>）。</td></tr>
               <tr><td class="c-n">14</td><td>検索欄・並び順</td><td>一覧の絞り込みと並べ替えを行います（<a href="#m-find" data-jump="m-find">6章</a>）。</td></tr>
               <tr><td class="c-n">15</td><td>一覧表</td><td>登録済みの備品です。数量は「−」「＋」または数値の直接入力で調整できます。行末の鉛筆アイコンで修正、ごみ箱アイコンで削除します（<a href="#m-edit" data-jump="m-edit">5章</a>）。</td></tr>
-              <tr><td class="c-n">16</td><td>ページ送り</td><td>前後のファイルへ移動します。</td></tr>
+              <tr><td class="c-n">16</td><td>ページ送り</td><td>前後のファイルへ移動します。パソコンでは一覧を広く使うため、ファイル名の右側に「‹ 1 / 3 ›」の形で表示します（前後のファイル名は、マウスポインターを合わせると表示されます）。</td></tr>
             </tbody>
           </table>
           <p class="m-note"><span class="m-note-label">補足</span>画面右上の「自動保存（共有）」等の表示は、現在のデータの保存先を示します（<a href="#m-save" data-jump="m-save">9章</a>）。</p>
@@ -1317,14 +1376,13 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td>削除</td><td>行末のごみ箱アイコンをクリックし、確認表示で<span class="ui">削除</span>をクリックします。<span class="ui">やめる</span>をクリックすると取り消せます。修正画面の<span class="ui">この備品を削除</span>からも削除できます（スマートフォンではこちらを使用します）。</td></tr>
             </tbody>
           </table>
-          <h4 id="m-undo" tabindex="-1">5.1　取り消しと変更履歴</h4>
+          <h4 id="m-undo" tabindex="-1">5.1　元に戻す・変更履歴</h4>
           <p>修正・削除・取り込み等の操作の直後は、画面下部の通知に<span class="ui">元に戻す</span>が約8秒間表示されます。クリックすると、その操作を取り消します。</p>
-          <p>画面右上の<span class="ui">変更履歴</span>では、この端末で行った変更（日時・内容・ファイル・記録した名前）を新しい順に確認できます。</p>
+          <p>画面右上の<span class="ui">変更履歴</span>では、この端末で行った変更（日時・内容・ファイル）を新しい順に確認できます。</p>
           <ul>
-            <li>各行の<span class="ui">取り消す</span>をクリックすると、その変更を元に戻します。取り消しも1件の変更として記録され、<span class="ui">やり直す</span>で取り消す前の状態に戻せます。</li>
+            <li>各行の<span class="ui">元に戻す</span>をクリックすると、その変更の前の状態に戻します。削除した備品・ファイルも、<span class="ui">元に戻す</span>で戻ります。元に戻した操作も「元に戻した：…」として1件記録されます。その行の<span class="ui">元に戻す</span>をクリックすると、元に戻す前の状態（削除した状態など）に戻り、「もう一度：…」として記録されます。</li>
             <li><span class="ui">このあと変更あり</span>と表示された変更は、同じ備品・ファイル等をその後にも変更しているため、そのままでは取り消せません。新しい変更から順に取り消してください。</li>
             <li>数量の<span class="ui">＋</span>・<span class="ui">−</span>・直接入力による変更は、同じ備品を1分以内に続けて変更した場合、1件にまとめて記録します。</li>
-            <li><span class="ui">記録する名前</span>に名前を入力すると、以後の変更にその名前が記録されます。共用の端末では、使用者が替わるたびに書き換えてください。</li>
             <li>パソコンでは、入力欄の外で Ctrl＋Z（Macでは ⌘＋Z）を押すと、まだ取り消していない最新の変更を取り消します。</li>
           </ul>
           <p class="m-note"><span class="m-note-label">補足</span>変更履歴は端末（ブラウザ）ごとに保存され、データの共有では送られません。記録は新しいものから300件まで残ります。古い記録や大量の変更の記録は、取り消しに必要な内容が残らず<span class="ui">記録のみ</span>となる場合があります。</p>
@@ -1341,10 +1399,11 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           </ul>
           <h4>6.1　備品が多い場合の表示</h4>
           <ul>
-            <li>パソコンでは、一覧表の中だけがスクロールします。列の見出しと合計行、ファイル名・集計欄・検索欄は常に表示されます。</li>
+            <li>パソコンでは、一覧表の中だけがスクロールします。列の見出しと合計行（件数を含む）、ファイル名・検索欄は常に表示されます。</li>
+            <li>項目が多く、一覧表が横に収まらない場合は、検索欄の左に「右にもほかの項目があります」と表示されます。一覧表を横にスクロール（下端のスクロールバー、またはShiftキーを押しながらマウスホイール）すると、残りの項目を確認できます。No.と品名は左端に固定され、どの備品の行かが分かります。</li>
             <li>スマートフォンでは、品名と数量を1行目に、その他の項目をその下にまとめた簡潔な表示になります。品名をタップすると修正画面が開きます。削除は修正画面から行います。</li>
             <li>一覧を下へ進むと、画面右下に<span class="ui">一覧の先頭へ</span>が表示されます。クリックすると一覧の先頭に戻り、検索欄にカーソルが移ります。</li>
-            <li>長い品名・備考は2行までを表示します。全文は、マウスポインターを合わせるか、修正画面で確認できます。</li>
+            <li>長い品名・備考は2行までを表示します。項目が8つ以上ある場合は、品名以外の文字の項目を1行で表示し、収まらない部分を「…」で省略します。全文は、マウスポインターを合わせるか、修正画面で確認できます。</li>
             <li>備品を登録すると、一覧のその行が表示され、一時的に色付けされます。</li>
           </ul>
           <p class="m-note"><span class="m-note-label">補足</span>出力には、検索条件にかかわらず、そのファイルのすべての備品が選択中の並び順で含まれます。</p>
@@ -1587,7 +1646,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
               <tr><td>「この画面ではこの形式を保存できません」と表示される</td><td>閲覧環境でExcel・CSVの保存が許可されていない</td><td>PDFまたは画像で出力するか、ローカル版を利用してください。</td></tr>
               <tr><td>「編集する権限がありません」と表示される</td><td>閲覧のみの権限で開いている</td><td>管理者に編集権限の付与を依頼してください。</td></tr>
               <tr><td>ローカル版・公開版のデータが消えた</td><td>ブラウザの閲覧データが削除された、または長期間開かなかったため自動で削除された</td><td>バックアップを保存している場合は、<span class="ui">バックアップ</span>の<span class="ui">ファイルを選ぶ</span>から復元できます（<a href="#m-backup" data-jump="m-backup">9.3</a>）。保存していない場合は復元できません。定期的にバックアップを保存してください。</td></tr>
-              <tr><td>間違えて削除・修正した</td><td>―</td><td>操作の直後であれば、画面下部の通知の<span class="ui">元に戻す</span>をクリックします。通知が消えた後は、<span class="ui">変更履歴</span>の<span class="ui">取り消す</span>で元に戻せます（<a href="#m-undo" data-jump="m-undo">5.1</a>）。</td></tr>
+              <tr><td>間違えて削除・修正した</td><td>―</td><td>操作の直後であれば、画面下部の通知の<span class="ui">元に戻す</span>をクリックします。通知が消えた後は、<span class="ui">変更履歴</span>の<span class="ui">元に戻す</span>で戻せます（<a href="#m-undo" data-jump="m-undo">5.1</a>）。</td></tr>
               <tr><td>変更履歴に「このあと変更あり」と表示され、取り消せない</td><td>同じ備品・ファイル等を、その後にも変更している</td><td>新しい変更から順に取り消してください。</td></tr>
               <tr><td>新しいファイルの色が自動で設定される</td><td>判別しやすい色を自動で選択する仕様</td><td><span class="ui">ファイル設定</span>で任意の色に変更できます。</td></tr>
               <tr><td>カメラが起動しない</td><td>ブラウザでカメラの使用が許可されていない、またはカメラを使用できない環境</td><td>ブラウザの設定でカメラを許可してください。許可できない場合は、QRコードを撮影した画像を<span class="ui">画像から読み取る</span>で読み取ってください。</td></tr>
@@ -1655,12 +1714,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
       <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
     <div class="modal-body hist-wrap">
-      <p class="hist-desc">この端末で行った変更の記録です（新しい順）。間違えた変更は<b>取り消す</b>で元に戻せます。</p>
-      <div class="hist-who">
-        <label for="hist-who-in">記録する名前（任意）</label>
-        <input type="text" id="hist-who-in" maxlength="20" autocomplete="off" placeholder="例：山田">
-        <p class="hist-hint">入力した名前が、これからの変更に記録されます。共用の端末では、使う人が替わったら書き換えてください。</p>
-      </div>
+      <p class="hist-desc">この端末で行った変更の記録です（新しい順）。間違えた変更は<b>元に戻す</b>で戻せます。</p>
       <p class="hist-status" id="hist-status" role="status"></p>
       <ol class="hist-list" id="hist-list"></ol>
       <p class="hist-empty" id="hist-empty">まだ変更の記録はありません。</p>
@@ -1791,7 +1845,7 @@ const el = {
   stage: $('#stage'), sheet: $('#sheet'), pager: $('#pager'), prevFile: $('#prev-file'), nextFile: $('#next-file'),
   prevName: $('#prev-name'), nextName: $('#next-name'), pagerPos: $('#pager-pos'),
   addBtn: $('#add-btn'), search: $('#search'), sort: $('#sort'),
-  tableWrap: $('#table-wrap'), thead: $('#thead'), rows: $('#rows'), tfoot: $('#tfoot'), empty: $('#empty'),
+  tableWrap: $('#table-wrap'), wideHint: $('#wide-hint'), thead: $('#thead'), rows: $('#rows'), tfoot: $('#tfoot'), empty: $('#empty'),
   itemDialog: $('#item-dialog'), itemForm: $('#item-form'), itemTitle: $('#item-dialog-title'), itemFields: $('#item-fields'),
   itemFile: $('#item-file'), itemError: $('#item-error'), itemSave: $('#item-save'), itemSaveNext: $('#item-save-next'),
   fileDialog: $('#file-dialog'), fileForm: $('#file-form'), fileDialogTitle: $('#file-dialog-title'),
@@ -2614,6 +2668,7 @@ function renderTotals(rows, C) {
 }
 
 function setEmpty(text, withButton) {
+  el.wideHint.hidden = true;
   el.empty.replaceChildren(
     withButton ? ico('box', 76) : null,
     h('div', { class: 'empty-body' }, h('p', { text }),
@@ -2642,7 +2697,7 @@ function rowEl(row, no, C, titleF) {
       td = h('td', { class: 'c-title', title: c.text.length > 24 ? c.text : null },
         h('button', { type: 'button', class: 'title-btn', 'data-act': 'edit', 'data-id': it.id, 'aria-label': `${c.text || '品名なし'}（修正）` },
           h('span', { class: 'clamp', text: c.text }), icon('M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16z', 14)));
-    } else if (f.kind === 'text') td = h('td', { class: isTitle ? 'c-title' : 'c-text', 'data-label': isTitle ? null : f.label, title: c.text.length > 24 ? c.text : null }, h('span', { class: 'clamp', text: c.text }));
+    } else if (f.kind === 'text') td = h('td', { class: isTitle ? 'c-title' : 'c-text', 'data-label': isTitle ? null : f.label, title: c.text.length > (isTitle ? 24 : 8) ? c.text : null }, h('span', { class: 'clamp', text: c.text }));
     else if (c.err) td = h('td', { class: 'num', 'data-label': f.label }, h('span', { class: 'cell-err', title: c.err, text: '計算エラー' }));
     else td = h('td', { class: 'num' + (f.kind === 'formula' ? ' c-calc' : ''), text: fmtNum(c.num, f), 'data-label': f.label, 'data-unit': f.unit || null });
     if (!isTitle && !c.err && (f.kind === 'text' ? !c.text : c.num == null)) td.classList.add('is-empty');
@@ -2666,20 +2721,20 @@ function rowEl(row, no, C, titleF) {
 }
 
 function renderTable(cur, rows, C) {
-  if (!isLoaded() || !cur) { el.tableWrap.hidden = true; setEmpty('読み込み中'); return; }
-  if (!rows.length) { el.tableWrap.hidden = true; setEmpty(state.canWrite ? 'まだ備品がありません。最初の1件を登録しましょう。' : 'まだ備品がありません。', state.canWrite); return; }
+  if (!isLoaded() || !cur) { el.sheet.classList.remove('has-foot'); el.tableWrap.hidden = true; setEmpty('読み込み中'); return; }
+  if (!rows.length) { el.sheet.classList.remove('has-foot'); el.tableWrap.hidden = true; setEmpty(state.canWrite ? 'まだ備品がありません。最初の1件を登録しましょう。' : 'まだ備品がありません。', state.canWrite); return; }
   const numbering = new Map(rows.map((r, i) => [r.it.id, i + 1]));
   const textFields = C.schema.filter((f) => f.kind === 'text');
   const q = state.query.trim();
   const match = makeMatcher(q);
   const shown = match ? rows.filter((r) => textFields.some((f) => match(cellOf(r, f).text))) : rows;
-  if (!shown.length) { el.tableWrap.hidden = true; setEmpty('該当する備品がありません。'); return; }
+  if (!shown.length) { el.sheet.classList.remove('has-foot'); el.tableWrap.hidden = true; setEmpty('該当する備品がありません。'); return; }
   el.empty.hidden = true;
   el.tableWrap.hidden = false;
   const titleF = titleFieldOf(C);
   el.thead.replaceChildren(h('tr', null,
     h('th', { class: 'c-no', scope: 'col', text: 'No.' }),
-    C.schema.map((f) => h('th', { scope: 'col', class: f.kind === 'text' ? null : 'num' }, f.label, f.unit ? h('span', { class: 'th-unit', text: f.unit }) : null)),
+    C.schema.map((f) => h('th', { scope: 'col', class: f.kind === 'text' ? (titleF && f.id === titleF.id ? 'th-title' : null) : 'num' }, f.label, f.unit ? h('span', { class: 'th-unit', text: f.unit }) : null)),
     h('th', { class: 'c-act', scope: 'col' }, h('span', { class: 'sr', text: '操作' }))));
   // 数量を入力している途中に表が描き直されても、入力中の値とカーソル位置を保つ
   const ae = document.activeElement;
@@ -2692,13 +2747,21 @@ function renderTable(cur, rows, C) {
   }
   const totals = totalsOf(shown, C);
   const firstIdx = C.schema.findIndex((f) => totals.has(f.id));
+  el.sheet.classList.toggle('has-foot', firstIdx >= 0);
+  el.tableWrap.classList.toggle('title-first', !!titleF && C.schema[0] === titleF);
+  el.tableWrap.classList.toggle('dense', C.schema.length >= 8);   // PC では上部の合計の帯の代わりになる
   if (firstIdx < 0) {
     el.tfoot.replaceChildren();
   } else {
-    const tr = h('tr', null, h('td', { class: 'ft-label', colspan: String(firstIdx + 1), text: q ? `合計（${shown.length}件）` : '合計' }));
+    // 品名が先頭なら、「合計」はNo.と品名の上だけに置く（横にスクロールしても品名と一緒に左に残る）
+    const titleFirst = !!titleF && C.schema[0] === titleF;
+    const labelSpan = titleFirst ? 2 : firstIdx + 1;
+    const tr = h('tr', null, h('td', { class: 'ft-label', colspan: String(labelSpan), text: `合計（${shown.length}件）` }),
+      titleFirst && firstIdx > 1 ? h('td', { class: 'ft-blank', colspan: String(firstIdx - 1) }) : null);
     C.schema.slice(firstIdx).forEach((f) => {
       const t = totals.get(f.id);
-      tr.append(t ? h('td', { class: 'num', 'data-label': f.label, 'data-unit': f.unit || null, text: fmtNum(t.sum, f) || '0' }) : h('td', { class: 'ft-blank' }));
+      const bad = t && t.bad ? `計算できない行 ${t.bad}件を除いた合計です` : null;
+      tr.append(t ? h('td', { class: 'num', 'data-label': f.label, 'data-unit': f.unit || null, title: bad }, fmtNum(t.sum, f) || '0', bad ? h('span', { class: 'ft-warn', 'aria-label': bad, text: '※' }) : null) : h('td', { class: 'ft-blank' }));
     });
     tr.append(h('td', { class: 'ft-blank' }));
     el.tfoot.replaceChildren(tr);
@@ -2714,7 +2777,20 @@ function renderTable(cur, rows, C) {
     if (b) b.focus();
     pendingFocus = null;
   }
+  updateWide();
 }
+// 表が横に収まらないとき（項目が多いときなど）：品名を左に固定し、右に続きがあることを影と案内で示す
+function updateWide() {
+  const w = el.tableWrap;
+  const wide = !w.hidden && w.scrollWidth > w.clientWidth + 1 && getComputedStyle(w).overflowX !== 'visible';
+  const more = wide && w.scrollLeft + w.clientWidth < w.scrollWidth - 2;
+  w.classList.toggle('is-wide', wide);
+  w.classList.toggle('more-right', more);
+  el.wideHint.hidden = !more;
+}
+el.tableWrap.addEventListener('scroll', updateWide, { passive: true });
+if (window.ResizeObserver) new ResizeObserver(() => updateWide()).observe(el.tableWrap);
+else window.addEventListener('resize', updateWide);
 
 function render() {
   const C = calc();
@@ -2742,6 +2818,7 @@ function renderPager(list, cur) {
     btn.dataset.file = f ? f.id : '';
     btn.tabIndex = f ? 0 : -1;
     btn.setAttribute('aria-label', f ? `${word}のファイル：${f.name}` : word);
+    if (f) btn.title = `${word}のファイル：${f.name}`; else btn.removeAttribute('title');
     nameEl.textContent = f ? f.name : '';
   };
   set(el.prevFile, el.prevName, list[idx - 1], '前');
@@ -2826,6 +2903,17 @@ el.fileList.addEventListener('click', (e) => {
   if (b) flipTo(b.dataset.file);
 });
 [el.prevFile, el.nextFile].forEach((b) => b.addEventListener('click', () => { if (b.dataset.file) flipTo(b.dataset.file); }));
+// PC（画面の高さに合わせる表示）では、ページ送りをファイル名の行に移し、下の段を一覧に回す。スマートフォンなどでは一覧の下
+const pcFrame = window.matchMedia ? window.matchMedia('(min-width:861px) and (min-height:600px)') : null;
+function placePager() {
+  const inHead = !!(pcFrame && pcFrame.matches);
+  const head = el.sheet.querySelector('.file-head');
+  if (inHead && el.pager.parentNode !== head) head.insertBefore(el.pager, head.querySelector('.head-actions'));
+  else if (!inHead && el.pager.parentNode !== el.sheet) el.sheet.append(el.pager);
+  el.pager.classList.toggle('in-head', inHead);
+}
+placePager();
+if (pcFrame) { if (pcFrame.addEventListener) pcFrame.addEventListener('change', placePager); else if (pcFrame.addListener) pcFrame.addListener(placePager); }
 
 /* ---------- item dialog ---------- */
 let itemCtx = null;
@@ -2929,7 +3017,7 @@ function openItemDialog(id) {
   const list = fileList();
   const cur = currentFile(list);
   const it = id ? state.items.find((x) => x.id === id) : null;
-  el.itemDialog.className = 'modal fc-' + colorOf(cur);
+  el.itemDialog.className = 'modal fc-' + colorOf(cur) + (C.schema.length >= 7 ? ' item-wide' : '');
   itemCtx = { id: it ? it.id : null };
   el.itemTitle.textContent = it ? '備品の編集' : '備品の追加';
   el.itemSaveNext.hidden = !!it;
@@ -2937,11 +3025,12 @@ function openItemDialog(id) {
   ifx.del.hidden = !it;
   showItemFoot(false);
   el.itemError.textContent = '';
+  const titleF = titleFieldOf(C);
   const nodes = C.schema.map((f) => {
     const raw = it ? it.values[f.id] : undefined;
     const label = h('label', { for: 'if-' + f.id }, f.label, f.required ? h('span', { class: 'req', text: '必須' }) : null);
     if (f.kind === 'text') {
-      return h('div', { class: 'field wide' }, label,
+      return h('div', { class: 'field wide' + (titleF && f.id === titleF.id ? ' is-title' : '') }, label,
         h('input', { type: 'text', id: 'if-' + f.id, maxlength: '200', value: raw == null ? '' : String(raw) }));
     }
     if (f.kind === 'number') {
@@ -2954,7 +3043,7 @@ function openItemDialog(id) {
     return h('div', { class: 'field' },
       h('span', { class: 'label', id: 'if-label-' + f.id, text: f.label }),
       h('output', { id: 'if-' + f.id, class: 'calc-out', 'aria-labelledby': 'if-label-' + f.id }),
-      h('p', { class: 'calc-hint', text: `計算式：${toDisplay(f.expr, C.schema)}` }));
+      h('p', { class: 'calc-hint', title: `計算式：${toDisplay(f.expr, C.schema)}`, text: `計算式：${toDisplay(f.expr, C.schema)}` }));
   });
   el.itemFields.replaceChildren(...nodes);
   const ids = realIds();
@@ -5071,11 +5160,11 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) flush
 // 書き換えはすべて api（またはまとめて書き換える applyChanges）を通るので、そこで変更前後の内容を残す。
 // 1回の操作（削除、取り込みなど）は recorded() で1件の記録にまとめる。
 const LS_HIST = 'bihin-daicho:history';
-const LS_WHO = 'bihin-daicho:who';
+const LS_WHO = 'bihin-daicho:who';   // 以前の版で記録していた名前（今は使わない。読み込み時に消す）
 const HIST_MAX = 300;              // 残す記録の件数
 const HIST_UNDO_CHARS = 1000000;   // 取り消し用の内容を残す量。超えた分は古い記録から「記録のみ」にする
 const QTY_JOIN_MS = 60000;         // 同じ備品の数量を続けて変えたときは、1分以内なら1件にまとめる
-const hd = { btn: $('#hist-btn'), dialog: $('#hist-dialog'), list: $('#hist-list'), empty: $('#hist-empty'), more: $('#hist-more'), who: $('#hist-who-in'), status: $('#hist-status') };
+const hd = { btn: $('#hist-btn'), dialog: $('#hist-dialog'), list: $('#hist-list'), empty: $('#hist-empty'), more: $('#hist-more'), status: $('#hist-status') };
 let histShown = 60;
 
 const cloneData = (o) => (o == null ? null : JSON.parse(JSON.stringify(o)));
@@ -5108,11 +5197,10 @@ function recPush(k, id, b, a) {
 function rec(k, id, after) {
   if (hist.cur && !hist.mute) recPush(k, id, recNow(k, id), recOf(k, id, after));
 }
-function whoName() { try { return (localStorage.getItem(LS_WHO) || '').trim().slice(0, 20); } catch (e) { return ''; } }
 
 // fn の中の書き換えを1件の記録にまとめる。記録を返す（fn の戻り値は .ret）
 async function recorded(label, fn, extra) {
-  const g = { id: newId(), at: Date.now(), who: whoName(), label: String(label).slice(0, 200), file: '', ch: [], ...extra };
+  const g = { id: newId(), at: Date.now(), label: String(label).slice(0, 200), file: '', ch: [], ...extra };
   const outer = hist.cur;
   hist.cur = g;
   try {
@@ -5214,7 +5302,6 @@ function noteQty(it, before, after, f) {
   if (top && top.qty === it.id && now - top.at < QTY_JOIN_MS && top.ch && top.ch.length === 1 && !top.undoneBy) {
     top.ch[0].a = after;
     top.at = now;
-    top.who = whoName();
     const b0 = top.ch[0].b;
     if (b0 && after && b0.fileId === after.fileId && stableJson(b0.values) === stableJson(after.values)) hist.list.shift();   // 元の数に戻った
     else top.label = qtyLabel(name, top.ch[0].b, after, f);
@@ -5222,7 +5309,7 @@ function noteQty(it, before, after, f) {
     renderHistory();
     return;
   }
-  pushHist({ id: newId(), at: now, who: whoName(), label: qtyLabel(name, before, after, f), file: fileNameOf(it), qty: it.id, ch: [{ k: 'item', id: it.id, b: before, a: after }] });
+  pushHist({ id: newId(), at: now, label: qtyLabel(name, before, after, f), file: fileNameOf(it), qty: it.id, ch: [{ k: 'item', id: it.id, b: before, a: after }] });
 }
 
 /* storage */
@@ -5257,7 +5344,7 @@ function cleanHist(list, keepCh) {
     .filter((e) => e && typeof e === 'object' && typeof e.label === 'string' && Number.isFinite(e.at))
     .slice(0, HIST_MAX)
     .map((e) => {
-      const o = { id: str(e.id, 64) || newId(), at: e.at, who: str(e.who, 20), label: str(e.label, 200), file: str(e.file, 40), ch: keepCh && Array.isArray(e.ch) && e.ch.every(okCh) ? e.ch : null };
+      const o = { id: str(e.id, 64) || newId(), at: e.at, label: str(e.label, 200), file: str(e.file, 40), ch: keepCh && Array.isArray(e.ch) && e.ch.every(okCh) ? e.ch : null };
       for (const k of ['undoOf', 'undoneBy', 'qty', 'op', 'base']) if (typeof e[k] === 'string') o[k] = str(e[k], 200);
       return o;
     });
@@ -5266,6 +5353,7 @@ function loadHist() {
   let list = [];
   try { const o = JSON.parse(localStorage.getItem(LS_HIST) || 'null'); if (o && Array.isArray(o.list)) list = o.list; } catch (e) {}
   hist.list = cleanHist(list, true);
+  try { if (localStorage.getItem(LS_WHO) != null) { localStorage.removeItem(LS_WHO); saveHist(); } } catch (e) {}   // 以前の版の名前を残さない
 }
 
 /* undo */
@@ -5285,7 +5373,7 @@ async function undoEntry(e) {
   if (!state.canWrite) return { error: '編集する権限がありません' };
   if (hist.busy) return { error: '処理中です。少し待ってからもう一度お試しください' };
   const st = undoState(e);
-  if (st === 'done') return { error: 'この変更は、すでに取り消しています' };
+  if (st === 'done') return { error: 'この変更は、すでに元に戻しています' };
   if (st === 'none') return { error: 'この記録は古いため、取り消しに必要な内容が残っていません' };
   if (st === 'later') return { error: 'このあとに同じ備品などを変更しているため、取り消せません。新しい変更から順に取り消してください' };
   flushAllQty();
@@ -5294,7 +5382,8 @@ async function undoEntry(e) {
   const base = e.base || e.label;
   const op = e.op === 'undo' ? 'redo' : 'undo';
   try {
-    const g = await recorded(`${op === 'redo' ? 'やり直し' : '取り消し'}：${base}`,
+    // 記録の名前：元に戻した操作は「元に戻した：…」、それをさらに元に戻した（同じ変更をもう一度行った）ときは「もう一度：…」
+    const g = await recorded(`${op === 'redo' ? 'もう一度' : '元に戻した'}：${base}`,
       () => applyChanges([...e.ch].reverse().map((c) => ({ k: c.k, id: c.id, to: c.b }))),
       { file: e.file, undoOf: e.id, op, base });
     e.undoneBy = g.id;
@@ -5323,7 +5412,7 @@ async function undoFromToast(e) {
   const r = await undoEntry(e);
   if (r.error) { toast(r.error, 'error'); return; }
   const redo = r.g.op === 'redo';
-  toast(redo ? 'やり直しました' : '取り消しました', '', undoAct(r.g, redo ? '取り消す' : 'やり直す'));
+  toast(redo ? 'やり直しました' : '元に戻しました', '', undoAct(r.g, redo ? '元に戻す' : 'やり直す'));
 }
 // Ctrl+Z（Mac は ⌘+Z）：まだ取り消していない、いちばん新しい変更を取り消す（入力欄の中では文字の取り消し）
 document.addEventListener('keydown', (e) => {
@@ -5347,7 +5436,6 @@ function openHistory() {
   if (!isLoaded()) return;
   flushAllQty();
   histShown = 60;
-  hd.who.value = whoName();
   setHistStatus('');
   openDialog(hd.dialog);
   renderHistory();
@@ -5369,8 +5457,7 @@ function renderHistory() {
       nodes.push(h('li', { class: 'hist-day', text: `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日（${'日月火水木金土'[d.getDay()]}）` }));
     }
     const st = undoState(e, cache);
-    const meta = [e.file && `ファイル：${e.file}`, e.who && `記録：${e.who}`].filter(Boolean).join('　');
-    const redo = e.op === 'undo';
+    const meta = e.file ? `ファイル：${e.file}` : '';
     nodes.push(h('li', { class: 'hist-item' + (st === 'done' ? ' is-undone' : ''), 'data-id': e.id },
       h('div', { class: 'hist-main' },
         h('div', { class: 'hist-line' },
@@ -5378,8 +5465,8 @@ function renderHistory() {
           h('span', { class: 'hist-label', text: e.label })),
         meta ? h('div', { class: 'hist-meta', text: meta }) : null),
       st === 'ok'
-        ? h('button', { type: 'button', class: 'btn', 'data-undo': e.id, disabled: hist.busy || !state.canWrite, text: redo ? 'やり直す' : '取り消す', 'aria-label': `${redo ? 'やり直す' : '取り消す'}：${e.label}` })
-        : h('span', { class: 'hist-tag', text: st === 'done' ? (redo ? 'やり直し済み' : '取り消し済み') : st === 'later' ? 'このあと変更あり' : '記録のみ' })));
+        ? h('button', { type: 'button', class: 'btn', 'data-undo': e.id, disabled: hist.busy || !state.canWrite, text: '元に戻す', 'aria-label': `元に戻す：${e.label}` })
+        : h('span', { class: 'hist-tag', text: st === 'done' ? '元に戻し済み' : st === 'later' ? 'このあと変更あり' : '記録のみ' })));
   }
   hd.list.replaceChildren(...nodes);
   hd.empty.hidden = hist.list.length > 0;
@@ -5387,16 +5474,14 @@ function renderHistory() {
 }
 hd.btn.addEventListener('click', openHistory);
 hd.more.addEventListener('click', () => { histShown += 100; renderHistory(); });
-hd.who.addEventListener('input', () => { try { localStorage.setItem(LS_WHO, hd.who.value.trim().slice(0, 20)); } catch (e) {} });
 hd.list.addEventListener('click', async (ev) => {
   const b = ev.target.closest('button[data-undo]');
   if (!b) return;
   const e = hist.list.find((x) => x.id === b.dataset.undo);
   if (!e) return;
-  const redo = e.op === 'undo';
   const r = await undoEntry(e);
   if (r.error) setHistStatus(r.error, true);
-  else setHistStatus(`${redo ? 'やり直しました' : '取り消しました'}：${e.base || e.label}`);
+  else setHistStatus(e.op === 'undo' ? `元に戻しました（${e.base} をもう一度行いました）` : `元に戻しました：${e.label}`);
   const again = hd.list.querySelector(`button[data-undo="${CSS.escape(r.g ? r.g.id : e.id)}"]`) || hd.list.querySelector('button[data-undo]');
   if (again) again.focus();
 });

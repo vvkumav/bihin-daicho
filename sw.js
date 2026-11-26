@@ -1,10 +1,10 @@
-// 備品台帳 service worker（公開版だけで使う。deploy.sh が ec789acdb340 と ["https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js","https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js","https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js","https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"] を書き換えて公開する）
+// 備品台帳 service worker（公開版だけで使う。deploy.sh が cfe779e527e3 と ["https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js","https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js","https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js","https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"] を書き換えて公開する）
 // ・通信できるときは、いつも最新の版を開く
 // ・通信できない、または返事が遅いとき（3.5秒）は、前回開いた版で開く。ホーム画面から開いたときも同じ
 // ・PDF・Excel・QRコードの部品（CDN）と文字の形（フォント）は、一度取ったものを使い回す（どれも版の決まったURL）
 // 登録内容は localStorage にあり、ここでは扱わない。キャッシュの名前は bihin- で始める
 // （同じ vvkumav.github.io のほかのアプリのキャッシュには触れない）
-const BUILD = 'ec789acdb340';
+const BUILD = 'cfe779e527e3';
 const LIBS = ["https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js","https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js","https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js","https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"];
 const SHELL = 'bihin-shell';
 const LIB_CACHE = 'bihin-libs';
