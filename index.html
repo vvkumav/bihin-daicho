@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#2d6cbd"><meta name="app-build" content="cfe779e527e3"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1' y='27' width='28' height='1.9' rx='.95' fill='%23b8c2cc'/%3E%3Crect x='2.5' y='6' width='7.5' height='21' rx='2' fill='%233b7bd4'/%3E%3Crect x='11.25' y='3' width='7.5' height='24' rx='2' fill='%2334a271'/%3E%3Crect x='20' y='8' width='7.5' height='19' rx='2' fill='%23ec8a32'/%3E%3C/svg%3E"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="備品台帳"><meta name="apple-mobile-web-app-status-bar-style" content="default"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>備品台帳</title><meta name="description" content="備品の名称・金額・個数をファイルごとに登録し、PDF・Excel・CSV・画像で出力できる備品台帳"><meta name="theme-color" content="#2d6cbd"><meta name="app-build" content="73d27f5ab7ad"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1' y='27' width='28' height='1.9' rx='.95' fill='%23b8c2cc'/%3E%3Crect x='2.5' y='6' width='7.5' height='21' rx='2' fill='%233b7bd4'/%3E%3Crect x='11.25' y='3' width='7.5' height='24' rx='2' fill='%2334a271'/%3E%3Crect x='20' y='8' width='7.5' height='19' rx='2' fill='%23ec8a32'/%3E%3C/svg%3E"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="備品台帳"><meta name="apple-mobile-web-app-status-bar-style" content="default"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>備品台帳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -490,6 +490,45 @@ dialog.modal::backdrop{background:rgba(10,14,18,.5)}
 .bk-desc{margin:0;font-size:14px;color:var(--ink-2)}
 .bk-last{margin:0;font-weight:700}
 .bk-msg{margin:0;font-size:14px;font-weight:700;color:var(--fc-ink)}
+/* まとめて操作：選んだ行に色、選択の操作は一覧の上の帯（スマートフォン・タブレットでは画面の下に浮かせる） */
+#sel-btn[aria-pressed="true"]{background:var(--fc-soft);border-color:var(--fc);color:var(--fc-ink)}
+.sel-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:6px 8px 6px 14px;border-radius:12px;background:var(--fc-soft);border:1px solid color-mix(in srgb,var(--fc) 45%,transparent)}
+.sel-bar[hidden],.sel-acts[hidden],.sel-confirm[hidden]{display:none}
+.sel-count{margin-right:auto;font-weight:700;color:var(--fc-ink)}
+.sel-count small{font-weight:400;color:var(--ink-2);margin-left:4px}
+.sel-acts,.sel-confirm{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.sel-confirm span{font-weight:700;color:var(--danger-text)}
+.sel-danger{color:var(--danger-text);border-color:color-mix(in srgb,var(--danger) 55%,transparent)}
+.c-sel{width:40px;min-width:40px;box-sizing:border-box;text-align:center;padding-left:6px!important;padding-right:6px!important}
+.sel-box,.sel-all{width:20px;height:20px;margin:0;accent-color:var(--fc-btn);cursor:pointer;vertical-align:middle}
+.table-wrap.selecting tbody tr{cursor:pointer}
+.ledger tbody tr.is-sel td{background:color-mix(in srgb,var(--fc) 16%,#ffffff)}
+.bulk-what{margin:0;font-weight:700}
+.bulk-note{margin:0;font-size:14px;color:var(--ink-2)}
+.bulk-note:empty,.item-note:empty{display:none}
+/* 下書き・複製の案内（備品の追加・編集の画面） */
+.draft-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 10px 8px 14px;border-radius:10px;background:#fff6d9;border:1px solid #e9cf7a}
+.draft-bar[hidden]{display:none}
+.draft-bar p{margin:0;flex:1 1 240px;font-size:14px;font-weight:700;color:#5f4a00}
+.draft-btns{display:flex;gap:6px}
+.item-note{margin:0;padding:8px 12px;border-radius:10px;background:var(--fc-soft);color:var(--fc-ink);font-size:14px;font-weight:700}
+@media (min-width:681px){
+  .table-wrap.is-wide.selecting .c-sel{position:sticky;left:0;z-index:1}
+  .table-wrap.is-wide.selecting .c-no{left:40px}
+  .table-wrap.is-wide.selecting.title-first .c-title,.table-wrap.is-wide.selecting.title-first .th-title{left:92px}
+  .table-wrap.is-wide.selecting thead .c-sel{z-index:4}
+}
+@media (max-width:860px){
+  .sel-bar{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:8;padding:8px 10px 8px 14px;box-shadow:0 8px 24px rgba(0,0,0,.32)}
+  .ledger.selecting{padding-bottom:150px}
+  #sel-done{order:2}
+  .sel-acts,.sel-confirm{order:3;width:100%}
+  .sel-acts{display:grid;grid-template-columns:1fr 1fr}
+}
+@media (max-width:680px){
+  .ledger td.c-sel{order:-1;width:auto;min-width:0;padding:0 2px 0 0!important}
+  .ledger tbody tr.is-sel{background:color-mix(in srgb,var(--fc) 12%,#ffffff);border-color:var(--fc)}
+}
 .inst-body{display:flex;flex-direction:column;gap:14px}
 .inst-lead{margin:0;font-family:var(--round);font-size:17px;font-weight:700;color:var(--ink)}
 .inst-merits{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--ink-2)}
@@ -860,7 +899,11 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             備品を追加
           </button>
-          <span class="grow"><span class="wide-hint" id="wide-hint" role="status" hidden>右にもほかの項目があります。横にスクロールしてください →</span></span>
+          <button type="button" class="btn" id="sel-btn" aria-pressed="false" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12 3 3 5-6"/></svg>
+            まとめて操作
+          </button>
+          <span class="grow"><span class="wide-hint" id="wide-hint" role="status" hidden title="一覧を横にスクロールすると、ほかの項目も見られます">右にも項目があります →</span></span>
           <div class="search">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
             <label class="sr" for="search">検索</label>
@@ -869,6 +912,21 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           </div>
           <label class="sr" for="sort">並び順</label>
           <select id="sort"></select>
+        </div>
+        <div class="sel-bar" id="sel-bar" hidden>
+          <span class="sel-count" id="sel-count" role="status"></span>
+          <div class="sel-acts" id="sel-acts">
+            <button type="button" class="btn btn-sm" id="sel-move">別のファイルへ移動</button>
+            <button type="button" class="btn btn-sm" id="sel-edit">値をまとめて変更</button>
+            <button type="button" class="btn btn-sm" id="sel-dup">複製</button>
+            <button type="button" class="btn btn-sm sel-danger" id="sel-del">削除</button>
+          </div>
+          <div class="sel-confirm" id="sel-confirm" hidden>
+            <span id="sel-confirm-text"></span>
+            <button type="button" class="btn btn-sm btn-danger" id="sel-del-yes">削除する</button>
+            <button type="button" class="btn btn-sm" id="sel-del-no">やめる</button>
+          </div>
+          <button type="button" class="btn btn-sm btn-text" id="sel-done">選択をやめる</button>
         </div>
         <div class="table-wrap" id="table-wrap" hidden>
           <table>
@@ -897,6 +955,14 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
       <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
     <div class="modal-body">
+      <div class="draft-bar" id="if-draft" role="status" hidden>
+        <p id="if-draft-text"></p>
+        <div class="draft-btns">
+          <button type="button" class="btn btn-sm btn-primary" id="if-draft-restore">戻す</button>
+          <button type="button" class="btn btn-sm" id="if-draft-discard">消す</button>
+        </div>
+      </div>
+      <p class="item-note" id="item-note" role="status"></p>
       <div class="field-grid" id="item-fields"></div>
       <div class="field"><label for="item-file">ファイル</label><select id="item-file"></select></div>
       <p class="form-error" id="item-error" role="alert"></p>
@@ -904,6 +970,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     <div class="modal-foot">
       <div class="foot-row" id="if-foot-normal">
         <button type="button" class="btn btn-text danger" id="if-delete" hidden>この備品を削除</button>
+        <button type="button" class="btn btn-text" id="if-dup" hidden>複製して追加</button>
         <span class="spacer"></span>
         <button type="button" class="btn" data-close>キャンセル</button>
         <button type="submit" class="btn" id="item-save-next">続けて登録</button>
@@ -1162,7 +1229,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-inner">
-        <p class="m-meta">第2.5版　2026年11月26日</p>
+        <p class="m-meta">第2.6版　2026年11月27日</p>
         <p class="m-lead" id="m-top" tabindex="-1">本書は、備品台帳（以下「本アプリ」）の操作方法を説明するものです。初めて利用する方は、「1 はじめに」と「2 画面構成」からお読みください。</p>
 
         <nav class="m-toc" aria-label="目次">
@@ -1362,6 +1429,15 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <li>数値項目は全角・半角のいずれでも入力できます。桁区切りのカンマ、「円」「¥」などの記号は自動的に除去されます（例：「¥12,800」「12800円」は、いずれも 12800 として登録されます）。</li>
             <li>登録先のファイルは、入力画面下部の<span class="ui">ファイル</span>で変更できます。</li>
           </ul>
+          <h4>4.3　備品の複製</h4>
+          <p>型番違いなど、似た備品を登録する場合は、元になる備品の修正画面を開き、<span class="ui">複製して追加</span>をクリックします。入力中の内容がそのまま写された追加画面に切り替わるので、異なる部分を修正して<span class="ui">登録</span>をクリックします。<span class="ui">続けて登録</span>をクリックすると、同じ内容を残したまま次の備品を登録できます。複数の備品をまとめて複製する場合は、<a href="#m-bulk" data-jump="m-bulk">5.2</a>を参照してください。</p>
+          <h4 id="m-draft" tabindex="-1">4.4　入力途中の保護（下書き）</h4>
+          <p>備品の追加・修正画面で入力した内容は、入力のたびにこの端末へ下書きとして保存されます。ナースコール等で入力を中断して画面を閉じた場合や、アプリが閉じられた場合も、入力した内容は失われません。</p>
+          <ul>
+            <li>同じ画面（追加の場合は追加画面、修正の場合はその備品の修正画面）を次に開くと、上部に「入力途中の内容があります」と表示されます。<span class="ui">戻す</span>をクリックすると、続きから入力できます。不要な場合は<span class="ui">消す</span>をクリックします。</li>
+            <li>アプリを開いたときに下書きがある場合は、画面下部の通知に<span class="ui">続きを入力</span>が表示されます。</li>
+            <li>下書きは1件のみ保存され、<span class="ui">登録</span>・<span class="ui">保存</span>すると消去されます。14日以上前の下書きは自動的に消去されます。</li>
+          </ul>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
 
@@ -1372,7 +1448,7 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <tbody>
               <tr><td>数量の調整</td><td>一覧表の数量欄の<span class="ui">＋</span>または<span class="ui">−</span>をクリックすると、1ずつ増減します。数値または計算式（例：「12+3」「2.5×4」）を直接入力し、Enterキーを押すか欄の外をクリックして確定することもできます。小数も入力できます。変更は直ちに保存されます。</td></tr>
               <tr><td>修正</td><td>一覧表の品名、または行末の鉛筆アイコンをクリックし、内容を変更して<span class="ui">保存</span>をクリックします。</td></tr>
-              <tr><td>他のファイルへの移動</td><td>修正画面の<span class="ui">ファイル</span>で移動先を選択し、<span class="ui">保存</span>をクリックします。</td></tr>
+              <tr><td>他のファイルへの移動</td><td>修正画面の<span class="ui">ファイル</span>で移動先を選択し、<span class="ui">保存</span>をクリックします。複数の備品をまとめて移動する場合は<a href="#m-bulk" data-jump="m-bulk">5.2</a>を参照してください。</td></tr>
               <tr><td>削除</td><td>行末のごみ箱アイコンをクリックし、確認表示で<span class="ui">削除</span>をクリックします。<span class="ui">やめる</span>をクリックすると取り消せます。修正画面の<span class="ui">この備品を削除</span>からも削除できます（スマートフォンではこちらを使用します）。</td></tr>
             </tbody>
           </table>
@@ -1386,6 +1462,22 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
             <li>パソコンでは、入力欄の外で Ctrl＋Z（Macでは ⌘＋Z）を押すと、まだ取り消していない最新の変更を取り消します。</li>
           </ul>
           <p class="m-note"><span class="m-note-label">補足</span>変更履歴は端末（ブラウザ）ごとに保存され、データの共有では送られません。記録は新しいものから300件まで残ります。古い記録や大量の変更の記録は、取り消しに必要な内容が残らず<span class="ui">記録のみ</span>となる場合があります。</p>
+          <h4 id="m-bulk" tabindex="-1">5.2　まとめて操作</h4>
+          <p>複数の備品を選択し、別のファイルへの移動、値の変更、複製、削除を一度に行えます。</p>
+          <ol class="m-steps">
+            <li>一覧の上の<span class="ui">まとめて操作</span>をクリックします。一覧の各行（スマートフォンでは各カード）に選択欄が表示されます。</li>
+            <li>対象の備品を選択します。選択欄のほか、行（カード）のどこをクリックしても選択・解除できます。見出しの選択欄をクリックすると、表示中の備品をすべて選択します。検索で絞り込んでから選択することもできます。</li>
+            <li>表示された帯から操作を選びます。
+              <ul>
+                <li><span class="ui">別のファイルへ移動</span>：移動先のファイルを選び、<span class="ui">移動する</span>をクリックします。</li>
+                <li><span class="ui">値をまとめて変更</span>：変更する項目と新しい値を入力し、<span class="ui">変更する</span>をクリックします（例：選んだ備品の「状態」をすべて「修理中」にする）。空欄のまま変更すると、その項目を空欄にします（品名を除く）。</li>
+                <li><span class="ui">複製</span>：選んだ備品と同じ内容の備品を、一覧の最後に追加します。</li>
+                <li><span class="ui">削除</span>：確認表示で<span class="ui">削除する</span>をクリックします。</li>
+              </ul>
+            </li>
+            <li>選択を終える場合は<span class="ui">選択をやめる</span>をクリックします（Escキーでも終了します）。</li>
+          </ol>
+          <p class="m-note"><span class="m-note-label">補足</span>まとめて行った操作は1件の変更として記録され、通知の<span class="ui">元に戻す</span>、または<span class="ui">変更履歴</span>の<span class="ui">元に戻す</span>で、まとめて元に戻せます。</p>
           <a class="m-back" href="#m-top" data-jump="m-top">目次へ戻る</a>
         </section>
 
@@ -1393,14 +1485,14 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
           <h3 id="m-find" tabindex="-1"><span class="m-num">6</span>一覧の検索と並べ替え</h3>
           <ul>
             <li><strong>検索</strong>：検索欄に語句を入力すると、文字項目（品名、備考等）にその語句を含む備品のみを表示します。絞り込み中は合計行が「合計（n件）」と表示され、表示中の備品のみを集計します。</li>
-            <li><strong>表記の違い</strong>：ひらがな・カタカナ、全角・半角、大文字・小文字、伸ばす音（「プリンター」「プリンタ」）、ハイフン・空白の有無は区別せずに検索します。また、よく使う備品の言い換え（例：「パソコン」と「PC」、「椅子」「いす」「チェア」、「机」「デスク」、「モニター」「ディスプレイ」、「複合機」「コピー機」）も同じものとして検索します。</li>
+            <li><strong>表記の違い</strong>：ひらがな・カタカナ、全角・半角、大文字・小文字、伸ばす音（「プリンター」「プリンタ」）、ハイフン・空白の有無は区別せずに検索します。また、よく使う備品の言い換え（例：「パソコン」と「PC」、「椅子」「いす」「チェア」、「机」「デスク」、「モニター」「ディスプレイ」、「複合機」「コピー機」）も同じものとして検索します。医療・看護の現場でよく使う言い換え（例：「SpO2」「サチュレーション」と「パルスオキシメーター」、「点滴台」「IVスタンド」と「点滴スタンド」、「ステート」と「聴診器」、「アンビュー」と「バッグバルブマスク」、「バルーンカテーテル」と「膀胱留置カテーテル」、「Pトイレ」と「ポータブルトイレ」、「ME機器」と「医療機器」）にも対応しています。</li>
             <li><strong>候補</strong>：入力中は検索欄の下に候補が表示されます。表示中のファイルの備品が先に、ほかのファイルの備品はファイル名付きで表示されます。候補をクリックする（または↑↓キーで選んでEnterキーを押す）と、その備品のファイルを開き、行が色付けされます。</li>
             <li><strong>並べ替え</strong>：並び順から、登録順、新しい順、各項目の昇順・降順を選択できます。</li>
           </ul>
           <h4>6.1　備品が多い場合の表示</h4>
           <ul>
             <li>パソコンでは、一覧表の中だけがスクロールします。列の見出しと合計行（件数を含む）、ファイル名・検索欄は常に表示されます。</li>
-            <li>項目が多く、一覧表が横に収まらない場合は、検索欄の左に「右にもほかの項目があります」と表示されます。一覧表を横にスクロール（下端のスクロールバー、またはShiftキーを押しながらマウスホイール）すると、残りの項目を確認できます。No.と品名は左端に固定され、どの備品の行かが分かります。</li>
+            <li>項目が多く、一覧表が横に収まらない場合は、検索欄の左に「右にも項目があります」と表示されます。一覧表を横にスクロール（下端のスクロールバー、またはShiftキーを押しながらマウスホイール）すると、残りの項目を確認できます。No.と品名は左端に固定され、どの備品の行かが分かります。</li>
             <li>スマートフォンでは、品名と数量を1行目に、その他の項目をその下にまとめた簡潔な表示になります。品名をタップすると修正画面が開きます。削除は修正画面から行います。</li>
             <li>一覧を下へ進むと、画面右下に<span class="ui">一覧の先頭へ</span>が表示されます。クリックすると一覧の先頭に戻り、検索欄にカーソルが移ります。</li>
             <li>長い品名・備考は2行までを表示します。項目が8つ以上ある場合は、品名以外の文字の項目を1行で表示し、収まらない部分を「…」で省略します。全文は、マウスポインターを合わせるか、修正画面で確認できます。</li>
@@ -1827,6 +1919,34 @@ dialog.manual .modal-head h2{font-family:var(--font);font-size:19px;letter-spaci
   </div>
 </dialog>
 
+<dialog class="modal" id="bulk-dialog" aria-labelledby="bulk-title">
+  <form class="modal-form" id="bulk-form" novalidate autocomplete="off">
+    <div class="modal-head">
+      <h2 id="bulk-title">まとめて操作</h2>
+      <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p class="bulk-what" id="bulk-what"></p>
+      <div class="field" id="bulk-file-field"><label for="bulk-file">移動先のファイル</label><select id="bulk-file"></select></div>
+      <div class="field-grid" id="bulk-value-fields">
+        <div class="field"><label for="bulk-field">変更する項目</label><select id="bulk-field"></select></div>
+        <div class="field">
+          <label for="bulk-value">新しい値</label>
+          <div class="input-unit"><input type="text" id="bulk-value" maxlength="200"><span id="bulk-unit"></span></div>
+          <p class="num-eval" id="bulk-eval" aria-live="polite"></p>
+        </div>
+      </div>
+      <p class="bulk-note" id="bulk-note"></p>
+      <p class="form-error" id="bulk-error" role="alert"></p>
+    </div>
+    <div class="modal-foot">
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>キャンセル</button>
+      <button type="submit" class="btn btn-primary" id="bulk-go">変更する</button>
+    </div>
+  </form>
+</dialog>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <button type="button" class="to-top" id="to-top" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 6-6 6 6"/></svg>一覧の先頭へ</button>
 <div class="update-bar" id="update-bar" role="status" hidden>
@@ -1846,7 +1966,7 @@ const el = {
   prevName: $('#prev-name'), nextName: $('#next-name'), pagerPos: $('#pager-pos'),
   addBtn: $('#add-btn'), search: $('#search'), sort: $('#sort'),
   tableWrap: $('#table-wrap'), wideHint: $('#wide-hint'), thead: $('#thead'), rows: $('#rows'), tfoot: $('#tfoot'), empty: $('#empty'),
-  itemDialog: $('#item-dialog'), itemForm: $('#item-form'), itemTitle: $('#item-dialog-title'), itemFields: $('#item-fields'),
+  itemDialog: $('#item-dialog'), itemForm: $('#item-form'), itemTitle: $('#item-dialog-title'), itemFields: $('#item-fields'), itemNote: $('#item-note'),
   itemFile: $('#item-file'), itemError: $('#item-error'), itemSave: $('#item-save'), itemSaveNext: $('#item-save-next'),
   fileDialog: $('#file-dialog'), fileForm: $('#file-form'), fileDialogTitle: $('#file-dialog-title'),
   fdName: $('#fd-name'), fdTitle: $('#fd-title'), fdOrg: $('#fd-org'), fdStamps: $('#fd-stamps'),
@@ -1953,6 +2073,7 @@ const state = {
   filesLoaded: false, itemsLoaded: false, schemaLoaded: false,
   mode: 'loading', canWrite: true, currentId: null,
   sort: 'created:asc', query: '', confirmId: null, busy: false, deleting: false,
+  selecting: false, sel: new Set(),   // まとめて操作：選んでいる途中か、選んだ備品のID
 };
 
 let db = null;
@@ -2033,7 +2154,7 @@ function toast(msg, kind, action) {
 }
 
 function openDialog(d) { if (typeof d.showModal === 'function') { if (!d.open) d.showModal(); } else d.setAttribute('open', ''); }
-function closeDialog(d) { if (typeof d.close === 'function') d.close(); else d.removeAttribute('open'); }
+function closeDialog(d) { if (d === el.itemDialog) beforeItemClose(); if (typeof d.close === 'function') d.close(); else d.removeAttribute('open'); }
 document.addEventListener('click', (e) => {
   const c = e.target.closest('[data-close]');
   if (c) closeDialog(c.closest('dialog'));
@@ -2686,7 +2807,11 @@ function titleFieldOf(C) { return C.byId.get('name') || C.schema.find((f) => f.k
 function rowEl(row, no, C, titleF) {
   const it = row.it;
   const name = titleF ? cellOf(row, titleF).text : '';
-  const tr = h('tr', { class: state.confirmId === it.id ? 'confirming' : null, 'data-id': it.id }, h('td', { class: 'c-no', text: String(no) }));
+  const selOn = state.selecting && state.canWrite;
+  const picked = selOn && state.sel.has(it.id);
+  const tr = h('tr', { class: [state.confirmId === it.id ? 'confirming' : '', picked ? 'is-sel' : ''].join(' ').trim() || null, 'data-id': it.id },
+    selOn ? h('td', { class: 'c-sel' }, h('input', { type: 'checkbox', class: 'sel-box', 'data-id': it.id, checked: picked, 'aria-label': `${name || '品名なし'}を選ぶ` })) : null,
+    h('td', { class: 'c-no', text: String(no) }));
   const qtyF = state.canWrite ? qtyFieldOf(C) : null;
   for (const f of C.schema) {
     if (qtyF && f.id === qtyF.id) { tr.append(qtyCell(row, f, name)); continue; }
@@ -2732,7 +2857,9 @@ function renderTable(cur, rows, C) {
   el.empty.hidden = true;
   el.tableWrap.hidden = false;
   const titleF = titleFieldOf(C);
+  const selOn = state.selecting && state.canWrite;
   el.thead.replaceChildren(h('tr', null,
+    selOn ? h('th', { class: 'c-sel', scope: 'col' }, h('input', { type: 'checkbox', class: 'sel-all', 'aria-label': '表示中の備品をすべて選ぶ' })) : null,
     h('th', { class: 'c-no', scope: 'col', text: 'No.' }),
     C.schema.map((f) => h('th', { scope: 'col', class: f.kind === 'text' ? (titleF && f.id === titleF.id ? 'th-title' : null) : 'num' }, f.label, f.unit ? h('span', { class: 'th-unit', text: f.unit }) : null)),
     h('th', { class: 'c-act', scope: 'col' }, h('span', { class: 'sr', text: '操作' }))));
@@ -2755,7 +2882,7 @@ function renderTable(cur, rows, C) {
   } else {
     // 品名が先頭なら、「合計」はNo.と品名の上だけに置く（横にスクロールしても品名と一緒に左に残る）
     const titleFirst = !!titleF && C.schema[0] === titleF;
-    const labelSpan = titleFirst ? 2 : firstIdx + 1;
+    const labelSpan = (titleFirst ? 2 : firstIdx + 1) + (selOn ? 1 : 0);
     const tr = h('tr', null, h('td', { class: 'ft-label', colspan: String(labelSpan), text: `合計（${shown.length}件）` }),
       titleFirst && firstIdx > 1 ? h('td', { class: 'ft-blank', colspan: String(firstIdx - 1) }) : null);
     C.schema.slice(firstIdx).forEach((f) => {
@@ -2777,6 +2904,7 @@ function renderTable(cur, rows, C) {
     if (b) b.focus();
     pendingFocus = null;
   }
+  syncSelAll();
   updateWide();
 }
 // 表が横に収まらないとき（項目が多いときなど）：品名を左に固定し、右に続きがあることを影と案内で示す
@@ -2805,6 +2933,7 @@ function render() {
   renderTotals(rows, C);
   renderTable(cur, rows, C);
   renderPager(list, cur);
+  renderBulk();
   renderHistBits();
 }
 
@@ -2830,6 +2959,8 @@ function renderPager(list, cur) {
 function selectFile(id) {
   state.currentId = id;
   state.confirmId = null;
+  state.selecting = false;   // ファイルを切り替えたら、まとめて操作の選択は終える
+  state.sel.clear();
   state.query = '';
   el.search.value = '';
   try { localStorage.setItem(LS_FILE, id); } catch (e) {}
@@ -3023,8 +3154,10 @@ function openItemDialog(id) {
   el.itemSaveNext.hidden = !!it;
   el.itemSave.textContent = it ? '保存' : '登録';
   ifx.del.hidden = !it;
+  ifx.dup.hidden = !it;
   showItemFoot(false);
   el.itemError.textContent = '';
+  el.itemNote.textContent = '';
   const titleF = titleFieldOf(C);
   const nodes = C.schema.map((f) => {
     const raw = it ? it.values[f.id] : undefined;
@@ -3051,6 +3184,7 @@ function openItemDialog(id) {
   el.itemFile.value = it ? fileIdOf(it, ids) : cur.id;
   updateItemCalc();
   openDialog(el.itemDialog);
+  offerDraftInDialog();
   const first = el.itemFields.querySelector('input');
   if (first) first.focus();
 }
@@ -3085,19 +3219,24 @@ el.itemForm.addEventListener('submit', async (e) => {
       const g = await recorded(editLabel(orig, data, C), () => api.updateItem(orig.id, data), { file: target.name });
       toast(moved ? `${target.name}に移動しました` : '保存しました', '', undoAct(g));
     } else {
-      const g = await recorded(`追加：${itemNameOf(values, C)}`, () => api.addItem(data), { file: target.name });
+      const g = await recorded(`${itemCtx.dupOf ? '追加（複製）' : '追加'}：${itemNameOf(values, C)}`, () => api.addItem(data), { file: target.name });
       const newItemId = g.ret;
       if (target.id === cur.id && newItemId) reveal = { id: newItemId, until: Date.now() + 5000 };
       toast(target.id === cur.id ? '登録しました' : `${target.name}に登録しました`, '', undoAct(g));
     }
+    clearDraft();   // 保存したので下書きは不要
     render();
     if (keepOpen) {
-      el.itemFields.querySelectorAll('input').forEach((x) => { x.value = ''; });
+      // 複製のときは同じ内容を残して、続けて別の備品として登録できるようにする
+      if (!itemCtx.dupOf) el.itemFields.querySelectorAll('input').forEach((x) => { x.value = ''; });
       el.itemError.textContent = '';
+      el.itemNote.textContent = itemCtx.dupOf ? '登録しました。同じ内容が残っているので、違うところを直して続けて登録できます。' : '';
       updateItemCalc();
+      idraft.base = stableJson(formSnapshot());
       const first = el.itemFields.querySelector('input');
-      if (first) first.focus();
+      if (first) { first.focus(); if (itemCtx.dupOf) first.select(); }
     } else {
+      idraft.base = stableJson(formSnapshot());
       closeDialog(el.itemDialog);
     }
   } catch (err) {
@@ -3151,8 +3290,9 @@ el.sort.addEventListener('change', () => {
 });
 
 // 修正画面からの削除（スマートフォンでは一覧に削除ボタンを出さないため、ここから削除する）
-const ifx = { del: $('#if-delete'), normal: $('#if-foot-normal'), confirm: $('#if-foot-confirm'), text: $('#if-confirm-text'), yes: $('#if-delete-yes'), no: $('#if-delete-no') };
+const ifx = { dup: $('#if-dup'), del: $('#if-delete'), normal: $('#if-foot-normal'), confirm: $('#if-foot-confirm'), text: $('#if-confirm-text'), yes: $('#if-delete-yes'), no: $('#if-delete-no') };
 function showItemFoot(confirming) { ifx.normal.hidden = confirming; ifx.confirm.hidden = !confirming; }
+ifx.dup.addEventListener('click', () => startDuplicate());
 ifx.del.addEventListener('click', () => {
   const it = itemCtx && state.items.find((x) => x.id === itemCtx.id);
   if (!it) return;
@@ -3165,6 +3305,8 @@ ifx.del.addEventListener('click', () => {
 ifx.no.addEventListener('click', () => { showItemFoot(false); ifx.del.focus(); });
 ifx.yes.addEventListener('click', async () => {
   const it = itemCtx && state.items.find((x) => x.id === itemCtx.id);
+  idraft.base = stableJson(formSnapshot());   // 削除する備品の入力は下書きに残さない
+  if (draftFor(readDraft(), itemCtx)) clearDraft();
   closeDialog(el.itemDialog);
   if (it) await doDelete(it);
 });
@@ -5684,6 +5826,361 @@ bk.dialog.addEventListener('cancel', (e) => { if (bk.busy) e.preventDefault(); }
 bk.barSave.addEventListener('click', saveBackup);
 bk.barLater.addEventListener('click', () => { lsSet(LS_BACKUP_LATER, Date.now() + DAY_MS); renderBackupBar(); });
 
+/* ---------- まとめて操作（複数の備品を選んで、別のファイルへ移動・値の変更・複製・削除） ---------- */
+// 「まとめて操作」を押すと一覧に選択の欄が出る。行（スマートフォンではカード）を押しても選べる。
+// 操作は1件の変更として記録し、通知の「元に戻す」や変更履歴からまとめて戻せる。
+const bulk = {
+  btn: $('#sel-btn'), bar: $('#sel-bar'), count: $('#sel-count'), acts: $('#sel-acts'),
+  move: $('#sel-move'), edit: $('#sel-edit'), dup: $('#sel-dup'), del: $('#sel-del'),
+  confirm: $('#sel-confirm'), confirmText: $('#sel-confirm-text'), yes: $('#sel-del-yes'), no: $('#sel-del-no'), done: $('#sel-done'),
+  dialog: $('#bulk-dialog'), form: $('#bulk-form'), title: $('#bulk-title'), what: $('#bulk-what'),
+  fileField: $('#bulk-file-field'), file: $('#bulk-file'), valueFields: $('#bulk-value-fields'), field: $('#bulk-field'),
+  value: $('#bulk-value'), unit: $('#bulk-unit'), evalOut: $('#bulk-eval'), note: $('#bulk-note'), error: $('#bulk-error'), go: $('#bulk-go'),
+  mode: '', busy: false,
+};
+// 選んでいる備品（表示中のファイルのものだけ。検索で隠れているものも含む）
+function selectedItems() {
+  const cur = currentFile();
+  if (!cur || !state.selecting) return [];
+  const ids = realIds();
+  return state.items.filter((it) => state.sel.has(it.id) && fileIdOf(it, ids) === cur.id).sort((a, b) => a.createdAt - b.createdAt);
+}
+function nameList(items) {
+  const names = items.map((it) => itemNameOf(it.values));
+  return names.length > 3 ? `${names.slice(0, 3).join('、')} ほか${names.length - 3}件` : names.join('、');
+}
+function setSelecting(on) {
+  state.selecting = !!on && state.canWrite;
+  state.sel.clear();
+  showBulkConfirm(false);
+  render();
+  if (state.selecting) (el.rows.querySelector('.sel-box') || bulk.done).focus();
+  else bulk.btn.focus();
+}
+function showBulkConfirm(on) {
+  bulk.acts.hidden = on;
+  bulk.confirm.hidden = !on;
+}
+function renderBulk() {
+  const cur = currentFile();
+  const any = isLoaded() && !!cur && state.canWrite && itemsOf(cur.id).length > 0;
+  if (state.selecting && !any) { state.selecting = false; state.sel.clear(); }
+  bulk.btn.hidden = !state.canWrite;
+  bulk.btn.disabled = !any;
+  bulk.btn.setAttribute('aria-pressed', String(state.selecting));
+  bulk.bar.hidden = !state.selecting;
+  el.tableWrap.classList.toggle('selecting', state.selecting);
+  el.tableWrap.closest('.ledger').classList.toggle('selecting', state.selecting);
+  if (!state.selecting) return;
+  const items = selectedItems();
+  state.sel = new Set(items.map((it) => it.id));
+  const n = items.length;
+  const shown = new Set([...el.rows.querySelectorAll('tr[data-id]')].map((tr) => tr.dataset.id));
+  const hidden = items.filter((it) => !shown.has(it.id)).length;
+  bulk.count.replaceChildren(...[n ? `${n}件を選択中` : '備品を選んでください', hidden ? h('small', { text: `（うち${hidden}件は検索で隠れています）` }) : null].filter(Boolean));
+  for (const b of [bulk.move, bulk.edit, bulk.dup, bulk.del]) b.disabled = !n || bulk.busy;
+  bulk.move.disabled = !n || bulk.busy || fileList().length < 2;
+  bulk.move.title = fileList().length < 2 ? 'ほかのファイルがありません' : '';
+  if (!n) showBulkConfirm(false);
+}
+function toggleSel(id, on) {
+  if (on === undefined) on = !state.sel.has(id);
+  if (on) state.sel.add(id); else state.sel.delete(id);
+  const tr = el.rows.querySelector(`tr[data-id="${CSS.escape(id)}"]`);
+  if (tr) { tr.classList.toggle('is-sel', on); const b = tr.querySelector('.sel-box'); if (b) b.checked = on; }
+  syncSelAll();
+  showBulkConfirm(false);
+  renderBulk();
+}
+function syncSelAll() {
+  const all = el.thead.querySelector('.sel-all');
+  if (!all) return;
+  const boxes = [...el.rows.querySelectorAll('.sel-box')];
+  const n = boxes.filter((b) => b.checked).length;
+  all.checked = boxes.length > 0 && n === boxes.length;
+  all.indeterminate = n > 0 && n < boxes.length;
+}
+// 選んだ内容を1件の記録にして書き換え、選択を終える
+async function runBulk(label, list) {
+  bulk.busy = true;
+  renderBulk();
+  try {
+    const cur = currentFile();
+    const g = await recorded(label, () => applyChanges(list), { file: cur ? cur.name : '' });
+    state.selecting = false;
+    state.sel.clear();
+    showBulkConfirm(false);
+    render();
+    return g;
+  } finally {
+    bulk.busy = false;
+    renderBulk();
+  }
+}
+bulk.btn.addEventListener('click', () => setSelecting(!state.selecting));
+bulk.done.addEventListener('click', () => setSelecting(false));
+el.thead.addEventListener('change', (e) => {
+  if (!e.target.classList.contains('sel-all')) return;
+  const on = e.target.checked;
+  el.rows.querySelectorAll('.sel-box').forEach((b) => { if (on) state.sel.add(b.dataset.id); else state.sel.delete(b.dataset.id); });
+  showBulkConfirm(false);
+  render();
+});
+el.rows.addEventListener('change', (e) => { if (e.target.classList.contains('sel-box')) toggleSel(e.target.dataset.id, e.target.checked); });
+// 選んでいる間は、行（カード）のどこを押しても選べる。品名を押したときも、修正の画面ではなく選択にする
+el.rows.addEventListener('click', (e) => {
+  if (!state.selecting) return;
+  const tr = e.target.closest('tr[data-id]');
+  if (!tr) return;
+  if (e.target.closest('.title-btn')) { e.preventDefault(); e.stopImmediatePropagation(); toggleSel(tr.dataset.id); return; }
+  if (e.target.closest('input, button, a, select, label, textarea')) return;
+  toggleSel(tr.dataset.id);
+}, true);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && state.selecting && !document.querySelector('dialog[open]')) { e.preventDefault(); setSelecting(false); }
+});
+
+bulk.del.addEventListener('click', () => {
+  const items = selectedItems();
+  if (!items.length) return;
+  bulk.confirmText.textContent = `${items.length}件の備品を削除しますか？`;
+  showBulkConfirm(true);
+  bulk.no.focus();
+});
+bulk.no.addEventListener('click', () => { showBulkConfirm(false); bulk.del.focus(); });
+bulk.yes.addEventListener('click', async () => {
+  const items = selectedItems();
+  if (!items.length || bulk.busy) return;
+  try {
+    const g = await runBulk(`まとめて削除：${items.length}件（${nameList(items)}）`, items.map((it) => ({ k: 'item', id: it.id, to: null })));
+    toast(`${items.length}件を削除しました`, '', undoAct(g));
+  } catch (err) {
+    toast(explainError(err), 'error');
+  }
+});
+bulk.dup.addEventListener('click', async () => {
+  const items = selectedItems();
+  if (!items.length || bulk.busy) return;
+  const now = Date.now(), ids = realIds();
+  const list = items.map((it, i) => ({ k: 'item', id: newId(), to: { fileId: fileIdOf(it, ids), values: cloneData(it.values), createdAt: now + i, updatedAt: now } }));
+  try {
+    const g = await runBulk(`まとめて複製：${items.length}件（${nameList(items)}）`, list);
+    reveal = { id: list[0].id, until: Date.now() + 5000 };
+    render();
+    toast(`${items.length}件を複製しました`, '', undoAct(g));
+  } catch (err) {
+    toast(explainError(err), 'error');
+  }
+});
+
+function bulkFieldDef() { return calc().schema.find((f) => f.id === bulk.field.value); }
+function syncBulkField() {
+  const f = bulkFieldDef();
+  if (!f) return;
+  bulk.unit.textContent = f.kind === 'number' ? (f.unit || '') : '';
+  bulk.value.classList.toggle('num-input', f.kind === 'number');
+  bulk.value.inputMode = f.kind === 'number' ? 'decimal' : 'text';
+  bulk.note.textContent = f.required ? `${f.label}は空欄にできません。` : '空欄のまま「変更する」を押すと、選んだ備品のこの項目を空欄にします。';
+  updateBulkEval();
+}
+function updateBulkEval() {
+  const f = bulkFieldDef();
+  if (!f || f.kind !== 'number') { bulk.evalOut.textContent = ''; return; }
+  const r = parseNumInput(bulk.value.value, f);
+  bulk.evalOut.classList.toggle('is-err', !!r.bad);
+  bulk.evalOut.textContent = r.expr ? `＝ ${withUnit(r.n, f)}` : r.bad ? numInputError(f, r) : '';
+}
+function openBulk(mode) {
+  const items = selectedItems();
+  if (!items.length || bulk.busy) return;
+  bulk.mode = mode;
+  bulk.dialog.className = 'modal fc-' + colorOf(currentFile());
+  bulk.error.textContent = '';
+  bulk.what.textContent = `選んだ備品 ${items.length}件：${nameList(items)}`;
+  bulk.fileField.hidden = mode !== 'move';
+  bulk.valueFields.hidden = mode !== 'edit';
+  bulk.note.textContent = '';
+  if (mode === 'move') {
+    const cur = currentFile();
+    bulk.title.textContent = '別のファイルへ移動';
+    bulk.file.replaceChildren(...fileList().filter((f) => f.id !== cur.id).map((f) => h('option', { value: f.id, text: f.name })));
+    bulk.go.textContent = '移動する';
+  } else {
+    bulk.title.textContent = '値をまとめて変更';
+    const fields = calc().schema.filter((f) => f.kind !== 'formula');
+    bulk.field.replaceChildren(...fields.map((f) => h('option', { value: f.id, text: f.label })));
+    const firstOther = fields.find((f) => !f.required);
+    if (firstOther) bulk.field.value = firstOther.id;
+    bulk.value.value = '';
+    syncBulkField();
+    bulk.go.textContent = '変更する';
+  }
+  openDialog(bulk.dialog);
+  (mode === 'move' ? bulk.file : bulk.field).focus();
+}
+bulk.move.addEventListener('click', () => openBulk('move'));
+bulk.edit.addEventListener('click', () => openBulk('edit'));
+bulk.field.addEventListener('change', () => { bulk.error.textContent = ''; syncBulkField(); });
+bulk.value.addEventListener('input', () => { bulk.error.textContent = ''; updateBulkEval(); });
+bulk.form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (bulk.busy || !state.canWrite) return;
+  const items = selectedItems();
+  if (!items.length) { closeDialog(bulk.dialog); return; }
+  const now = Date.now();
+  bulk.error.textContent = '';
+  let label, list, done;
+  if (bulk.mode === 'move') {
+    const target = fileList().find((f) => f.id === bulk.file.value);
+    if (!target) return;
+    list = items.map((it) => ({ k: 'item', id: it.id, to: { ...itemRec(it), fileId: target.id, updatedAt: now } }));
+    label = `まとめて移動：${items.length}件 → ${target.name}（${nameList(items)}）`;
+    done = `${items.length}件を${target.name}に移動しました`;
+  } else {
+    const f = bulkFieldDef();
+    if (!f) return;
+    let v;
+    if (f.kind === 'text') v = bulk.value.value.trim().slice(0, 200);
+    else {
+      const r = parseNumInput(bulk.value.value, f);
+      if (r.bad) { bulk.error.textContent = numInputError(f, r); bulk.value.focus(); return; }
+      v = r.empty ? '' : r.n;
+    }
+    if (v === '' && f.required) { bulk.error.textContent = `${f.label}を入力してください`; bulk.value.focus(); return; }
+    list = items.map((it) => {
+      const values = { ...it.values };
+      if (v === '') delete values[f.id]; else values[f.id] = v;
+      return { k: 'item', id: it.id, to: { ...itemRec(it), values, updatedAt: now } };
+    });
+    label = `まとめて変更：${items.length}件の${f.label}を「${v === '' ? '空欄' : shortValue(v, f)}」に（${nameList(items)}）`;
+    done = `${items.length}件の${f.label}を変更しました`;
+  }
+  bulk.go.disabled = true;
+  try {
+    const g = await runBulk(label, list);
+    closeDialog(bulk.dialog);
+    toast(done, '', undoAct(g));
+  } catch (err) {
+    bulk.error.textContent = explainError(err);
+  } finally {
+    bulk.go.disabled = false;
+  }
+});
+
+/* ---------- 備品の複製（修正の画面の「複製して追加」） ---------- */
+// 入力中の内容をそのまま写して、新しい備品の追加に切り替える。違うところだけ直して登録できる
+function startDuplicate() {
+  const it = itemCtx && itemCtx.id && state.items.find((x) => x.id === itemCtx.id);
+  if (!it) return;
+  itemCtx = { id: null, dupOf: it.id };
+  el.itemTitle.textContent = '備品の追加（複製）';
+  el.itemSaveNext.hidden = false;
+  el.itemSave.textContent = '登録';
+  ifx.del.hidden = true;
+  ifx.dup.hidden = true;
+  showItemFoot(false);
+  el.itemError.textContent = '';
+  el.itemNote.textContent = `「${itemNameOf(it.values)}」の内容を写しました。違うところを直して「登録」を押してください。`;
+  idraft.base = '';   // 写した内容は、まだ保存していない入力として扱う
+  saveDraftSoon();
+  const tf = titleFieldOf(calc());
+  const inp = tf ? itemInput(tf) : el.itemFields.querySelector('input');
+  if (inp) { inp.focus(); inp.select(); }
+}
+
+/* ---------- 入力途中の保護（下書き） ---------- */
+// 備品の追加・修正の画面の入力を、入力のたびにこの端末に残す（1件だけ）。保存せずに閉じたり、
+// ナースコールなどで画面を離れてアプリが閉じられたりしても、次に開いたときに「戻す」で続きから入力できる。
+const LS_DRAFT = 'bihin-daicho:draft';
+const idraft = { timer: 0, base: '', bar: $('#if-draft'), text: $('#if-draft-text'), restore: $('#if-draft-restore'), discard: $('#if-draft-discard'), pending: null };
+function formSnapshot() {
+  const values = {};
+  el.itemFields.querySelectorAll('input[id^="if-"]').forEach((x) => { values[x.id.slice(3)] = x.value; });
+  return { values, fileId: el.itemFile.value };
+}
+function readDraft() {
+  try {
+    const o = JSON.parse(localStorage.getItem(LS_DRAFT) || 'null');
+    return o && typeof o === 'object' && o.values && typeof o.values === 'object' && Number.isFinite(o.at) ? o : null;
+  } catch (e) { return null; }
+}
+function clearDraft() { clearTimeout(idraft.timer); try { localStorage.removeItem(LS_DRAFT); } catch (e) {} }
+const draftFor = (d, ctx) => !!d && !!ctx && (d.id || null) === (ctx.id || null);
+// 開いたときから変わっていれば残す。元に戻っていれば、この画面の下書きは消す
+function saveDraftNow(closing) {
+  clearTimeout(idraft.timer);
+  if ((!closing && !el.itemDialog.open) || !itemCtx) return false;   // 閉じた直後（close）は、閉じる前の入力を残す
+  const snap = formSnapshot();
+  if (stableJson(snap) === idraft.base) {
+    if (draftFor(readDraft(), itemCtx)) clearDraft();
+    return false;
+  }
+  const tf = titleFieldOf(calc());
+  const o = { at: Date.now(), id: itemCtx.id || null, dupOf: itemCtx.dupOf || null, fileId: snap.fileId, values: snap.values, name: tf ? String(snap.values[tf.id] || '').slice(0, 40) : '' };
+  try { localStorage.setItem(LS_DRAFT, JSON.stringify(o)); } catch (e) {}
+  return true;
+}
+function saveDraftSoon() { clearTimeout(idraft.timer); idraft.timer = setTimeout(saveDraftNow, 400); }
+function fmtDraftTime(t) { const d = new Date(t); return `${d.getMonth() + 1}月${d.getDate()}日 ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+// 画面を開いたとき：同じ備品（追加なら追加）の下書きがあれば案内を出す
+function offerDraftInDialog() {
+  idraft.base = stableJson(formSnapshot());
+  const d = readDraft();
+  idraft.pending = draftFor(d, itemCtx) && stableJson({ values: d.values, fileId: d.fileId }) !== idraft.base ? d : null;
+  idraft.bar.hidden = !idraft.pending;
+  if (idraft.pending) idraft.text.textContent = `入力途中の内容があります（${fmtDraftTime(d.at)}${d.name ? `・${d.name}` : ''}）。続きから入力しますか？`;
+}
+function restoreDraft(d) {
+  if (!d) return;
+  for (const [k, v] of Object.entries(d.values)) {
+    const inp = document.getElementById('if-' + k);
+    if (inp && inp.tagName === 'INPUT' && typeof v === 'string') inp.value = v.slice(0, 200);
+  }
+  if (d.fileId && [...el.itemFile.options].some((o) => o.value === d.fileId)) el.itemFile.value = d.fileId;
+  if (d.dupOf && !itemCtx.id) { itemCtx.dupOf = d.dupOf; el.itemTitle.textContent = '備品の追加（複製）'; }
+  idraft.pending = null;
+  idraft.bar.hidden = true;
+  el.itemNote.textContent = '入力途中の内容を戻しました。';
+  updateItemCalc();
+  const first = el.itemFields.querySelector('input');
+  if (first) first.focus();
+}
+idraft.restore.addEventListener('click', () => restoreDraft(idraft.pending));
+idraft.discard.addEventListener('click', () => {
+  clearDraft();
+  idraft.pending = null;
+  idraft.bar.hidden = true;
+  const first = el.itemFields.querySelector('input');
+  if (first) first.focus();
+});
+el.itemFields.addEventListener('input', saveDraftSoon);
+el.itemFile.addEventListener('change', saveDraftSoon);
+// 保存せずに閉じるとき：入力が残っていれば下書きにして知らせる。閉じる操作の中で（close の知らせを待たずに）行う。
+// closeDialog（閉じる・キャンセル・登録のあと）と Esc キー（cancel）から呼ばれる
+function beforeItemClose() {
+  if (!el.itemDialog.open) return;
+  if (saveDraftNow(true)) toast('入力途中の内容を残しました。次に開くと続きから入力できます');
+  idraft.pending = null;
+}
+el.itemDialog.addEventListener('cancel', beforeItemClose);
+document.addEventListener('visibilitychange', () => { if (document.hidden) saveDraftNow(); });
+window.addEventListener('pagehide', () => { saveDraftNow(); });
+// アプリを開いたとき：前回の入力途中の備品があれば知らせる
+function offerDraftAtStart() {
+  if (!isLoaded()) { setTimeout(offerDraftAtStart, 300); return; }
+  const d = readDraft();
+  if (!d || !state.canWrite) return;
+  if (Date.now() - d.at > 14 * DAY_MS || (d.id && !state.items.some((x) => x.id === d.id))) { clearDraft(); return; }
+  if (document.querySelector('dialog[open]')) return;
+  toast(`入力途中の備品があります${d.name ? `（${d.name}）` : ''}`, '', { label: '続きを入力', run: () => {
+    const now = readDraft();
+    if (!now) return;
+    openItemDialog(now.id || null);
+    if (el.itemDialog.open) restoreDraft(now);
+  } });
+}
+setTimeout(offerDraftAtStart, 1200);
+
 /* ---------- home screen (install as an app) ---------- */
 // 公開版（deploy.sh が manifest を付けた index.html）だけで使う。claude.ai 版・端末用のファイルでは何も出さない。
 // ・画面右上の「ホーム画面に追加」で、端末に合わせた追加方法を案内する（Chrome・Edge では確認画面を直接出す）
@@ -5959,6 +6456,78 @@ const SYNONYMS = [
   ['USBメモリ', 'USBメモリー', 'フラッシュメモリ'],
   ['会議', 'かいぎ', 'ミーティング'],
   ['事務', 'じむ', 'オフィス'],
+  // 医療・看護の現場でよく使う言い換え（略語・通称・商品名として広く使われる呼び方）
+  ['パルスオキシメーター', 'パルオキ', 'SpO2', 'SpO2モニター', 'サチュレーション', 'サチュレーションモニター', 'サチュモニ'],
+  ['点滴スタンド', '点滴台', 'IVスタンド', 'IVポール', 'イルリガートル台', 'ガートル台', 'イルリ台'],
+  ['点滴', '輸液', 'てんてき'],
+  ['輸液ポンプ', 'インフュージョンポンプ', '輸注ポンプ'],
+  ['シリンジポンプ', 'シリポン'],
+  ['車椅子', '車いす', '車イス', 'くるまいす', 'ホイールチェア'],
+  ['ストレッチャー', '担架', 'たんか'],
+  ['血圧計', 'けつあつけい', 'BP計', '血圧モニター'],
+  ['体温計', 'たいおんけい', '検温計'],
+  ['聴診器', 'ちょうしんき', 'ステート'],
+  ['心電図モニター', 'ECGモニター', '心電図モニタ', 'モニター心電図'],
+  ['心電図', 'ECG', 'EKG', '心電計'],
+  ['ベッドサイドモニター', '生体情報モニター', 'バイタルモニター'],
+  ['除細動器', 'じょさいどうき', 'デフィブリレーター', 'ディフィブリレーター'],
+  ['AED', '自動体外式除細動器'],
+  ['吸引器', '吸引機', 'サクション', 'きゅういんき'],
+  ['吸引カテーテル', '吸引チューブ', 'サクションチューブ'],
+  ['低圧持続吸引器', '持続吸引器', 'メラサキューム'],
+  ['酸素ボンベ', '酸素ボトル', 'O2ボンベ', 'さんそぼんべ'],
+  ['酸素流量計', 'フローメーター', 'さんそりゅうりょうけい'],
+  ['ネブライザー', '吸入器', 'きゅうにゅうき'],
+  ['救急カート', '急変カート', 'クラッシュカート', 'きゅうきゅうかーと'],
+  ['アンビューバッグ', 'アンビュー', 'バッグバルブマスク', 'BVM', '蘇生バッグ'],
+  ['喉頭鏡', 'こうとうきょう', 'ラリンゴスコープ'],
+  ['気管チューブ', '挿管チューブ', '気管内チューブ'],
+  ['胃管', 'マーゲンチューブ', 'NGチューブ', '経鼻胃管'],
+  ['膀胱留置カテーテル', 'バルーンカテーテル', '尿道カテーテル'],
+  ['留置針', 'サーフロー', '静脈留置針'],
+  ['三方活栓', 'さんぽうかっせん', '三活'],
+  ['輸液セット', '輸液ルート', '点滴ルート'],
+  ['延長チューブ', 'エクステンションチューブ'],
+  ['注射器', 'シリンジ', 'ちゅうしゃき'],
+  ['注射針', 'ニードル', 'ちゅうしゃばり'],
+  ['駆血帯', 'くけつたい', 'ターニケット'],
+  ['血糖測定器', '血糖計', '血糖測定機', 'グルコメーター', 'けっとうけい'],
+  ['体重計', 'たいじゅうけい', 'ヘルスメーター'],
+  ['身長計', 'しんちょうけい'],
+  ['ガーグルベースン', 'ガーグル', 'うがい受け'],
+  ['膿盆', 'のうぼん'],
+  ['鑷子', 'せっし', 'ピンセット'],
+  ['鉗子', 'かんし', 'ペアン', 'コッヘル'],
+  ['はさみ', '鋏', '剪刀', 'せんとう'],
+  ['舌圧子', 'ぜつあつし'],
+  ['尿器', 'しびん', '尿瓶', 'ユリンボトル'],
+  ['便器', 'ベッドパン', '差込便器', '差し込み便器'],
+  ['ポータブルトイレ', 'Pトイレ', 'ポータブル便器'],
+  ['おむつ', '紙おむつ', 'リハビリパンツ', 'リハパン', '紙パンツ'],
+  ['陰部洗浄ボトル', '陰洗ボトル', 'いんせんぼとる'],
+  ['吸い飲み', '吸いのみ', 'すいのみ'],
+  ['エアマット', 'エアマットレス', '体圧分散マットレス', '除圧マット'],
+  ['離床センサー', '離床センサ', 'センサーマット', 'りしょうせんさー'],
+  ['ナースコール', 'なーすこーる', '呼び出しボタン'],
+  ['ナースステーション', 'なーすすてーしょん'],
+  ['オーバーテーブル', 'オーバーベッドテーブル', 'ベッドテーブル'],
+  ['床頭台', 'しょうとうだい', 'ベッドサイドキャビネット'],
+  ['歩行器', 'ほこうき', 'ウォーカー'],
+  ['杖', 'つえ', 'ステッキ'],
+  ['シャワーチェア', 'シャワーいす', '入浴用いす', 'シャワーキャリー'],
+  ['体位変換クッション', 'ポジショニングクッション', 'ポジショニングピロー', '体交枕'],
+  ['氷枕', 'こおりまくら', 'アイス枕', 'アイスノン'],
+  ['弾性ストッキング', '着圧ストッキング', '弾ストッキング'],
+  ['フットポンプ', '間欠的空気圧迫装置', 'カーフポンプ'],
+  ['アルコール綿', 'アル綿', '酒精綿'],
+  ['手袋', 'てぶくろ', 'グローブ'],
+  ['ガウン', '予防衣', 'アイソレーションガウン'],
+  ['包帯', 'ほうたい', 'バンテージ'],
+  ['サージカルテープ', '医療用テープ'],
+  ['防水シーツ', 'ラバーシーツ', '処置用シーツ'],
+  ['エコー', '超音波診断装置', 'ちょうおんぱ'],
+  ['ディスポ', 'ディスポーザブル', '使い捨て'],
+  ['医療機器', 'ME機器', 'いりょうきき'],
 ];
 const SG_MAX = 8;
 // 1文字ずつの読み替え（カタカナ→ひらがな、大文字→小文字、伸ばす音・ハイフン・空白は消す）
